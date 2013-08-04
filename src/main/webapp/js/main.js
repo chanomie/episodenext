@@ -36,6 +36,11 @@ $(document).ready(function() {
     $("#settingspage").slideUp('slow');
     $("#mainpage").slideDown('slow');	  
   });
+  
+  $("#showdetailsdone").click(function() {
+    $("#showdetailspage").slideUp('slow');
+    $("#mainpage").slideDown('slow');	  
+  })
     
   $("#addnewshowbutton").click(addNewShow);
   $('#addshowform').submit(onSearch);
@@ -214,14 +219,15 @@ function buildMainScreenFromCache() {
                       addClass("icon-trash")).
                     append(
                       $("<i></i>").
-                      addClass("infoButton").
+                      addClass("infoButtonShow").
                       attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
                       addClass("icon-info-sign"))
                     ))
            ); 
         }        
         $(".deleteButton").click(deleteSeriesButton);
-        
+        $(".infoButtonShow").click(showInfoShow);
+                
         $("#unwatchedShowList").empty();
 		var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
 		if(nextEpisodeCacheJson !== null) {
@@ -296,6 +302,11 @@ function buildMainScreenFromCache() {
 function deleteSeriesButton() {
     var seriesid = $(this).attr("data-seriesid");
     deleteSeries(seriesid);
+}
+
+function showInfoShow() {
+    var seriesid = $(this).attr("data-seriesid");
+    // deleteSeries(seriesid);	
 }
 
 function playedEpisode() {
