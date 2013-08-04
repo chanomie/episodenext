@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]>    <html class="no-js iem7"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Wire Watcher</title>
+        <meta name="description" content="Allows tracking and marking of shows.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/touch/apple-touch-icon-144x144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/touch/apple-touch-icon-114x114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/touch/apple-touch-icon-72x72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="img/touch/apple-touch-icon-57x57-precomposed.png">
+        <link rel="shortcut icon" href="img/touch/apple-touch-icon.png">
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="img/touch/apple-touch-icon-144x144-precomposed.png">
+        <meta name="msapplication-TileColor" content="#222222">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="https://www.dropbox.com/static/api/1/dropbox-datastores-0.1.0-b2.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <script src="js/helper.js"></script>
+        <script src="js/thetvdb.js"></script>
+        <script src="js/main.js"></script>
+        <!-- Add your site or application content here -->
+        
+        <div id="mainpage" class="page">
+			<div class="header">
+	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
+	          <div class="rightheaderbutton" id="addshowbutton">+</div>
+	          <div class="title">Wire Watcher</div>
+	          <div id="unwatchedShowList" class="showlist"></div>
+	          <div id="showlist" class="showlist"></div>
+			</div>
+        </div>
+        <div id="searchpage" class="page" style="display:none">
+			<div class="header">
+	          <div class="leftheaderbutton" id="cancelsearch">Back</div>
+	          <div class="title">Search</div>
+			</div>
+			<div class="conent">
+			  <form id="addshowform" action="#">
+			    <i class="icon-search"></i>
+			    <input type="text" id="searchtext" name="searchtext" placeholder="Episode Name" />
+			  </form>
+			  <div id="searchResultList">
+			  </div>
+			</div>
+        </div>
+        <div id="addshowpage" style="display: none;">
+			<div class="header">
+	          <div class="leftheaderbutton" id="canceladdshowpage">Back</div>
+	          <div class="rightheaderbutton" id="addnewshowbutton">+</div>
+	          <div class="title">Add Show</div>
+			</div>
+          <div class="bannerdiv"><img id="addbannerimage" class="bannerimage" src="http://thetvdb.com/banners/graphical/205281-g10.jpg" /></div>
+          <div id="addshowtitle" class="showtitle">Falling Skies</div>
+		  <div id="addfirstaired" class="firstaired">2011-06-19</div>
+          <div id="addoverview" class="overview">The series tells the story of the aftermath of a global invasion by several races of extraterrestrials that neutralizes the world's power grid and technology, quickly destroys the combined militaries of all the world's countries, and apparently kills over 90% of the human population within a few days.</div>
+        </div>
+        
+       <div id="settingspage" style="display:none">
+			<div class="header">
+	          <div class="rightheaderbuttonblue" id="settingsdone">Done</div>
+	          <div class="title">Settings</div>
+			</div>
+			<div class="content">
+				<div id="dropboxlogin">
+					<button id="dropboxLoginButton">Link to Dropbox</button>
+				</div>
+				<div id="dropboxlogout" style="display:none">
+				  <button id="dropboxSyncButton">Sync Dropbox</button>
+				  <button id="dropboxLogoutButton">Unlink Dropbox</button>
+				</div>
+			</div>
+        </div>
+    </body>
+</html>
