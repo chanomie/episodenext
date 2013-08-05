@@ -70,6 +70,15 @@ div.page {
 	/* min-height: 460px; */
 }
 
+div#spinner {
+    position:fixed;
+	height: 100%;
+	width: 100%;
+	top:0px;
+    left:0px;
+    background: rgba(0, 0, 0, .5);
+}
+
 div.header {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
 	height: 44px;
@@ -211,7 +220,6 @@ div.firstaired {
 }
 
 div.showlist {
-	margin-top: 10px;
 	text-align: center;
 	max-width: 760px;
 }
@@ -274,15 +282,35 @@ div.season {
 }
 
 div.seasonbar {
-    font-size: 20px;
+    font-size: 24px;
 	padding-left: 10px;
 	padding-right: 10px;
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #BEBEBE));	
 }
 
 div.seasonbuttons {
-  float: right;	
+  float: right;
+  letter-spacing: 10pt;
 }
+
+div.episodelist {
+	font-size: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: solid darkgrey 1px;
+}
+
+div.episodelistbuttons {
+	float: right;
+	font-size: 24px;
+    letter-spacing: 10pt;
+}
+
+div.episodelistdetail {
+	font-size: 12px;
+}
+
+
 
 /* ==========================================================================
    Helper classes

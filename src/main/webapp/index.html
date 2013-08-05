@@ -32,16 +32,20 @@
     </head>
     <body>
         <script src="js/helper.js"></script>
-        <script src="js/thetvdb.js"></script>
+        <script src="js/spin.min.js"></script>
+        <script src="js/jquery.spin.js"></script>
         <script src="js/main.js"></script>
         <!-- Add your site or application content here -->
         
+        <div id="spinner" style="display:none;"></div>
         <div id="mainpage" class="page">
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
 	          <div class="rightheaderbutton" id="addshowbutton">+</div>
 	          <div class="title">Wire Watcher</div>
+	          <div class="seasonbar"><i class="icon-collapse"></i> Unwatched Episodes</div>
 	          <div id="unwatchedShowList" class="showlist"></div>
+	          <div class="seasonbar"><i class="icon-collapse"></i> All Shows</div>
 	          <div id="showlist" class="showlist"></div>
 			</div>
         </div>
@@ -59,6 +63,7 @@
 			  </div>
 			</div>
         </div>
+        
         <div id="addshowpage" style="display: none;">
         </div>
         
@@ -72,23 +77,35 @@
 		  <div id="viewfirstaired" class="firstaired">2011-06-19</div>
           <div id="viewoverview" class="overview">The series tells the story of the aftermath of a global invasion by several races of extraterrestrials that neutralizes the world's power grid and technology, quickly destroys the combined militaries of all the world's countries, and apparently kills over 90% of the human population within a few days.</div>
           
-          <div class="season" >
-	          <div class="seasonbar">
-	            <i class="icon-collapse"></i> Season 1
-	            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-	          </div>
-          </div>
-          <div class="season">
-	          <div class="seasonbar">
-	            <i class="icon-expand"></i> Season 2
-  	            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-	          </div>
-          </div>	          
-          <div class="season">
-	          <div class="seasonbar">
-	            <i class="icon-expand"></i> Season 3
-	            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-	          </div>
+          <div id="seasonlist" class="seasonlist">
+		      <div id="season1" class="season" data-season="1">
+		          <div class="seasonbar">
+		            <i class="icon-collapse"></i> Season 1
+		            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
+		          </div>
+		          <div class="episodelist" data-episode="101">
+		            <span class="episodelisttitle">Live and Learn</span>
+		            <div class="episodelistbuttons"><i class="icon-eye-close"></i> <i class="icon-info-sign"></i></div>
+		            <div class="episodelistdetail">1x1 2011-06-19</div>
+		          </div>
+		          <div class="episodelist" data-episode="102">
+		            <span class="episodelisttitle">The Armory</span>
+		            <div class="episodelistbuttons"><i class="icon-eye-close"></i> <i class="icon-info-sign"></i></div>
+		            <div class="episodelistdetail">1x2 2011-06-19</div>
+		          </div>
+		      </div>
+		      <div class="season">
+		          <div class="seasonbar">
+		            <i class="icon-expand"></i> Season 2
+			            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
+		          </div>
+		      </div>	          
+		      <div class="season">
+		          <div class="seasonbar">
+		            <i class="icon-expand"></i> Season 3
+		            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
+		          </div>
+		      </div>
           </div>
        </div>
        

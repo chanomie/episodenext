@@ -2,6 +2,11 @@ package net.chaosserver.wiredepisodes;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.junit.Test;
 
 import com.omertron.thetvdbapi.model.Episode;

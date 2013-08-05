@@ -78,9 +78,19 @@ $(document).ready(function() {
 		});
 	}
 
-  
   buildMainScreenFromCache();
 });
+
+function spin() {
+  $("#spinner").show();
+  $("#spinner").spin();	
+}
+
+function stopspin() {
+  $("#spinner").hide();
+  $("#spinner").spin(false);	
+
+}
 
 function onSearch() {
   var showname = $("#searchtext").val();
@@ -97,6 +107,7 @@ function searchForShow(showname) {
     var encodedName = encodeURIComponent(showname);
     var searchUrl = getSeriesUrl + encodedName;
     
+    spin();
     $.ajax({
       url: searchUrl,
       success: searchForShowSuccess,
@@ -132,6 +143,7 @@ function searchForShowSuccess(data, status) {
 	});
 	
 	$(".seriesrow").click(displayShowDetails);
+    stopspin();
 }
 
 function displayShowDetails() {
@@ -139,6 +151,7 @@ function displayShowDetails() {
     console.log("Getting show detail: " + seriesid);
     var searchUrl = getSeriesDetailsUrl + seriesid;
 
+	spin();
     $.ajax({
       url: searchUrl,
       success: searchDisplayShowSuccess,
@@ -162,6 +175,7 @@ function searchDisplayShowSuccess(data, status) {
   
   $("#searchpage").slideUp('slow');
   $("#addshowpage").slideDown('slow');
+  stopspin(); 
 }
 
 function addNewShow() {
@@ -173,6 +187,7 @@ function addNewShow() {
 }
 
 function buildMainScreenFromCache() {
+    spin();
     console.log("Rebuilding Screen");
 	$("#showlist").empty();
 	
@@ -297,6 +312,7 @@ function buildMainScreenFromCache() {
 		}
 		$(".playedButton").click(playedEpisode);		
 	}
+	stopspin();
 }
 
 function deleteSeriesButton() {
@@ -306,7 +322,169 @@ function deleteSeriesButton() {
 
 function showInfoShow() {
     var seriesid = $(this).attr("data-seriesid");
-    // deleteSeries(seriesid);	
+    var seriesUrl = getSeriesAllDetailsUrl + seriesid;
+
+	spin();
+    $.ajax({
+      url: seriesUrl,
+      success: seriesDisplayShowSuccess,
+      error: genericError
+    });
+}
+
+function seriesDisplayShowSuccess(data, status) {
+  var seriesId = $(data).find("Data Series id").text();
+  var seriesName = $(data).find("Data Series SeriesName").text();
+  var firstAiredDate = $(data).find("Data Series FirstAired").text(); 
+  var overview = $(data).find("Data Series Overview").text(); 
+  var bannersrc = TheTbDbUrlBase + "/banners/" + $(data).find("Data Series banner").text();  
+  $("#seasonlist").empty();
+  $("#viewbannerimage").attr("src",bannersrc);
+  $("#viewshowtitle").html(seriesName);
+  $("#viewfirstaired").html(firstAiredDate);
+  $("#viewoverview").html(overview);
+  
+  $("#mainpage").slideUp('slow');
+  $("#showdetailspage").slideDown('slow');
+  
+  $(data).find("Data Episode").each(function(i) {
+    var episodeName = $(this).find("EpisodeName").text();
+    var seasonNumber = $(this).find("SeasonNumber").text(); 
+    var seasonid = $(this).find("seasonid").text();
+    var episodeNumber = $(this).find("EpisodeNumber").text();
+    var firstAired = $(this).find("FirstAired").text();
+    var watchedEpisodeKey = seriesId + "-" + $(this).find("id").text();
+    var episodeKeyString = seasonNumber + "x" + episodeNumber;
+    var episodeKey = parseInt(seasonNumber) * 100 + parseInt(episodeNumber);
+    
+    var appendElement;
+    // Check if Season Exists and if not add the season bar
+    if($("#"+seasonid).length > 0) {
+	    appendElement = $("#"+seasonid);
+    } else {
+	    appendElement = $("<div></div>").
+        attr("id",seasonid).
+        addClass("season").append(
+          $("<div></div>").
+          addClass("seasonbar").
+          text("Season " + seasonNumber).
+          append(
+            $("<div></div>").
+            addClass("seasonbuttons").
+            append(
+              $("<i></i>").
+              addClass("watchseason").
+              addClass("icon-play-sign").
+              attr("data-seasonid",seasonid)
+            ).append(
+              $("<i></i>").
+              addClass("unwatchseason").
+              addClass("icon-eye-close").
+              attr("data-seasonid",seasonid)
+            )
+        ));
+        
+        $("#seasonlist").append(appendElement);
+    }
+    
+    // watchedEpisodeKey
+    // seriesid-episodeid
+    // episodeKey in watchedEpisodes
+    var toggleIcon = "icon-eye-close";
+    var watchedEpisodes = getWatchedEpisodes();
+    console.log("Checking for: " + watchedEpisodeKey);
+    if(watchedEpisodeKey in watchedEpisodes) {
+	    toggleIcon = "icon-eye-close";
+	    console.log("Found already watched.");
+    } else {
+	    toggleIcon = "icon-play-sign";
+	    console.log("Not found already watched.");
+    }
+    
+    appendElement.append(
+      $("<div></div>").
+      addClass("episodelist").
+      attr("data-episode",episodeKey).
+      attr("data-seasonid",seasonid).
+      attr("data-watchedkey",watchedEpisodeKey).
+      append(
+        $("<span></span>").
+        addClass("episodelisttitle").
+        html(episodeName)
+      ).append(
+        $("<div></div>").
+        addClass("episodelistbuttons").
+        append(
+          $("<i></i>").
+          addClass(toggleIcon).
+          addClass("toggleWatched").
+          attr("data-seasonid",seasonid).
+          attr("data-watchedkey",watchedEpisodeKey)
+        ).append(
+          $("<i></i>").
+          addClass("icon-info-sign")
+        )
+      ).append(
+        $("<div></div>").
+        addClass("episodelistdetail").
+        html(episodeKeyString + " " + firstAired)
+      )
+    );
+
+  });
+
+  $(".watchseason").click(watchSeason);
+  $(".unwatchseason").click(unwatchSeason);
+  stopspin();
+}
+
+function watchSeason() {
+	var seasonid = $(this).attr("data-seasonid");
+	var dirty = false;
+	console.log("Watching Season: " + seasonid);
+
+	var watchedEpisodes = getWatchedEpisodes();
+	$( "div.episodelist[data-seasonid=" + seasonid + "]" ).each(function(i) {
+		var watchedEpisodeKey = $(this).attr("data-watchedkey");
+		console.log("Watched: " + watchedEpisodeKey);
+		if(!(watchedEpisodeKey in watchedEpisodes)) {
+		  dirty = true;
+		  watchedEpisodes[watchedEpisodeKey] = true;
+		  $(this).find("i.toggleWatched").each(function(i) {
+		    $(this).removeClass("icon-play-sign");
+		    $(this).addClass("icon-eye-close");
+		  });
+		}
+	});
+	
+	if(dirty) {
+		saveWatchedEpisodes(watchedEpisodes);
+	}
+}
+
+function unwatchSeason() {
+	var seasonid = $(this).attr("data-seasonid");
+	var dirty = false;
+	console.log("Watching Season: " + seasonid);
+
+	var watchedEpisodes = getWatchedEpisodes();
+	$( "div.episodelist[data-seasonid=" + seasonid + "]" ).each(function(i) {
+		var watchedEpisodeKey = $(this).attr("data-watchedkey");
+		console.log("Unwatched key: " + watchedEpisodeKey);
+		if(watchedEpisodeKey in watchedEpisodes) {
+		  dirty=true;
+          console.log("Delete key: " + watchedEpisodeKey);
+		  delete watchedEpisodes[watchedEpisodeKey];
+		  $(this).find("i.toggleWatched").each(function(i) {
+            console.log("Toggle Eye key: " + watchedEpisodeKey);
+		    $(this).removeClass("icon-eye-close");
+		    $(this).addClass("icon-play-sign");
+		  });
+		}
+	});
+	if(dirty) {
+		saveWatchedEpisodes(watchedEpisodes);
+	}
 }
 
 function playedEpisode() {
@@ -366,11 +544,11 @@ function saveWatchedEpisodes(watchedEpisodes) {
 	var watchedEpisodesJson = JSON.stringify(watchedEpisodes);
 	localStorage.setItem("watchedEpisodes", watchedEpisodesJson);
 	recache();
-	
 }
 
 
 function genericError(jqXHR, textStatus) {
+    stopspin();
 	alert("Failure: " + textStatus);
 }
 
@@ -469,6 +647,7 @@ function recache() {
     	// 2: Rebuild the unwatched episode cache
     	
     	var searchUrl = getSeriesAllDetailsUrl + seriesList[i];
+    	spin();
         $.ajax({
           url: searchUrl,
           async: false,
@@ -523,6 +702,7 @@ function recache() {
 			  if(oldestUnwatchedEpisode !== null) {
 				  nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
 			  }
+			  stopspin();
 		  }});
 	}
 	

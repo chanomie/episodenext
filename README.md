@@ -96,10 +96,13 @@ Mark the episode as not watched.
   }
 }
 
+curl http://thetvdb.com/api/${thetvdbapikey}/series/205281/all/en.xml
+
 
 mvn verify - verify the build
- mvn appengine:devserver
+mvn appengine:devserver - run the dev server
 mvn eclipse:eclipse
+mvn appengine:update
 
 * Need to Create a 404 Page
 
