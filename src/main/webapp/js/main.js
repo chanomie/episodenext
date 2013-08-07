@@ -33,6 +33,7 @@ var spinCount = 0;
 
 
 $(document).ready(function() {
+  spin();
   $("#addshowbutton").click(function() {
     $("#mainpage").slideUp('slow');
     $("#searchpage").slideDown('slow');
@@ -88,6 +89,7 @@ $(document).ready(function() {
     e.preventDefault();
     client.authenticate();
   });
+  $("#thetvdbsync").click(recache);  
 
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
@@ -113,8 +115,22 @@ $(document).ready(function() {
 			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
+	
+   var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
+   if(lastDropboxSyncEpoch != null) {
+	   lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
+       $("#dropboxsynctime").text(lastDropboxSync.toLocaleString());
+   }
+
+   var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
+   if(lastTheTvDbSyncEpoch != null) {
+	   lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
+       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleString());
+   }
+   	
 
   buildMainScreenFromCache();
+  stopspin();
 });
 
 function spin() {
@@ -747,6 +763,10 @@ function syncDropbox() {
 		  saveSeriesList(seriesList);
 	  }  
    }
+   
+   var lastDropboxSync = new Date();
+   localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
+   $("#dropboxsynctime").text(lastDropboxSync.toLocaleString());
    stopspin();
 }
 
@@ -762,7 +782,6 @@ function recache() {
     	// 2: Rebuild the unwatched episode cache
     	
     	var searchUrl = getSeriesAllDetailsUrl + seriesList[i];
-    	spin();
         $.ajax({
           url: searchUrl,
           async: false,
@@ -817,13 +836,17 @@ function recache() {
 			  if(oldestUnwatchedEpisode !== null) {
 				  nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
 			  }
-			  stopspin();
 		  }});
 	}
 	
 	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
 	localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));
 	buildMainScreenFromCache();
+
+	var lastTheTvDbSync = new Date();
+	localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
+	$("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleString());
+
 	stopspin();
 }
 

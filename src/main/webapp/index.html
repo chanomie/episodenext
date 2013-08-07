@@ -46,7 +46,7 @@
           <div>Watch this episode and post to Facebook?</div>
           <div class="modalbuttons"><span id="facebookpost" class="facebook">Post to Facebook</span><span id="facebookcancel" class="cancel">Cancel</span></div>
         </div>
-        <div id="mainpage" class="page">
+        <div id="mainpage" class="page" style="display:none">
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
 	          <div class="rightheaderbutton" id="addshowbutton">+</div>
@@ -89,59 +89,42 @@
 	          <div id="showdetailsdone" class="leftheaderbutton">Back</div>
 	          <div class="title">Show Details</div>
 			</div>
-          <div class="bannerdiv"><img id="viewbannerimage" class="bannerimage" src="http://thetvdb.com/banners/graphical/205281-g10.jpg" /></div>
-          <div id="viewshowtitle" class="showtitle">Falling Skies</div>
-		  <div id="viewfirstaired" class="firstaired">2011-06-19</div>
-          <div id="viewoverview" class="overview">The series tells the story of the aftermath of a global invasion by several races of extraterrestrials that neutralizes the world's power grid and technology, quickly destroys the combined militaries of all the world's countries, and apparently kills over 90% of the human population within a few days.</div>
+          <div class="bannerdiv"><img id="viewbannerimage" class="bannerimage" src="#" /></div>
+          <div id="viewshowtitle" class="showtitle"></div>
+		  <div id="viewfirstaired" class="firstaired"></div>
+          <div id="viewoverview" class="overview"></div>
           
           <div id="seasonlist" class="seasonlist">
-		      <div id="season1" class="season" data-season="1">
-		          <div class="seasonbar">
-		            <i class="icon-collapse"></i> Season 1
-		            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-		          </div>
-		          <div class="episodelist" data-episode="101">
-		            <span class="episodelisttitle">Live and Learn</span>
-		            <div class="episodelistbuttons"><i class="icon-eye-close"></i> <i class="icon-info-sign"></i></div>
-		            <div class="episodelistdetail">1x1 2011-06-19</div>
-		          </div>
-		          <div class="episodelist" data-episode="102">
-		            <span class="episodelisttitle">The Armory</span>
-		            <div class="episodelistbuttons"><i class="icon-eye-close"></i> <i class="icon-info-sign"></i></div>
-		            <div class="episodelistdetail">1x2 2011-06-19</div>
-		          </div>
-		      </div>
-		      <div class="season">
-		          <div class="seasonbar">
-		            <i class="icon-expand"></i> Season 2
-			            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-		          </div>
-		      </div>	          
-		      <div class="season">
-		          <div class="seasonbar">
-		            <i class="icon-expand"></i> Season 3
-		            <div class="seasonbuttons"><i class="icon-play-sign"></i> <i class="icon-eye-close"></i></div>
-		          </div>
-		      </div>
           </div>
        </div>
        
-       <div id="settingspage" style="display:none">
+       <div id="settingspage">
 			<div class="header">
 	          <div class="rightheaderbuttonblue" id="settingsdone">Done</div>
 	          <div class="title">Settings</div>
 			</div>
 			<div class="content">
+			    <div class="settingsheader">Synchronization</div>
 				<div id="dropboxlogin">
 					<button id="dropboxLoginButton">Link to Dropbox</button>
 				</div>
 				<div id="dropboxlogout" style="display:none">
-				  <button id="dropboxSyncButton">Sync Dropbox</button>
+				  <button id="dropboxSyncButton"><i class="icon-dropbox"></i> Sync Dropbox</button>
 				  <button id="dropboxLogoutButton">Unlink Dropbox</button>
+				  <div id="dropboxtime">Last Dropbox Sync: <span id="dropboxsynctime">Unknown</span></div>
 				</div>
+				
+				<div class="settingsheader">Facebook</div>
 				<div id="facebooklogin">
                   <fb:login-button show-faces="true" max-rows="1" scope="publish_actions,user_actions.video"></fb:login-button>
 				</div>
+
+				<div class="settingsheader">Sync Status</div>
+				<div id="syncstatus">
+  				  <button id="thetvdbsync">Sync The TV DB</button>
+				  <div id="dropboxtime">Last TheTV DB Sync: <span id="thetvdbsynctime">Unknown</span></div>
+				</div>
+
 			</div>
         </div>
     </body>

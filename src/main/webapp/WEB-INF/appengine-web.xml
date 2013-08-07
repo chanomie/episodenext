@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- 
  Copyright 2013 Jordan Reed
 
@@ -15,7 +16,6 @@
    
    http://code.google.com/p/thewirewatcher/
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>thewirewatcher</application>
     <version>${appengine.app.version}</version>
