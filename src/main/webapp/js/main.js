@@ -10,6 +10,9 @@ var TheTbDbUrlBase = "http://thetvdb.com";
 var getSeriesUrl = "http://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "http://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "http://thewirewatcher.appspot.com/api/all/"
+var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+var spinCount = 0;
+
 
 $(document).ready(function() {
   $("#addshowbutton").click(function() {
@@ -41,17 +44,32 @@ $(document).ready(function() {
     $("#showdetailspage").slideUp('slow');
     $("#mainpage").slideDown('slow');	  
   })
+  
+  $("#allshowsseasonbar").click(function() {
+	 if($(this).attr("data-status") == "hidden") {
+	   	$(this).attr("data-status","shown");
+	   	$("#allshowsexpander").removeClass("icon-expand");
+	   	$("#allshowsexpander").addClass("icon-collapse");
+	   	$("#showlist").show();
+	 } else {
+	   	$(this).attr("data-status","hidden");
+	   	$("#allshowsexpander").removeClass("icon-collapse");
+	   	$("#allshowsexpander").addClass("icon-expand");
+	   	$("#showlist").hide();
+	 }
+  });
     
   $("#addnewshowbutton").click(addNewShow);
   $('#addshowform').submit(onSearch);
   $("#recache").click(recache);
+  $("#facebookcancel").click(function() {$.modal.close()});
+  $("#facebookpost").click(facebookPlayedEpisode);
+  
   $("#dropboxSyncButton").click(syncDropbox);
   $('#dropboxLoginButton').click(function (e) {
-  	    console.log("dropboxLoginButton");
-		e.preventDefault();
-		// This will redirect the browser to OAuth login.
-		client.authenticate();
-	});
+    e.preventDefault();
+    client.authenticate();
+  });
 
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
@@ -82,14 +100,21 @@ $(document).ready(function() {
 });
 
 function spin() {
+  spinCount++;
+  console.log("Spinning with increment: " + spinCount);
   $("#spinner").show();
   $("#spinner").spin();	
 }
 
 function stopspin() {
-  $("#spinner").hide();
-  $("#spinner").spin(false);	
+  spinCount--;
+  console.log("Spinning less with decrement: " + spinCount);
 
+  if(spinCount <= 0) {
+    spinCount = 0;
+    $("#spinner").hide();
+    $("#spinner").spin(false);
+  }
 }
 
 function onSearch() {
@@ -205,6 +230,7 @@ function buildMainScreenFromCache() {
             	  addClass("listbannerimage").
             	  append(
                 	  $("<img></img>").
+                	  addClass("showbanner").
                 	  attr("src",seriesListCache[seriesId]["bannersrc"]))).
                 append(
                   $("<div></div>").
@@ -259,6 +285,7 @@ function buildMainScreenFromCache() {
 	            	  addClass("listbannerimage").
 	            	  append(
 	                	  $("<img></img>").
+	                	  addClass("showbanner").
 	                	  attr("src",nextEpisodeCache[seriesId]["bannersrc"]))).
 	                append(
 	                  $("<div></div>").
@@ -300,6 +327,9 @@ function buildMainScreenFromCache() {
 	                      $("<i></i>").
 	                      addClass("facebookButton").
 	                      attr("data-seriesid",nextEpisodeCache[seriesId]["seriesId"]).
+	                      attr("data-seasonnumber",nextEpisodeCache[seriesId]["SeasonNumber"]).
+	                      attr("data-episodenumber",nextEpisodeCache[seriesId]["EpisodeNumber"]).
+	                      attr("data-episodeId",nextEpisodeCache[seriesId]["episodeId"]).
 	                      addClass("icon-facebook-sign")).
 	                    append(
 	                      $("<i></i>").
@@ -310,7 +340,8 @@ function buildMainScreenFromCache() {
 	           ); 
 			}
 		}
-		$(".playedButton").click(playedEpisode);		
+		$(".playedButton").click(playedEpisode);
+		$(".facebookButton").click(facebookShare);
 	}
 	stopspin();
 }
@@ -435,6 +466,7 @@ function seriesDisplayShowSuccess(data, status) {
 
   $(".watchseason").click(watchSeason);
   $(".unwatchseason").click(unwatchSeason);
+  $(".toggleWatched").click(toggleWatchShow);
   stopspin();
 }
 
@@ -473,8 +505,16 @@ function unwatchSeason() {
 		console.log("Unwatched key: " + watchedEpisodeKey);
 		if(watchedEpisodeKey in watchedEpisodes) {
 		  dirty=true;
-          console.log("Delete key: " + watchedEpisodeKey);
 		  delete watchedEpisodes[watchedEpisodeKey];
+		  
+		  // Delete realtime from Dropbox
+		  if(watchedEpisodesTable) {
+			  var results = watchedEpisodesTable.query({"episodeKey": watchedEpisodeKey}); 
+		      for(var i=0; i< results.length; i++) {
+		        results[i].deleteRecord();
+		      }			  
+		  }
+		  
 		  $(this).find("i.toggleWatched").each(function(i) {
             console.log("Toggle Eye key: " + watchedEpisodeKey);
 		    $(this).removeClass("icon-eye-close");
@@ -485,6 +525,79 @@ function unwatchSeason() {
 	if(dirty) {
 		saveWatchedEpisodes(watchedEpisodes);
 	}
+}
+
+function toggleWatchShow() {
+	var watchedkey = $(this).attr("data-watchedkey");
+	var watchedEpisodes = getWatchedEpisodes();
+	if($(this).hasClass("icon-play-sign")) {
+		$(this).removeClass("icon-play-sign");
+		$(this).addClass("icon-eye-close");
+		watchedEpisodes[watchedkey] = true;
+		saveWatchedEpisodes(watchedEpisodes);
+	} else {
+		$(this).removeClass("icon-eye-close");
+		$(this).addClass("icon-play-sign");
+		delete watchedEpisodes[watchedkey];
+		saveWatchedEpisodes(watchedEpisodes);
+   	    // Delete realtime from Dropbox
+		if(watchedEpisodesTable) {
+			var results = watchedEpisodesTable.query({"episodeKey": watchedkey}); 
+		    for(var i=0; i< results.length; i++) {
+		      results[i].deleteRecord();
+		    }			  
+		}
+		
+	}
+}
+
+function facebookShare() {
+	var seriesId = $(this).attr("data-seriesid");
+	var episodeId = $(this).attr("data-episodeId");
+	var seasonnumber = $(this).attr("data-seasonnumber");
+	var episodenumber = $(this).attr("data-episodenumber");
+	var seasonId = $(this).attr("data-seasonid");
+	
+	$("#facebookpost").
+	  attr("data-seriesid",seriesId).
+	  attr("data-episodeId",episodeId).
+	  attr("data-seasonnumber",seasonnumber).
+	  attr("data-episodenumber",episodenumber).
+	  attr("data-seasonid",seasonId);
+	
+	FB.getLoginStatus(function(response) {
+		if (response.status === 'connected') {
+			$("#facebookmodal").modal();
+		} else {
+			$("#mainpage").slideUp('slow');
+			$("#settingspage").slideDown('slow');		
+		}
+	});
+}
+
+function facebookPlayedEpisode() {
+	var seriesId = $(this).attr("data-seriesid");
+	var episodeId = $(this).attr("data-episodeId");
+	var seasonnumber = $(this).attr("data-seasonnumber");
+	var episodenumber = $(this).attr("data-episodenumber");
+	var seasonId = $(this).attr("data-seasonid");
+	var episodeKey = seriesId + "-" + episodeId;
+	
+	var showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
+	spin();	
+    FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
+	  if (!response || response.error) {
+        alert('Error occured: ' + response.error);
+        $.modal.close();
+      } else {
+        console.log('Post ID: ' + response.id);
+		var watchedEpisodes = getWatchedEpisodes();
+		watchedEpisodes[episodeKey] = true;
+		saveWatchedEpisodes(watchedEpisodes);	
+        $.modal.close();
+      }
+    });	
+    stopspin();
 }
 
 function playedEpisode() {
@@ -511,7 +624,14 @@ function deleteSeries(seriesId) {
 		  newSeriesList.push(seriesList[i]);
 	  }
 	}
+	
 	saveSeriesList(newSeriesList);
+	if(seriesListTable) {
+	  var results = seriesListTable.query({"seriesId": seriesId}); 
+      for(var i=0; i< results.length; i++) {
+        results[i].deleteRecord();
+      }
+	}
 }
 
 function getSeriesList() {
@@ -553,36 +673,24 @@ function genericError(jqXHR, textStatus) {
 }
 
 function syncDropbox() {
-    console.log("client.isAuthenticated(): " + client.isAuthenticated());
+    spin();
     if(client.isAuthenticated()) {
   	  var watchedEpisodes = getWatchedEpisodes();
 	  var seriesList = getSeriesList();
 	  var localDirty = false;
 	  
 	  // Add to Dropbox
-	  console.log("Adding Watched Episodes to Dropbox");
 	  for(episodeKey in watchedEpisodes) {
-        console.log("Checking for key: " + episodeKey);
 	    var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
-        console.log("Result table has: " + results.length);
 	    if(results === null || results.length === 0) {
-	        console.log("Adding dropbox key: " + episodeKey);
 	        watchedEpisodesTable.insert({"episodeKey": episodeKey});
-	    } else {
-	        console.log("Existing dropbox key: " + episodeKey);		    
 	    }
 	  }
 	  
-	  console.log("Adding Series List to Dropbox");
 	  for(var i=0; i<seriesList.length; i++) {
-        console.log("Checking for key: " + seriesList[i]);
   	    var results = seriesListTable.query({"seriesId": seriesList[i]}); 
-        console.log("Result table has: " + results.length);
 	    if(results === null || results.length === 0) {
-	        console.log("Adding dropbox key: " + seriesList[i]);
 	        seriesListTable.insert({"seriesId": seriesList[i]});
-	    } else {
-	        console.log("Existing dropbox key: " + seriesList[i]);		    
 	    }
 	  }
 	  
@@ -591,23 +699,16 @@ function syncDropbox() {
 	  for(var i=0; i< dropboxWatched.length; i++) {
 		  var episodeKey = dropboxWatched[i].get("episodeKey");
 		  if(episodeKey !== null && !(episodeKey in watchedEpisodes)) {
-	        console.log("Adding local key: " + episodeKey);
 		    watchedEpisodes[episodeKey] = true;
 		    localDirty = true;
-		  } else {
-	        console.log("Existing local key: " + episodeKey);
 		  }
 	  }
 
-	  console.log("Adding Dropbox to Series List");
 	  var dropboxSeriesList = seriesListTable.query();
-	  console.log("dropboxSeriesList.length: " + dropboxSeriesList.length);
 	  for(var i=0; i<dropboxSeriesList.length; i++) {
 		  var seriesId = dropboxSeriesList[i].get("seriesId");
-		  console.log("Checking: " + seriesId);
 		  
 		  if(seriesId !== null) {
-			  console.log("Checking: " + seriesId);
 			  var inlocal = false;
 			  
 			  for(var j=0; j<seriesList.length; j++) {
@@ -617,26 +718,22 @@ function syncDropbox() {
 				  }
 			  }
 			  if(inlocal === false) {
-	              console.log("Adding series local key: " + seriesId);
 				  seriesList.push(seriesId);
 				  localDirty = true;
-			  } else {
-	              console.log("Existing series local key: " + seriesId);
-				  
 			  }
           }
 	  }
 	  
 	  if(localDirty === true) {
-	      console.log("Saving lists locally");
 	      saveWatchedEpisodes(watchedEpisodes);
 		  saveSeriesList(seriesList);
-		  
 	  }  
    }
+   stopspin();
 }
 
 function recache() {
+    spin();
 	var seriesList = getSeriesList();
 	var watchedEpisodes = getWatchedEpisodes();
 	
@@ -709,4 +806,65 @@ function recache() {
 	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
 	localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));
 	buildMainScreenFromCache();
+	stopspin();
 }
+
+/** Facebook Fun */
+  // Additional JS functions here
+  window.fbAsyncInit = function() {
+    console.log("running async");
+    FB.init({
+      appId      : '132823190241236', // App ID
+      channelUrl : '//thewirewatcher.appspot.com/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
+
+    console.log("Gettin facebook status");
+	FB.getLoginStatus(function(response) {
+	  if (response.status === 'connected') {
+	    // the user is logged in and has authenticated your
+	    // app, and response.authResponse supplies
+	    // the user's ID, a valid access token, a signed
+	    // request, and the time the access token 
+	    // and signed request each expire
+	    var uid = response.authResponse.userID;
+	    var accessToken = response.authResponse.accessToken;
+	  } else if (response.status === 'not_authorized') {
+	    // the user is logged in to Facebook, 
+	    // but has not authenticated your app
+	  } else {
+	    // the user isn't logged in to Facebook.
+	  }
+	 });
+     
+     /*
+     console.log("Got facebook status");
+	 FB.login(function(response) {
+	   console.log("got login callback");
+	   if (response.authResponse) {
+	     console.log('Welcome!  Fetching your information.... ');
+	     FB.api('/me', function(response) {
+	       console.log('Good to see you, ' + response.name + '.');
+	     });
+	   } else {
+	     console.log('User cancelled login or did not fully authorize.');
+	   }
+	 });
+    console.log("ran async");
+    */
+
+  };
+
+  // Load the SDK asynchronously
+  console.log("Injecting Facebook");
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     ref.parentNode.insertBefore(js, ref);
+   }(document));
+  console.log("Injected Facebook");
+

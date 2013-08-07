@@ -1,6 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:url value="/showdetails/${episode.seriesId}" var="seriesUrl" />
-<c:url value="/showdetails/${episode.seriesId}/${seasonNumber}/${episodeNumber}" var="episodeUrl" />
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="req" value="${pageContext.request}" />
+<c:set var="baseURL" value="${fn:replace(req.requestURL, fn:substring(req.requestURI, 1, fn:length(req.requestURI)), req.contextPath)}" />
+
+<c:url value="${baseURL}showdetails/${episode.seriesId}" var="seriesUrl" />
+<c:url value="${baseURL}showdetails/${episode.seriesId}/${seasonNumber}/${episodeNumber}" var="episodeUrl" />
 <c:url value="http://thetvdb.com/" var="tvdbUrl">
 	<c:param name="tab" value="episode"/>
 	<c:param name="seriesid" value="${episode.seriesId}"/>
@@ -15,7 +19,7 @@
   <meta property="og:type"        content="video.episode" /> 
   <meta property="video:series"   content="<c:out value="${seriesUrl}"/>" />
   <meta property="og:url"         content="<c:out value="${episodeUrl}"/>" /> 
-  <meta property="og:title"       content="<c:out value="${episode.episodeName}"/>" /> 
+  <meta property="og:title"       content="<c:out value="${series.seriesName} ${seasonNumber}x${episodeNumber} - ${episode.episodeName}"/>" /> 
   <meta property="og:image"       content="<c:out value="${episode.filename}"/>" /> 
   <meta property="og:description" content="<c:out value="${episode.overview}"/>" />
   <meta proptery="og:site_name"   content="TheTVDB.com" />

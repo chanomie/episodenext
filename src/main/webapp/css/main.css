@@ -88,6 +88,7 @@ div.header div.title {
     margin-top: 0;
     margin-bottom: 0;
     padding-top: 8px;
+    padding-bottom: 8px;
     color: white;
     text-shadow: -1px -1px 1px #000;
     font-family: 'Open Sans', sans-serif;
@@ -147,6 +148,18 @@ div.leftheaderbutton {
 div.bold {
   font-weight: 800; 
   font-size: 14pt;
+}
+
+div#unwatchedShowList {
+	margin: auto;
+	border-left: 1px gray solid;
+	border-right: 1px gray solid;
+}
+
+div#showlist {
+	margin: auto;
+	border-left: 1px gray solid;
+	border-right: 1px gray solid;
 }
 
 
@@ -229,11 +242,7 @@ div.show {
 }
 
 div.listbannerimage {
-	position: absolute;
-}
-
-div.listbannerimage img {
-  opacity: 0.2;
+	overflow: hidden;
 }
 
 div.seasonepisode {
@@ -242,14 +251,18 @@ div.seasonepisode {
 
 div.showtext {
   margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
   text-align: left;
   font-size: 18px;
-  height:140px;
 }
 
 div.buttonRow {
     position: relative;
-    letter-spacing: 10px;
+    font-size: 28px;
+    letter-spacing: 18px;
+    text-align: center;
+    
 }
 
 div.buttonrow i {
@@ -310,6 +323,56 @@ div.episodelistdetail {
 	font-size: 12px;
 }
 
+#simplemodal-overlay {background-color:#000;}
+div#facebookmodal {
+    background: white;
+	border: solid darkgrey 1px;
+	padding: 10px;
+	border-radius:25px;
+}
+
+div.modaltitle {
+	text-align: center;
+	font-size: 24px;
+	top: 5px;
+	left: 0px;
+	width: 100%;
+}
+
+div.modalbuttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+div.modalbuttons span.facebook {
+    cursor:default;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px;
+	border: solid 1px;
+	color: #FFFFFF;
+	background: rgb(91, 116, 168);
+	border-bottom-color: rgb(26, 53, 110);
+	border-left-color: rgb(41, 68, 126);
+	border-right-color: rgb(41, 68, 126);
+	border-top-color: rgb(41, 68, 126);
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0
+}
+
+div.modalbuttons span.cancel {
+    cursor:default;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px;
+	border: solid darkgrey 1px;
+	color: #FFFFFF;
+	background: grey;
+	border-bottom-color: rgb(26, 53, 110);
+	border-left-color: rgb(41, 68, 126);
+	border-right-color: rgb(41, 68, 126);
+	border-top-color: rgb(41, 68, 126);
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0
+}
 
 
 /* ==========================================================================
@@ -436,11 +499,14 @@ textarea[contenteditable] {
    Modify as content requires.
    ========================================================================== */
 
+@media only screen and (max-width: 758px) {
+  img.showbanner {
+    width: 100%;
+  }
+}
+
 @media only screen and (min-width: 800px) {
     /* Style adjustments for viewports that meet the condition */
-    div.show {
-	    font-size: 80%;
-    }
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),

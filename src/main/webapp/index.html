@@ -22,8 +22,8 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="">
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <script src="https://www.dropbox.com/static/api/1/dropbox-datastores-0.1.0-b2.js"></script>
@@ -31,13 +31,21 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
+        <script src="js/jquery.simplemodal.1.4.4.min.js"></script>
         <script src="js/helper.js"></script>
         <script src="js/spin.min.js"></script>
         <script src="js/jquery.spin.js"></script>
+        <div id="fb-root"></div>
         <script src="js/main.js"></script>
+        
         <!-- Add your site or application content here -->
         
         <div id="spinner" style="display:none;"></div>
+        <div id="facebookmodal" style="display:none;">
+          <div class="modaltitle">Post to Facebook</div>
+          <div>Watch this episode and post to Facebook?</div>
+          <div class="modalbuttons"><span id="facebookpost" class="facebook">Post to Facebook</span><span id="facebookcancel" class="cancel">Cancel</span></div>
+        </div>
         <div id="mainpage" class="page">
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
@@ -45,8 +53,8 @@
 	          <div class="title">Wire Watcher</div>
 	          <div class="seasonbar"><i class="icon-collapse"></i> Unwatched Episodes</div>
 	          <div id="unwatchedShowList" class="showlist"></div>
-	          <div class="seasonbar"><i class="icon-collapse"></i> All Shows</div>
-	          <div id="showlist" class="showlist"></div>
+	          <div id="allshowsseasonbar" data-status="hidden" class="seasonbar"><i id="allshowsexpander" class="icon-expand"></i> All Shows</div>
+	          <div id="showlist" class="showlist" style="display:none;"></div>
 			</div>
         </div>
         <div id="searchpage" class="page" style="display:none">
@@ -65,6 +73,15 @@
         </div>
         
         <div id="addshowpage" style="display: none;">
+			<div class="header">
+				<div class="leftheaderbutton" id="canceladdshowpage">Back</div>
+				<div class="rightheaderbutton" id="addnewshowbutton">+</div>
+				<div class="title">Add Show</div>
+			</div>
+			<div class="bannerdiv"><img id="addbannerimage" class="bannerimage" src="" /></div>
+			<div id="addshowtitle" class="showtitle"></div>
+			<div id="addfirstaired" class="firstaired"></div>
+			<div id="addoverview" class="overview"></div>        
         </div>
         
        <div id="showdetailspage" style="display: none;">
@@ -121,6 +138,9 @@
 				<div id="dropboxlogout" style="display:none">
 				  <button id="dropboxSyncButton">Sync Dropbox</button>
 				  <button id="dropboxLogoutButton">Unlink Dropbox</button>
+				</div>
+				<div id="facebooklogin">
+                  <fb:login-button show-faces="true" max-rows="1" scope="publish_actions,user_actions.video"></fb:login-button>
 				</div>
 			</div>
         </div>

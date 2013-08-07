@@ -98,6 +98,7 @@ Mark the episode as not watched.
 
 curl http://thetvdb.com/api/${thetvdbapikey}/series/205281/all/en.xml
 
+curl -A "facebookexternalhit/1.1" https://thewirewatcher.appspot.com/showdetails/73730/1/1
 
 mvn verify - verify the build
 mvn appengine:devserver - run the dev server

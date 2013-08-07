@@ -1,5 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:url value="/showdetails/${episode.seriesId}" var="seriesUrl" />
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="req" value="${pageContext.request}" />
+<c:set var="baseURL" value="${fn:replace(req.requestURL, fn:substring(req.requestURI, 1, fn:length(req.requestURI)), req.contextPath)}" />
+
+<c:url value="${baseURL}showdetails/${episode.seriesId}" var="seriesUrl" />
 <c:url value="http://thetvdb.com/" var="tvdbUrl">
 	<c:param name="tab" value="series"/>
 	<c:param name="id" value="${series.id}"/>

@@ -40,8 +40,8 @@ public class EpisodeController {
 		   model.addAttribute("series", series);
 	   		   
 		   if(series != null) {
-			   if("facebookexternalhit".equals(userAgent) || Boolean.parseBoolean(ignoreUA)) {
-				   resultView = "series/view";
+			   if(userAgent != null && userAgent.contains("facebookexternalhit") 
+					   || Boolean.parseBoolean(ignoreUA)) {
 			   } else {
 				   resultView = "redirect:" + showInformation.getSeriesUrl(series);;
 			   }
@@ -72,7 +72,8 @@ public class EpisodeController {
 		   model.addAttribute("episode", episode);
 		   
 		   if(series != null && episode != null) {
-			   if("facebookexternalhit".equals(userAgent) || Boolean.parseBoolean(ignoreUA)) {
+			   if(userAgent != null && userAgent.contains("facebookexternalhit") 
+					   || Boolean.parseBoolean(ignoreUA)) {
 				   resultView = "episode/view";
 			   } else {
 				   resultView = "redirect:" + showInformation.getEpisodeUrl(episode);
