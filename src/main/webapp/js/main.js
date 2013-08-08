@@ -327,7 +327,7 @@ function buildMainScreenFromCache() {
 	var seriesListCacheJson = localStorage.getItem("seriesListCache");
 	if(seriesListCacheJson !== null) {
 		var seriesListCache = JSON.parse(seriesListCacheJson);
-		for(var seriesId in seriesListCache){
+		for(var seriesId in seriesListCache) {
           $("#showlist").append(
             $("<div></div>").
             	attr("id",("series-"+seriesListCache[seriesId]["seriesId"])).
@@ -382,8 +382,8 @@ function buildMainScreenFromCache() {
 		if(nextEpisodeCacheJson !== null) {
 			var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
 			for(var seriesId in nextEpisodeCache){
-			  console.log("Adding in unwatched show: " + seriesId);
-	          $("#unwatchedShowList").append(
+			  var newEpisodeAirDate = nextEpisodeCache[seriesId]["FirstAired"];
+			  var newEpisodeElement =
 	            $("<div></div>").
 	            	attr("id",("series-"+nextEpisodeCache[seriesId]["seriesId"])).
 	            	attr("data-seriesid",nextEpisodeCache[seriesId]["seriesId"]).
@@ -444,8 +444,26 @@ function buildMainScreenFromCache() {
 	                      addClass("infoButton").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
 	                      addClass("icon-info-sign"))
-	                    ))
-	           ); 
+	                    ));
+
+			  if($("#unwatchedShowList").children().length == 0) {
+			      // First show - just add
+		          $("#unwatchedShowList").append(newEpisodeElement);	  
+			  } else {
+			    var appended = false;
+				$('#unwatchedShowList').children().each(function () {
+					var thisEpisodeAirDate = $(this).find("span.episodeFirstAired").text();
+					if(newEpisodeAirDate < thisEpisodeAirDate) {
+						$(this).before(newEpisodeElement);
+						appended = true;
+						return;
+					}
+				});
+				if(appended == false) {
+					$("#unwatchedShowList").append(newEpisodeElement);
+				}
+			  }
+
 			}
 		}
 		$(".playedButton").click(playedEpisode);
@@ -980,23 +998,6 @@ function recache() {
 	    // the user isn't logged in to Facebook.
 	  }
 	 });
-     
-     /*
-     console.log("Got facebook status");
-	 FB.login(function(response) {
-	   console.log("got login callback");
-	   if (response.authResponse) {
-	     console.log('Welcome!  Fetching your information.... ');
-	     FB.api('/me', function(response) {
-	       console.log('Good to see you, ' + response.name + '.');
-	     });
-	   } else {
-	     console.log('User cancelled login or did not fully authorize.');
-	   }
-	 });
-    console.log("ran async");
-    */
-
   };
 
   // Load the SDK asynchronously
