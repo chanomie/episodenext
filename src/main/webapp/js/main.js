@@ -72,7 +72,10 @@ $(document).ready(function() {
 	   	$("#allshowsexpander").removeClass("icon-expand");
 	   	$("#allshowsexpander").addClass("icon-collapse");
 	   	$("#showlist").show();
-	 } else {
+		$(document.body).animate({
+		    'scrollTop': $('#allshowsseasonbar').offset().top
+		}, 1000);	   	
+	} else {
 	   	$(this).attr("data-status","hidden");
 	   	$("#allshowsexpander").removeClass("icon-collapse");
 	   	$("#allshowsexpander").addClass("icon-expand");
@@ -865,6 +868,7 @@ function syncDropbox() {
    var lastDropboxSync = new Date();
    localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
    updateSyncDisplay();
+   recache();
    stopspin();
 }
 
