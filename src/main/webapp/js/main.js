@@ -30,6 +30,7 @@ var getSeriesDetailsUrl = "http://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "http://thewirewatcher.appspot.com/api/all/"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
+var settings;
 
 
 $(document).ready(function() {
@@ -50,8 +51,9 @@ $(document).ready(function() {
   });
   
   $("#settingsbutton").click(function() {
+    updateSyncDisplay();  
     $("#mainpage").slideUp('slow');
-    $("#settingspage").slideDown('slow');	  
+    $("#settingspage").slideDown('slow');
   });
 
   $("#settingsdone").click(function() {
@@ -89,7 +91,9 @@ $(document).ready(function() {
     e.preventDefault();
     client.authenticate();
   });
-  $("#thetvdbsync").click(recache);  
+  $("#thetvdbsync").click(recache);
+  $("#dropboxsync").change(changeSyncFrequency);
+  $("#thetvdbsync").change(changeSyncFrequency);
 
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
@@ -115,23 +119,90 @@ $(document).ready(function() {
 			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
-	
+  
+  updateSyncDisplay();
+  checkAndSync();
+  buildMainScreenFromCache();
+  stopspin();
+});
+
+function updateSyncDisplay() {
+   var today = new Date();
    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
    if(lastDropboxSyncEpoch != null) {
 	   lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
-       $("#dropboxsynctime").text(lastDropboxSync.toLocaleString());
+	   
+	   if(today.toDateString() == lastDropboxSync.toDateString()) {
+	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleTimeString());
+       } else {
+	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleDateString());	       
+       }
+   }
+   var dropboxFrequencySetting = getSetting("dropbox.frequency");
+   if(dropboxFrequencySetting !== undefined && dropboxFrequencySetting !== null) {
+	   $("#dropboxsync").val(dropboxFrequencySetting);
    }
 
    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
    if(lastTheTvDbSyncEpoch != null) {
 	   lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
-       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleString());
+	   
+	   if(today.toDateString() == lastTheTvDbSync.toDateString()) {
+	       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleTimeString());
+       } else {
+	       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleDateString());	       
+       }
    }
-   	
+   var thetvdbFrequencySetting = getSetting("thetvdb.frequency");
+   if(thetvdbFrequencySetting !== undefined && thetvdbFrequencySetting !== null) {
+	   $("#tvdbsync").val(thetvdbFrequencySetting);
+   }
+   
+   
+   
+}
 
-  buildMainScreenFromCache();
-  stopspin();
-});
+function changeSyncFrequency() {
+	var syncKey = $(this).attr("data-sync");
+	var frequency = $(this).val();
+	
+    setSetting(syncKey, frequency);
+}
+
+function checkAndSync() {
+	var dropboxFrequencyString = getSetting("dropbox.frequency");
+	var thetvdbFrequencyString = getSetting("thetvdb.frequency");
+	var now = new Date();
+	
+    if(dropboxFrequencyString !== undefined && dropboxFrequencyString !== null && dropboxFrequencyString !== "0") {
+	    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
+	    if(lastDropboxSyncEpoch != null) {
+	        var dropboxFrequency = parseInt(dropboxFrequencyString);
+		    lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
+			var difference = now - lastDropboxSync;             
+			difference = difference / 60 / 60 / 1000;
+	         
+	         if(difference > dropboxFrequency) {
+		         syncDropbox();
+	         }
+	    }
+    }	
+
+    if(thetvdbFrequencyString !== undefined && thetvdbFrequencyString !== null && thetvdbFrequencyString !== "0") {
+	    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
+	    if(lastTheTvDbSyncEpoch != null) {
+	        var thetvdbFrequency = parseInt(thetvdbFrequencyString);
+		    lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
+			var difference = now - lastTheTvDbSync;             
+			difference = difference / 60 / 60 / 1000;
+	         
+	         if(difference > thetvdbFrequency) {
+		         recache();
+	         }
+	    }
+    }	
+
+}
 
 function spin() {
   spinCount++;
@@ -694,6 +765,33 @@ function saveSeriesList(seriesList) {
 	recache();
 }
 
+function getSetting(settingKey) {
+    if(settings === undefined || settings === null) {
+	  var settingsJson = localStorage.getItem("settings");
+	  if(settingsJson !== null) {      
+		settings = JSON.parse(settingsJson);
+	  } else {
+		settings = {};
+	  }
+    }
+    
+    return settings[settingKey];
+}
+
+function setSetting(settingKey, settingValue) {
+    if(settings === undefined || settings === null) {
+	  var settingsJson = localStorage.getItem("settings");
+	  if(settingsJson !== null) {      
+		settings = JSON.parse(settingsJson);
+	  } else {
+		settings = {};
+	  }
+    }
+    
+	settings[settingKey] = settingValue;
+	localStorage.setItem("settings", JSON.stringify(settings));
+}
+
 function saveWatchedEpisodes(watchedEpisodes) {
 	var watchedEpisodesJson = JSON.stringify(watchedEpisodes);
 	localStorage.setItem("watchedEpisodes", watchedEpisodesJson);
@@ -766,7 +864,7 @@ function syncDropbox() {
    
    var lastDropboxSync = new Date();
    localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
-   $("#dropboxsynctime").text(lastDropboxSync.toLocaleString());
+   updateSyncDisplay();
    stopspin();
 }
 
@@ -845,8 +943,7 @@ function recache() {
 
 	var lastTheTvDbSync = new Date();
 	localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
-	$("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleString());
-
+	updateSyncDisplay();
 	stopspin();
 }
 

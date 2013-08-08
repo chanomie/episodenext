@@ -46,7 +46,7 @@
           <div>Watch this episode and post to Facebook?</div>
           <div class="modalbuttons"><span id="facebookpost" class="facebook">Post to Facebook</span><span id="facebookcancel" class="cancel">Cancel</span></div>
         </div>
-        <div id="mainpage" class="page" style="display:none">
+        <div id="mainpage" class="page">
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
 	          <div class="rightheaderbutton" id="addshowbutton">+</div>
@@ -98,33 +98,51 @@
           </div>
        </div>
        
-       <div id="settingspage">
+       <div id="settingspage"  style="display:none">
 			<div class="header">
 	          <div class="rightheaderbuttonblue" id="settingsdone">Done</div>
 	          <div class="title">Settings</div>
 			</div>
 			<div class="content">
-			    <div class="settingsheader">Synchronization</div>
-				<div id="dropboxlogin">
-					<button id="dropboxLoginButton">Link to Dropbox</button>
-				</div>
-				<div id="dropboxlogout" style="display:none">
-				  <button id="dropboxSyncButton"><i class="icon-dropbox"></i> Sync Dropbox</button>
-				  <button id="dropboxLogoutButton">Unlink Dropbox</button>
-				  <div id="dropboxtime">Last Dropbox Sync: <span id="dropboxsynctime">Unknown</span></div>
-				</div>
-				
-				<div class="settingsheader">Facebook</div>
+			    <ul id="dropboxlogin" class="tableView">
+			      <li id="dropboxLoginButton"><b><i class="icon-dropbox"></i> Dropbox</b><span class="subtitle">Link</span></li>
+			    </ul>
+
+			    <ul id="dropboxlogout" class="tableView">
+			      <li id="dropboxLogoutButton"><b><i class="icon-dropbox"></i> Dropbox</b><span class="subtitle">Unlink</span></li>
+			      <li id="dropboxSyncButton"><b>Sync</b><span id="dropboxsynctime" class="subtitle">Unknown</span></li>
+			      <li><b>Frequency</b><span class="subtitle">
+					<select id="dropboxsync" data-sync="dropbox.frequency" name="Dropbox Sync" class="settingsselect">
+						<option value="0">Manually</option>
+						<option value="60">Every Hour</option>
+						<option value="360">Four Times a Day</option>
+						<option value="720">Twice a Day</option>
+						<option value="1440">Once a Day</option>
+					</select>			      
+			      </span></li>
+			    </ul>
+			    				
+				<div class="tbHeader">Facebook</div>
+				<ul class="tableView">
+				  <li><b>
 				<div id="facebooklogin">
-                  <fb:login-button show-faces="true" max-rows="1" scope="publish_actions,user_actions.video"></fb:login-button>
+                  <fb:login-button show-faces="true" max-rows="1" data-width="280" scope="publish_actions,user_actions.video"></fb:login-button>
 				</div>
-
-				<div class="settingsheader">Sync Status</div>
-				<div id="syncstatus">
-  				  <button id="thetvdbsync">Sync The TV DB</button>
-				  <div id="dropboxtime">Last TheTV DB Sync: <span id="thetvdbsynctime">Unknown</span></div>
-				</div>
-
+				  </b></li>
+				</ul>
+				
+				<ul class="tableView">
+				  <li id="thetvdbsync"><b>Sync</b><span id="thetvdbsynctime" class="subtitle">Unknown</span></li>
+			      <li><b>Frequency</b><span class="subtitle">
+					<select id="tvdbsync" data-sync="thetvdb.frequency" name="The TV DB Sync" class="settingsselect">
+						<option value="0">Manually</option>
+						<option value="60">Every Hour</option>
+						<option value="360">Four Times a Day</option>
+						<option value="720">Twice a Day</option>
+						<option value="1440">Once a Day</option>
+					</select>			      
+			      </span></li>
+				</ul>
 			</div>
         </div>
     </body>
