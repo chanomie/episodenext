@@ -565,10 +565,6 @@ function seriesDisplayShowSuccess(data, status) {
       attr("data-seasonid",seasonid).
       attr("data-watchedkey",watchedEpisodeKey).
       append(
-        $("<span></span>").
-        addClass("episodelisttitle").
-        html(episodeName)
-      ).append(
         $("<div></div>").
         addClass("episodelistbuttons").
         append(
@@ -581,6 +577,10 @@ function seriesDisplayShowSuccess(data, status) {
           $("<i></i>").
           addClass("icon-info-sign")
         )
+      ).append(
+        $("<div></div>").
+        addClass("episodelisttitle").
+        html(episodeName)
       ).append(
         $("<div></div>").
         addClass("episodelistdetail").
