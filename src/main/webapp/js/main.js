@@ -117,14 +117,14 @@ $(document).ready(function() {
 			console.log("Dropbox Authenticated");
 			seriesListTable = datastore.getTable('seriesListTable');
 			watchedEpisodesTable = datastore.getTable('watchedEpisodesTable');
-			
+			checkAndSync();
+
 			// Ensure that future changes update the list.
 			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
   
   updateSyncDisplay();
-  checkAndSync();
   buildMainScreenFromCache();
   stopspin();
 });
@@ -176,33 +176,36 @@ function checkAndSync() {
 	var dropboxFrequencyString = getSetting("dropbox.frequency");
 	var thetvdbFrequencyString = getSetting("thetvdb.frequency");
 	var now = new Date();
-	
+		
     if(dropboxFrequencyString !== undefined && dropboxFrequencyString !== null && dropboxFrequencyString !== "0") {
 	    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
-	    if(lastDropboxSyncEpoch != null) {
-	        var dropboxFrequency = parseInt(dropboxFrequencyString);
-		    lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
-			var difference = now - lastDropboxSync;             
-			difference = difference / 60 / 60 / 1000;
-	         
-	         if(difference > dropboxFrequency) {
-		         syncDropbox();
-	         }
+	    if(lastDropboxSyncEpoch == null) {
+	      lastDropboxSyncEpoch = 0;
 	    }
+        var dropboxFrequency = parseInt(dropboxFrequencyString);
+	    lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
+		var difference = now - lastDropboxSync;             
+		difference = difference / 60 / 1000;         
+         if(difference > dropboxFrequency) {
+	         syncDropbox();
+         }
+
     }	
 
     if(thetvdbFrequencyString !== undefined && thetvdbFrequencyString !== null && thetvdbFrequencyString !== "0") {
 	    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
-	    if(lastTheTvDbSyncEpoch != null) {
-	        var thetvdbFrequency = parseInt(thetvdbFrequencyString);
-		    lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
-			var difference = now - lastTheTvDbSync;             
-			difference = difference / 60 / 60 / 1000;
-	         
-	         if(difference > thetvdbFrequency) {
-		         recache();
-	         }
+    	console.log("lastTvDbSync = " + lastTvDbSync);
+	    if(lastTheTvDbSyncEpoch == null) {
+	      lastTheTvDbSyncEpoch = 0
 	    }
+        var thetvdbFrequency = parseInt(thetvdbFrequencyString);
+	    lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
+		var difference = now - lastTheTvDbSync;             
+		difference = difference / 60 / 1000;
+         
+         if(difference > thetvdbFrequency) {
+	         recache();
+         }
     }	
 
 }
@@ -880,13 +883,13 @@ function syncDropbox() {
 	  if(localDirty === true) {
 	      saveWatchedEpisodes(watchedEpisodes);
 		  saveSeriesList(seriesList);
+		  recache();
 	  }  
    }
    
    var lastDropboxSync = new Date();
    localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
    updateSyncDisplay();
-   recache();
    stopspin();
 }
 
