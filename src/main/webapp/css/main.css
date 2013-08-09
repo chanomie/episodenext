@@ -323,6 +323,7 @@ div.episodelist {
     padding-left: 10px;
     padding-right: 10px;
     border-bottom: solid darkgrey 1px;
+    min-height: 40px;
 }
 
 div.episodelistbuttons {
