@@ -25,9 +25,9 @@ var seriesListTable;
 var watchedEpisodesTable;
 
 var TheTbDbUrlBase = "http://thetvdb.com";
-var getSeriesUrl = "http://thewirewatcher.appspot.com/api/getseries?seriesname=";
-var getSeriesDetailsUrl = "http://thewirewatcher.appspot.com/api/"
-var getSeriesAllDetailsUrl = "http://thewirewatcher.appspot.com/api/all/"
+var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
+var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
+var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
 var settings;
@@ -216,7 +216,7 @@ function checkAndSync() {
 
     if(thetvdbFrequencyString !== undefined && thetvdbFrequencyString !== null && thetvdbFrequencyString !== "0") {
 	    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
-    	console.log("lastTvDbSync = " + lastTvDbSync);
+    	console.log("lastTvDbSync = " + lastTheTvDbSyncEpoch);
 	    if(lastTheTvDbSyncEpoch == null) {
 	      lastTheTvDbSyncEpoch = 0
 	    }
@@ -488,11 +488,12 @@ function buildMainScreenFromCache() {
 			  } else {
 			    var appended = false;
 				$('#unwatchedShowList').children().each(function () {
-					var thisEpisodeAirDate = $(this).find("span.episodeFirstAired").text();
-					if(newEpisodeAirDate < thisEpisodeAirDate) {
-						$(this).before(newEpisodeElement);
-						appended = true;
-						return;
+				    if(!appended) {
+						var thisEpisodeAirDate = $(this).find("span.episodeFirstAired").text();
+						if(newEpisodeAirDate < thisEpisodeAirDate) {
+							$(this).before(newEpisodeElement);
+							appended = true;
+						}
 					}
 				});
 				if(appended == false) {
