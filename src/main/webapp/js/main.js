@@ -66,7 +66,17 @@ $(document).ready(function() {
   $("#showdetailsdone").click(function() {
     $("#showdetailspage").slideUp('slow');
     $("#mainpage").slideDown('slow');	  
-  })
+  });
+
+  $("#showaboutthetvdb").click(function(){
+    $("#settingspage").slideUp('slow');
+    $("#aboutthetvdb").slideDown('slow');	  	  
+  });
+  
+  $("#aboutthetvdbback").click(function(){
+    $("#aboutthetvdb").slideUp('slow');
+    $("#settingspage").slideDown('slow');	  	  
+  });
   
   $("#allshowsseasonbar").click(function() {
 	 if($(this).attr("data-status") == "hidden") {

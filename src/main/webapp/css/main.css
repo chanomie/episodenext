@@ -470,6 +470,10 @@ i.icon-chevron-right {
 	color:#7B7B7B;
 }
 
+div.about div.content {
+	padding-left: 10px;
+}
+
 
 /* ==========================================================================
    Helper classes
