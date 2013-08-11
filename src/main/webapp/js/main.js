@@ -38,6 +38,8 @@ $(document).ready(function() {
   $("#addshowbutton").click(function() {
     $("#mainpage").slideUp('slow');
     $("#searchpage").slideDown('slow');
+    $("#searchtext").focus();
+
   });
 
   $("#cancelsearch").click(function() {
@@ -233,6 +235,7 @@ function onSearch() {
   if(showname === null || showname === "") {
 	  // error
   } else {
+    $("#searchtext").focus();
     $("#searchResultList").empty()
     searchForShow(showname);
   }

@@ -18,6 +18,18 @@ textarea {
     color: #222;
 }
 
+div.firsttime {
+	position:absolute;
+	top: 35;
+	left: 0;
+	width: 100%;
+}
+
+div.firsttime span {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
