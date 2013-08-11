@@ -186,7 +186,12 @@ function changeSyncFrequency() {
 }
 
 function logoutDropbox() {
-	
+	if (client.isAuthenticated()) {
+	  client.signOut(function(){
+		$("#dropboxlogout").hide();		  
+		$('#dropboxlogin').show();
+	  });
+	}
 }
 
 function checkAndSync() {
@@ -464,13 +469,18 @@ function buildMainScreenFromCache() {
 	                      attr("data-seasonnumber",nextEpisodeCache[seriesId]["SeasonNumber"]).
 	                      attr("data-episodenumber",nextEpisodeCache[seriesId]["EpisodeNumber"]).
 	                      attr("data-episodeId",nextEpisodeCache[seriesId]["episodeId"]).
-	                      addClass("icon-facebook-sign")).
+	                      addClass("icon-facebook-sign"))
+	                    ));
+	                    
+			  /*
+			  Removed extra
+			  .
 	                    append(
 	                      $("<i></i>").
 	                      addClass("infoButton").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
 	                      addClass("icon-info-sign"))
-	                    ));
+			  */
 
 			  if($("#unwatchedShowList").children().length == 0) {
 			      // First show - just add
