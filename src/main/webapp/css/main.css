@@ -214,13 +214,12 @@ div.originaldate {
 	font-size: 10px;
 }
 
-div.rightarrow:after {
+div.rightarrow {
   position: relative;
-  top: -24px;
+  top: -22px;
   right: 20px;
   float: right;
   font-weight: 800;
-  content: ">";
 }
 
 div.bannerdiv {
@@ -467,6 +466,9 @@ select.settingsselect {
 	color:#385487;
 }
 
+i.icon-chevron-right {
+	color:#7B7B7B;
+}
 
 
 /* ==========================================================================

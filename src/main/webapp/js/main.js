@@ -235,7 +235,7 @@ function onSearch() {
   if(showname === null || showname === "") {
 	  // error
   } else {
-    $("#searchtext").focus();
+    $("#searchtext").blur();
     $("#searchResultList").empty()
     searchForShow(showname);
   }
@@ -275,7 +275,12 @@ function searchForShowSuccess(data, status) {
 				html(firstAired)
 			).
 			append($("<div></div>").
-				addClass("rightarrow"));
+				addClass("rightarrow").
+				append(
+				  $("<i></i>").
+				  addClass("icon-chevron-right")
+				)
+			);
 			
 			
          $("#searchResultList").append(newSeries);	
