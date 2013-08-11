@@ -96,9 +96,10 @@ $(document).ready(function() {
     e.preventDefault();
     client.authenticate();
   });
+  $('#dropboxLogoutButton').click(logoutDropbox);
   $("#thetvdbsync").click(recache);
   $("#dropboxsync").change(changeSyncFrequency);
-  $("#thetvdbsync").change(changeSyncFrequency);
+  $("#tvdbsync").change(changeSyncFrequency);
 
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
@@ -172,6 +173,10 @@ function changeSyncFrequency() {
 	var frequency = $(this).val();
 	
     setSetting(syncKey, frequency);
+}
+
+function logoutDropbox() {
+	
 }
 
 function checkAndSync() {
