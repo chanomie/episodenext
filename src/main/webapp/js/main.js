@@ -234,15 +234,12 @@ function checkAndSync() {
 
 function spin() {
   spinCount++;
-  console.log("Spinning with increment: " + spinCount);
   $("#spinner").show();
   $("#spinner").spin();	
 }
 
 function stopspin() {
   spinCount--;
-  console.log("Spinning less with decrement: " + spinCount);
-
   if(spinCount <= 0) {
     spinCount = 0;
     $("#spinner").hide();
@@ -351,6 +348,9 @@ function addNewShow() {
 }
 
 function buildMainScreenFromCache() {
+    var start = new Date();
+    console.log("build screen start: " + start.toLocaleString());
+
     spin();
     console.log("Rebuilding Screen");
 	$("#showlist").empty();
@@ -507,6 +507,10 @@ function buildMainScreenFromCache() {
 		$(".facebookButton").click(facebookShare);
 	}
 	stopspin();
+
+	var stop = new Date();
+	console.log("build screen end: " + stop.toLocaleString());
+	console.log("build screen Total time: " + (stop-start)/1000);
 }
 
 function deleteSeriesButton() {
@@ -863,6 +867,9 @@ function genericError(jqXHR, textStatus) {
 }
 
 function syncDropbox() {
+    var start = new Date();
+    console.log("dropbox sync start: " + start.toLocaleString());
+
     spin();
     if(client.isAuthenticated()) {
   	  var watchedEpisodes = getWatchedEpisodes();
@@ -871,11 +878,13 @@ function syncDropbox() {
 	  
 	  // Add to Dropbox
 	  for(episodeKey in watchedEpisodes) {
+        console.log("dropbox sync adding episodes [" + episodeKey + "] to dropbox: " + (new Date()-start)/1000);
 	    var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
 	    if(results === null || results.length === 0) {
 	        watchedEpisodesTable.insert({"episodeKey": episodeKey});
 	    }
 	  }
+      console.log("dropbox sync add episodes to dropbox: " + (new Date()-start)/1000);
 	  
 	  for(var i=0; i<seriesList.length; i++) {
   	    var results = seriesListTable.query({"seriesId": seriesList[i]}); 
@@ -883,6 +892,8 @@ function syncDropbox() {
 	        seriesListTable.insert({"seriesId": seriesList[i]});
 	    }
 	  }
+      console.log("dropbox sync add series to dropbox: " + (new Date()-start)/1000);
+
 	  
 	  // Add to Local
 	  var dropboxWatched = watchedEpisodesTable.query();
@@ -893,6 +904,7 @@ function syncDropbox() {
 		    localDirty = true;
 		  }
 	  }
+      console.log("dropbox sync add episodes to local: " + (new Date()-start)/1000);
 
 	  var dropboxSeriesList = seriesListTable.query();
 	  for(var i=0; i<dropboxSeriesList.length; i++) {
@@ -913,6 +925,7 @@ function syncDropbox() {
 			  }
           }
 	  }
+      console.log("dropbox sync add series to local: " + (new Date()-start)/1000);
 	  
 	  if(localDirty === true) {
 	      saveWatchedEpisodes(watchedEpisodes);
@@ -925,9 +938,16 @@ function syncDropbox() {
    localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
    updateSyncDisplay();
    stopspin();
+
+	var stop = new Date();
+	console.log("dropbox sync end: " + stop.toLocaleString());
+	console.log("dropbox sync Total time: " + (stop-start)/1000);
 }
 
 function recache() {
+    var start = new Date();
+    console.log("recache start: " + start.toLocaleString());
+    
     spin();
 	var seriesList = getSeriesList();
 	var watchedEpisodes = getWatchedEpisodes();
@@ -1004,6 +1024,11 @@ function recache() {
 	localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
 	updateSyncDisplay();
 	stopspin();
+	
+    var stop = new Date();
+    console.log("recache end: " + stop.toLocaleString());
+    console.log("recache Total time: " + (stop-start)/1000);
+
 }
 
 /** Facebook Fun */
