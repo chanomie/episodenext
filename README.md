@@ -100,6 +100,8 @@ curl http://thetvdb.com/api/${thetvdbapikey}/series/205281/all/en.xml
 
 curl -A "facebookexternalhit/1.1" https://thewirewatcher.appspot.com/showdetails/73730/1/1
 
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+
 mvn verify - verify the build
 mvn appengine:devserver - run the dev server
 mvn eclipse:eclipse

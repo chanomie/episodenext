@@ -866,83 +866,116 @@ function genericError(jqXHR, textStatus) {
 	alert("Failure: " + textStatus);
 }
 
+
+/** Dropbox Sync State Stuff **/
+var isDropboxSyncing = false;
+var syncKeyArray;
+var dropboxTableResult;
+var syncKeyIndex;
+var watchedEpisodesSync;
+var seriesListSync;
+var localDirty;
+
 function syncDropbox() {
-    var start = new Date();
-    console.log("dropbox sync start: " + start.toLocaleString());
-
-    spin();
-    if(client.isAuthenticated()) {
-  	  var watchedEpisodes = getWatchedEpisodes();
-	  var seriesList = getSeriesList();
-	  var localDirty = false;
-	  
-	  // Add to Dropbox
-	  for(episodeKey in watchedEpisodes) {
-        console.log("dropbox sync adding episodes [" + episodeKey + "] to dropbox: " + (new Date()-start)/1000);
-	    var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
-	    if(results === null || results.length === 0) {
-	        watchedEpisodesTable.insert({"episodeKey": episodeKey});
-	    }
-	  }
-      console.log("dropbox sync add episodes to dropbox: " + (new Date()-start)/1000);
-	  
-	  for(var i=0; i<seriesList.length; i++) {
-  	    var results = seriesListTable.query({"seriesId": seriesList[i]}); 
-	    if(results === null || results.length === 0) {
-	        seriesListTable.insert({"seriesId": seriesList[i]});
-	    }
-	  }
-      console.log("dropbox sync add series to dropbox: " + (new Date()-start)/1000);
-
-	  
-	  // Add to Local
-	  var dropboxWatched = watchedEpisodesTable.query();
-	  for(var i=0; i< dropboxWatched.length; i++) {
-		  var episodeKey = dropboxWatched[i].get("episodeKey");
-		  if(episodeKey !== null && !(episodeKey in watchedEpisodes)) {
-		    watchedEpisodes[episodeKey] = true;
-		    localDirty = true;
-		  }
-	  }
-      console.log("dropbox sync add episodes to local: " + (new Date()-start)/1000);
-
-	  var dropboxSeriesList = seriesListTable.query();
-	  for(var i=0; i<dropboxSeriesList.length; i++) {
-		  var seriesId = dropboxSeriesList[i].get("seriesId");
-		  
-		  if(seriesId !== null) {
-			  var inlocal = false;
-			  
-			  for(var j=0; j<seriesList.length; j++) {
-				  if(seriesId === seriesList[j]) {
-					  inlocal = true;
-					  break;
-				  }
-			  }
-			  if(inlocal === false) {
-				  seriesList.push(seriesId);
-				  localDirty = true;
-			  }
-          }
-	  }
-      console.log("dropbox sync add series to local: " + (new Date()-start)/1000);
-	  
-	  if(localDirty === true) {
-	      saveWatchedEpisodes(watchedEpisodes);
-		  saveSeriesList(seriesList);
-		  recache();
-	  }  
-   }
-   
-   var lastDropboxSync = new Date();
-   localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
-   updateSyncDisplay();
-   stopspin();
-
-	var stop = new Date();
-	console.log("dropbox sync end: " + stop.toLocaleString());
-	console.log("dropbox sync Total time: " + (stop-start)/1000);
+    if(!isDropboxSyncing && client.isAuthenticated()) {
+	  spin();
+      isDropboxSyncing = true;
+  	  watchedEpisodesSync = getWatchedEpisodes();
+	  seriesListSync = getSeriesList();
+	  localDirty = false;
+	  syncKeyArray = Object.keys(watchedEpisodesSync);
+	  syncKeyIndex = 0;
+	  setTimeout(syncWatchedEpisodesToDropbox,0);
+    }
 }
+
+function syncWatchedEpisodesToDropbox() {  
+  if(syncKeyIndex < syncKeyArray.length) {
+	  var episodeKey = syncKeyArray[syncKeyIndex++];
+	  var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
+	  if(results === null || results.length === 0) {
+	      watchedEpisodesTable.insert({"episodeKey": episodeKey});
+	  }	  
+	  setTimeout(syncWatchedEpisodesToDropbox,0);	  
+  } else {
+      console.log("All done syncing episodes.");
+      syncKeyArray = getSeriesList();
+      syncKeyIndex = 0;
+      setTimeout(syncSeriesToDropbox, 0);
+  }
+}
+
+function syncSeriesToDropbox() {
+  if(syncKeyIndex < syncKeyArray.length) {
+	  var seriesKey = syncKeyArray[syncKeyIndex++];
+  	  var results = seriesListTable.query({"seriesId": seriesKey}); 
+	  if(results === null || results.length === 0) {
+	        seriesListTable.insert({"seriesId": seriesKey});
+	  }
+	  setTimeout(syncSeriesToDropbox,0);	  
+  } else {
+      console.log("All done syncing series.");
+      dropboxTableResult = watchedEpisodesTable.query();
+      syncKeyIndex = 0;
+      setTimeout(syncWatchedEpisodesFromDropbox,0);
+  }
+}
+
+function syncWatchedEpisodesFromDropbox() {
+	if(syncKeyIndex < dropboxTableResult.length) {
+		var episodeKey = dropboxTableResult[syncKeyIndex++].get("episodeKey");
+		if(episodeKey !== null && !(episodeKey in watchedEpisodesSync)) {
+			watchedEpisodesSync[episodeKey] = true;
+			localDirty = true;
+		}
+		setTimeout(syncWatchedEpisodesFromDropbox,0);
+	} else {
+      console.log("All done syncing episodes from dropbox.");
+      dropboxTableResult = seriesListTable.query();
+      syncKeyIndex = 0;
+      setTimeout(syncSeriesFromDropbox,0);
+	}
+}
+
+function syncSeriesFromDropbox() {
+	if(syncKeyIndex < dropboxTableResult.length) {
+		var seriesId = dropboxTableResult[syncKeyIndex++].get("seriesId");
+
+		if(seriesId !== null) {
+			var inlocal = false;
+			
+			for(var j=0; j<seriesListSync.length; j++) {
+				if(seriesId === seriesListSync[j]) {
+					inlocal = true;
+					break;
+				}
+			}
+			if(inlocal === false) {
+				seriesListSync.push(seriesId);
+				localDirty = true;
+			}
+		}
+		setTimeout(syncSeriesFromDropbox,0);
+	} else {
+      console.log("All done syncing series from dropbox.");
+      setTimeout(syncDropboxComplete,0);
+	}
+}
+
+function syncDropboxComplete() {
+	if(localDirty === true) {
+		saveWatchedEpisodes(watchedEpisodesSync);
+		saveSeriesList(seriesListSync);
+		recache();
+	}
+
+	var lastDropboxSync = new Date();
+	localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
+	updateSyncDisplay();
+    stopspin();
+	isDropboxSyncing = false;
+}
+
 
 function recache() {
     var start = new Date();
