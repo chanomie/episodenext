@@ -976,22 +976,28 @@ function syncDropboxComplete() {
 	isDropboxSyncing = false;
 }
 
-
+// Start the Recache
+var isRecaching = false;
+var seriesListRecache;
+var seriesListIndex;
+var nextEpisodeCache = {};
+var seriesListCache = {};
 function recache() {
-    var start = new Date();
-    console.log("recache start: " + start.toLocaleString());
-    
     spin();
-	var seriesList = getSeriesList();
-	var watchedEpisodes = getWatchedEpisodes();
-	
-	var nextEpisodeCache = {};
-	var seriesListCache = {};
-	for (var i = 0; i < seriesList.length; i++) {
-    	// 1: Get a the series details into the local cache
-    	// 2: Rebuild the unwatched episode cache
-    	
-    	var searchUrl = getSeriesAllDetailsUrl + seriesList[i];
+    if(!isRecaching) {
+		seriesListRecache = getSeriesList();		
+		nextEpisodeCache = {};
+		seriesListCache = {};
+		seriesListIndex = 0;
+	    setTimeout(recacheSeries, 0);
+    }
+}
+
+function recacheSeries() {
+	if(seriesListIndex  < seriesListRecache.length) {
+		var seriesListItem = seriesListRecache[seriesListIndex++];
+
+    	var searchUrl = getSeriesAllDetailsUrl + seriesListItem;
         $.ajax({
           url: searchUrl,
           async: false,
@@ -1013,7 +1019,7 @@ function recache() {
 		      $(data).find("Data Episode").each(function(i) {
 		          var episodeId = $(this).find("id").text();
 		          var episodeKey = seriesId + "-" + episodeId;
-		          if(!(episodeKey in watchedEpisodes)) {
+		          if(!(episodeKey in getWatchedEpisodes())) {
 					  var firstAired = $(this).find("FirstAired").text();
 					  if(firstAired !== undefined && firstAired !== "") {
 					      var firstAiredDate = new Date(firstAired);
@@ -1042,27 +1048,26 @@ function recache() {
 					  }
 		          }
 			  });
-			  
 			  if(oldestUnwatchedEpisode !== null) {
 				  nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
 			  }
 		  }});
-	}
+		  setTimeout(recacheSeries, 0);
+	} else {
+		localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
+		localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));
+		buildMainScreenFromCache();
 	
-	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
-	localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));
-	buildMainScreenFromCache();
-
-	var lastTheTvDbSync = new Date();
-	localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
-	updateSyncDisplay();
-	stopspin();
-	
-    var stop = new Date();
-    console.log("recache end: " + stop.toLocaleString());
-    console.log("recache Total time: " + (stop-start)/1000);
-
+		var lastTheTvDbSync = new Date();
+		localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
+		updateSyncDisplay();
+		stopspin();		
+		isRecaching = false;
+	    console.log("recache end");
+	}	
 }
+
+
 
 /** Facebook Fun */
   // Additional JS functions here

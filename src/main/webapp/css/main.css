@@ -82,6 +82,7 @@ div.page {
 	/* min-height: 460px; */
 }
 
+/*
 div#spinner {
     position:fixed;
 	height: 100%;
@@ -90,6 +91,16 @@ div#spinner {
     left:0px;
     background: rgba(0, 0, 0, .5);
 }
+*/
+
+div#spinner {
+    position:fixed;
+	width: 15%;
+	height: 15%;
+	bottom:0px;
+    right:0px;
+}
+
 
 div.header {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
