@@ -3,7 +3,7 @@
 <!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <title>Wire Watcher</title>
+        <title>Episode.Next</title>
         <meta name="description" content="Allows tracking and marking of shows.">
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
@@ -20,9 +20,9 @@
         <link rel="apple-touch-icon" href="img/touch/apple-touch-icon-57x57-precomposed.png">
         <link rel="shortcut icon" href="img/touch/apple-touch-icon.png">
         
-        <meta property="og:title" content="The Wire Watcher" />
+        <meta property="og:title" content="The Episode.Next" />
         <meta property="og:image"  content="img/facebook/facebook-200x200.png" /> 
-        <meta property="og:site_name" content="The Wire Watcher" />
+        <meta property="og:site_name" content="The Episode.Next" />
         <meta property="fb:app_id" content="132823190241236" /> 
         
         
@@ -68,9 +68,15 @@
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
 	          <div class="rightheaderbutton" id="addshowbutton">+</div>
-	          <div class="title">Wire Watcher</div>
-	          <div class="seasonbar"><i class="icon-collapse"></i> Unwatched Episodes</div>
+	          <div class="title">Episode.Next</div>
+	          <div class="seasonbar"><i class="icon-collapse">
+	            </i> Unwatched Episodes</div>
 	          <div id="unwatchedShowList" class="showlist"></div>
+	          
+	          <div id="unairedseasonbar" data-status="hidden" class="seasonbar">
+	            <i id="unairedseasonexpander" class="icon-expand"></i> Unaired Episodes</div>
+	          <div id="unairedShowList" class="showlist" style="display:none;"></div>
+	          	          
 	          <div id="allshowsseasonbar" data-status="hidden" class="seasonbar">
 	            <i id="allshowsexpander" class="icon-expand"></i> All Shows</div>
 	          <div id="showlist" class="showlist" style="display:none;"></div>

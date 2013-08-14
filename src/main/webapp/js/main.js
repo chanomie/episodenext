@@ -409,6 +409,8 @@ function buildMainScreenFromCache() {
         $(".infoButtonShow").click(showInfoShow);
                 
         $("#unwatchedShowList").empty();
+        $("#unairedShowList").empty();
+
 		var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
 		if(nextEpisodeCacheJson !== null) {
 			var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
@@ -1101,7 +1103,6 @@ function recacheSeries() {
   };
 
   // Load the SDK asynchronously
-  console.log("Injecting Facebook");
   (function(d){
      var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
      if (d.getElementById(id)) {return;}
@@ -1109,5 +1110,4 @@ function recacheSeries() {
      js.src = "//connect.facebook.net/en_US/all.js";
      ref.parentNode.insertBefore(js, ref);
    }(document));
-  console.log("Injected Facebook");
 
