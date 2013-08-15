@@ -209,16 +209,8 @@ div.bold {
   font-size: 14pt;
 }
 
-div#unwatchedShowList {
+div.showlist {
 	margin: auto;
-	border-left: 1px gray solid;
-	border-right: 1px gray solid;
-}
-
-div#showlist {
-	margin: auto;
-	border-left: 1px gray solid;
-	border-right: 1px gray solid;
 }
 
 
@@ -647,6 +639,15 @@ textarea[contenteditable] {
     width: 100%;
   }
 }
+
+@media only screen and (min-width: 760px) {
+	div.showlist {
+		border-left: 1px gray solid;
+		border-right: 1px gray solid;
+	}
+}
+
+
 
 @media only screen and (min-width: 800px) {
     /* Style adjustments for viewports that meet the condition */

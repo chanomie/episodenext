@@ -94,6 +94,24 @@ $(document).ready(function() {
 	   	$("#showlist").hide();
 	 }
   });
+
+  $("#unairedseasonbar").click(function() {
+	 if($(this).attr("data-status") == "hidden") {
+	   	$(this).attr("data-status","shown");
+	   	$("#unairedseasonexpander").removeClass("icon-expand");
+	   	$("#unairedseasonexpander").addClass("icon-collapse");
+	   	$("#unairedShowList").show();
+		$(document.body).animate({
+		    'scrollTop': $('#unairedseasonbar').offset().top
+		}, 1000);	   	
+	} else {
+	   	$(this).attr("data-status","hidden");
+	   	$("#unairedseasonexpander").removeClass("icon-collapse");
+	   	$("#unairedseasonexpander").addClass("icon-expand");
+	   	$("#unairedShowList").hide();
+	 }
+  });
+
     
   $("#addnewshowbutton").click(addNewShow);
   $('#addshowform').submit(onSearch);
@@ -427,8 +445,9 @@ function buildMainScreenFromCache() {
 		var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
 		if(nextEpisodeCacheJson !== null) {
 			var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
-			for(var seriesId in nextEpisodeCache){
-			  var newEpisodeAirDate = nextEpisodeCache[seriesId]["FirstAired"];
+			for(var seriesId in nextEpisodeCache) {
+			  var newEpisodeAirDateString = nextEpisodeCache[seriesId]["FirstAired"];
+			  var newEpisodeAirDate = parseDate(newEpisodeAirDateString);
 			  var newEpisodeElement =
 	            $("<div></div>").
 	            	attr("id",("series-"+nextEpisodeCache[seriesId]["seriesId"])).
@@ -497,25 +516,51 @@ function buildMainScreenFromCache() {
 	                      addClass("icon-info-sign"))
 			  */
 
-			  if($("#unwatchedShowList").children().length == 0) {
-			      // First show - just add
-		          $("#unwatchedShowList").append(newEpisodeElement);	  
-			  } else {
-			    var appended = false;
-				$('#unwatchedShowList').children().each(function () {
-				    if(!appended) {
-						var thisEpisodeAirDate = $(this).find("span.episodeFirstAired").text();
-						if(newEpisodeAirDate < thisEpisodeAirDate) {
-							$(this).before(newEpisodeElement);
-							appended = true;
+			  var now = new Date();
+			  if(newEpisodeAirDate < now) {
+				  // Episode has already aired, so add to this existing
+				  if($("#unwatchedShowList").children().length == 0) {
+				      // First show - just add
+			          $("#unwatchedShowList").append(newEpisodeElement);	  
+				  } else {
+				    var appended = false;
+					$('#unwatchedShowList').children().each(function () {
+					    if(!appended) {
+							var thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
+							
+							if(newEpisodeAirDateString < thisEpisodeAirDateString) {
+								$(this).before(newEpisodeElement);
+								appended = true;
+							}
 						}
+					});
+					if(appended == false) {
+						$("#unwatchedShowList").append(newEpisodeElement);
 					}
-				});
-				if(appended == false) {
-					$("#unwatchedShowList").append(newEpisodeElement);
 				}
+			  } else {
+				  // Episode airs in future, so add to future list				  
+				  // Episode has already aired, so add to this existing
+				  if($("#unairedShowList").children().length == 0) {
+				      // First show - just add
+			          $("#unairedShowList").append(newEpisodeElement);	  
+				  } else {
+				    var appended = false;
+					$('#unairedShowList').children().each(function () {
+					    if(!appended) {
+							var thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
+							
+							if(newEpisodeAirDateString < thisEpisodeAirDateString) {
+								$(this).before(newEpisodeElement);
+								appended = true;
+							}
+						}
+					});
+					if(appended == false) {
+						$("#unairedShowList").append(newEpisodeElement);
+					}
+			     }
 			  }
-
 			}
 		}
 		$(".playedButton").click(playedEpisode);
@@ -1082,6 +1127,11 @@ function recacheSeries() {
 	}	
 }
 
+function parseDate(input) {
+  var parts = input.split('-');
+  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+  return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
+}
 
 
 /** Facebook Fun */
