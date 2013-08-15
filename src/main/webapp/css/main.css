@@ -101,6 +101,38 @@ div#spinner {
     right:0px;
 }
 
+div#addtohome {
+    z-index: 900;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	display:none;
+}
+
+div#addtohomemessage {
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+	border: 1px gray solid;
+	margin: auto;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
+	box-shadow: 0 1px 1px #ddd, 0 1px 1px #555;
+	width: 214px;
+}
+
+div#addtohomemessage .close {
+    z-index: 1000;
+    float: right;
+    margin-top: -10px;
+    margin-right: -5px;
+}
+
+div#addtohomemessage .appicon {
+	height: 55px;
+	margin-bottom: 10px;
+}
+
 
 div.header {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));

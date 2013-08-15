@@ -100,6 +100,10 @@ $(document).ready(function() {
   $("#recache").click(recache);
   $("#facebookcancel").click(function() {$.modal.close()});
   $("#facebookpost").click(facebookPlayedEpisode);
+  $("#addtohome .close").click(function() {
+	$("#addtohome").slideUp('slow');
+	localStorage.setItem("hideaddto","true");
+  });
   
   $("#dropboxSyncButton").click(syncDropbox);
   $('#dropboxLoginButton').click(function (e) {
@@ -110,6 +114,15 @@ $(document).ready(function() {
   $("#thetvdbsync").click(recache);
   $("#dropboxsync").change(changeSyncFrequency);
   $("#tvdbsync").change(changeSyncFrequency);
+
+  if(localStorage.getItem("hideaddto") == null 
+      && window
+      && window.navigator
+      && window.navigator.standalone == false) {
+      
+	$("#addtohome").slideDown('slow');	  
+  }
+
 
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
