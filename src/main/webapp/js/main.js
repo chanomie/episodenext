@@ -459,29 +459,25 @@ function buildMainScreenFromCache() {
 	            	  append(
 	                	  $("<img></img>").
 	                	  addClass("showbanner").
+	                	  attr("alt",nextEpisodeCache[seriesId]["seriesName"]).
 	                	  attr("src",nextEpisodeCache[seriesId]["bannersrc"]))).
 	                append(
 	                  $("<div></div>").
 	                  addClass("showtext").
 	                  append(
 	                    $("<span></span>").
-	                    addClass("episodeshowname").
-	                    html(nextEpisodeCache[seriesId]["seriesName"])
-	                    ).
-	                  append(
-	                    $("<span></span>").
 	                    addClass("episodetitle").
 	                    html(nextEpisodeCache[seriesId]["EpisodeName"])
-	                    ).
-	                  append(
-	                    $("<span></span>").
-	                    addClass("episodeFirstAired").
-	                    html(nextEpisodeCache[seriesId]["FirstAired"])
 	                    ).
 	                  append(
 	                    $("<div></div>").
 	                    addClass("seasonepisode").
 	                    html("Season " + nextEpisodeCache[seriesId]["SeasonNumber"] + ", Episode " + nextEpisodeCache[seriesId]["EpisodeNumber"])).
+	                  append(
+	                    $("<span></span>").
+	                    addClass("episodeFirstAired").
+	                    html(nextEpisodeCache[seriesId]["FirstAired"])
+	                    ).
 	                  append(
 	                    $("<div></div>").
 	                    addClass("episodeSummary").

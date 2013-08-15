@@ -297,7 +297,17 @@ div.listbannerimage {
 
 div.seasonepisode {
 	font-size: 14px;
+	display:inline;
 }
+
+span.episodeFirstAired {
+    font-size: 14px;
+}
+
+span.episodeFirstAired:before {
+	content: ", ";
+}
+
 
 div.showtext {
   margin-left: 10px;
@@ -305,6 +315,11 @@ div.showtext {
   margin-bottom: 10px;
   text-align: left;
   font-size: 18px;
+}
+
+span.episodetitle {
+    display:block;
+	clear:both;
 }
 
 div.buttonRow {
@@ -317,17 +332,6 @@ div.buttonRow {
 
 div.buttonrow i {
 	margin-left: 50px;
-}
-
-span.episodeshowname:after {
-	content: " - ";
-}
-
-span.episodeFirstAired:before {
-	content: " (";
-}
-span.episodeFirstAired:after {
-	content: ")";
 }
 
 div.episodeSummary {
