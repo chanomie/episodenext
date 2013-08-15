@@ -25,14 +25,16 @@
         <meta property="og:site_name" content="The Episode.Next" />
         <meta property="fb:app_id" content="132823190241236" /> 
         
-        
         <link rel="apple-touch-startup-image" href="img/startup/startup.png">
+
+		<!--
         <link rel="apple-touch-startup-image" href="img/startup/startup.png" media="(device-width: 320px)">
         <link rel="apple-touch-startup-image" href="img/startup/startup-retina.png.png" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" >
         <link rel="apple-touch-startup-image" href="img/startup/startup-tablet-portrait.png" media="(device-width: 768px) and (orientation: portrait)">
         <link rel="apple-touch-startup-image" href="img/startup/startup-tablet-landscape.png" media="(device-width: 768px) and (orientation: landscape)" >
         <link rel="apple-touch-startup-image" href="img/startup/startup-tablet-portrait-retina.png" media="(device-width: 1536px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" >
         <link rel="apple-touch-startup-image" href="img/startup/startup-tablet-landscape-retina.png" media="(device-width: 1536px)  and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" >
+        -->
 
         <!-- Tile icon for Win8 (144x144 + tile color) -->
         <meta name="msapplication-TileImage" content="img/touch/apple-touch-icon-144x144-precomposed.png">
@@ -40,7 +42,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-title" content="">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=The+Girl+Next+Door|Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
         <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
@@ -64,7 +66,7 @@
           <div>Watch this episode and post to Facebook?</div>
           <div class="modalbuttons"><span id="facebookpost" class="facebook">Post to Facebook</span><span id="facebookcancel" class="cancel">Cancel</span></div>
         </div>
-        <div id="addtohome">
+        <div id="addtohome" style="display:none;">
           <div id="addtohomemessage">
             <div class="close"><i class="icon-remove-sign"></i></div>
             <div class="appicon"><img src="img/iosicon.png" width="55"/></div>
@@ -74,6 +76,23 @@
         </div>
         
         <div id="mainpage" class="page">
+            <div class="help" style="display:none;">
+              <div class="leftheader">
+                <div style="float:left;"><i class="icon-long-arrow-up"></i></div>
+                <div class="helptext">You can use the <i class="icon-cog"></i> button to link Dropbox, Facebook and setup sync schedules.</div>
+              </div>
+              <div class="rightheader">
+                <div style="float:right;"><i class="icon-long-arrow-up"></i></div>
+                 <div class="helptext">You can use the + button to search for a new series to add.</div>
+              </div>
+              <div class="centerhelp">
+                <div class="helptext">
+                  Episode.Next is a great way for you to keep track of your favorite shows
+                  so you know what episode you are on and when the next episode is going to air.
+                </div>
+              </div>
+            </div>
+        
 			<div class="header">
 	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
 	          <div class="rightheaderbutton" id="addshowbutton">+</div>

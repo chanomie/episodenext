@@ -133,15 +133,6 @@ $(document).ready(function() {
   $("#dropboxsync").change(changeSyncFrequency);
   $("#tvdbsync").change(changeSyncFrequency);
 
-  if(localStorage.getItem("hideaddto") == null 
-      && window
-      && window.navigator
-      && window.navigator.standalone == false) {
-      
-	$("#addtohome").slideDown('slow');	  
-  }
-
-
   client.authenticate({interactive:false}, function (error) {
 	if (error) {
 		alert('Authentication error: ' + error);
@@ -168,6 +159,19 @@ $(document).ready(function() {
 		});
 	}
   
+  
+  if(getSeriesList()==null || getSeriesList().length == 0) {
+	  $(".help").show();
+  } else {
+	  $(".help").hide();
+	  if(localStorage.getItem("hideaddto") == null 
+	      && window
+	      && window.navigator
+	      && window.navigator.standalone == false) {
+	      
+		$("#addtohome").slideDown('slow');	  
+	  }
+  }
   updateSyncDisplay();
   buildMainScreenFromCache();
   stopspin();
@@ -834,6 +838,7 @@ function playedEpisode() {
 }
 
 function addShowToSeriesList(seriesId) {
+    $(".help").hide();
 	var seriesList = getSeriesList();
 	seriesList.push(seriesId);
 	saveSeriesList(seriesList);

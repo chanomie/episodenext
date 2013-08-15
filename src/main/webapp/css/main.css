@@ -107,7 +107,6 @@ div#addtohome {
 	bottom: 0px;
 	left: 0px;
 	width: 100%;
-	display:none;
 }
 
 div#addtohomemessage {
@@ -116,7 +115,7 @@ div#addtohomemessage {
     border-radius: 15px;
 	border: 1px gray solid;
 	margin: auto;
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
 	box-shadow: 0 1px 1px #ddd, 0 1px 1px #555;
 	width: 214px;
 }
@@ -211,6 +210,46 @@ div.bold {
 
 div.showlist {
 	margin: auto;
+}
+
+div.help {
+    position: fixed;
+    width: 100%;
+	font-family: 'The Girl Next Door', cursive;
+}
+
+div.help div.rightheader {
+	position: fixed;
+	top: 48px;
+	right: 10px;
+	float: right;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
+	box-shadow: 5px 5px 5px #888888;
+	padding: 10px;
+}
+
+div.help div.leftheader {
+	position: fixed;
+	top: 48px;
+	left: 10px;
+	float: left;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
+	box-shadow: 5px 5px 5px #888888;
+	padding: 10px;
+}
+
+div.leftheader div.helptext {
+	padding-left: 20px;
+}
+
+div.help div.centerhelp {
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 150%;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
+	box-shadow: 5px 5px 5px #888888;
+	padding: 10px;
+
 }
 
 
@@ -650,6 +689,33 @@ textarea[contenteditable] {
 		border-right: 1px gray solid;
 	}
 }
+
+@media only screen and (min-width: 825px) {
+	div.centerhelp {
+		margin-top: 100px;
+		width: 40%;
+	}
+	div.help div.rightheader {
+	    width: 25%;
+	}
+	div.help div.leftheader {
+	    width: 25%;
+	}
+}
+@media only screen and (max-width: 825px) {
+	div.centerhelp {
+		margin-top: 218px;
+		width: 80%;
+	}
+	div.help div.rightheader {
+	    width: 40%;
+	}
+	div.help div.leftheader {
+	    width: 40%;
+	}
+}
+
+	
 
 
 

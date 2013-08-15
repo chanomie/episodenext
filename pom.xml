@@ -116,6 +116,23 @@
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.target.version}</version>
             </plugin>
+	      <plugin>
+	        <groupId>net.alchim31.maven</groupId>
+	        <artifactId>yuicompressor-maven-plugin</artifactId>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>compress</goal>
+	            </goals>
+	          </execution>
+	        </executions>        
+            <configuration>
+              <nosuffix>true</nosuffix>
+              <excludes>
+                <exclude>**/*min.js</exclude>
+              </excludes>
+           </configuration>
+	      </plugin>            
         </plugins>
     </build>
     <repositories>
