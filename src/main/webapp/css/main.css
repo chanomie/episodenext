@@ -208,12 +208,17 @@ div.bold {
   font-size: 14pt;
 }
 
+div#unwatchedShowList {
+  margin-top: 2px;
+}
+
 div.showlist {
 	margin: auto;
 }
 
 div.help {
     position: fixed;
+    top: 45px;
     width: 100%;
 	font-family: 'The Girl Next Door', cursive;
 }
@@ -227,6 +232,11 @@ div.help div.rightheader {
 	box-shadow: 5px 5px 5px #888888;
 	padding: 10px;
 }
+
+div.rightheader div.helptext {
+	padding-right: 15px;
+}
+
 
 div.help div.leftheader {
 	position: fixed;
@@ -692,7 +702,7 @@ textarea[contenteditable] {
 
 @media only screen and (min-width: 825px) {
 	div.centerhelp {
-		margin-top: 100px;
+		margin-top: 20px;
 		width: 40%;
 	}
 	div.help div.rightheader {
@@ -704,7 +714,7 @@ textarea[contenteditable] {
 }
 @media only screen and (max-width: 825px) {
 	div.centerhelp {
-		margin-top: 218px;
+		margin-top: 190px;
 		width: 80%;
 	}
 	div.help div.rightheader {

@@ -159,7 +159,13 @@ $(document).ready(function() {
 		});
 	}
   
-  
+  checkPopupFloaters();
+  updateSyncDisplay();
+  buildMainScreenFromCache();
+  stopspin();
+});
+
+function checkPopupFloaters() {
   if(getSeriesList()==null || getSeriesList().length == 0) {
 	  $(".help").show();
   } else {
@@ -172,10 +178,8 @@ $(document).ready(function() {
 		$("#addtohome").slideDown('slow');	  
 	  }
   }
-  updateSyncDisplay();
-  buildMainScreenFromCache();
-  stopspin();
-});
+
+}
 
 function updateSyncDisplay() {
    var today = new Date();
@@ -838,7 +842,7 @@ function playedEpisode() {
 }
 
 function addShowToSeriesList(seriesId) {
-    $(".help").hide();
+    checkPopupFloaters();
 	var seriesList = getSeriesList();
 	seriesList.push(seriesId);
 	saveSeriesList(seriesList);
@@ -1034,6 +1038,7 @@ function syncDropboxComplete() {
 	localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
 	updateSyncDisplay();
     stopspin();
+    checkPopupFloaters();
 	isDropboxSyncing = false;
 }
 
