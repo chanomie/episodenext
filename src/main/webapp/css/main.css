@@ -80,6 +80,8 @@ textarea {
 
 div.page {
 	/* min-height: 460px; */
+	margin-top: 44px;
+	
 }
 
 /*
@@ -136,6 +138,9 @@ div#addtohomemessage .appicon {
 div.header {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
 	background: -moz-linear-gradient(top,  #BCCADB,  #587396);
+	position: fixed;
+	top: 0;
+	width: 100%;
 	height: 44px;
 }
 
@@ -150,6 +155,8 @@ div.header div.title {
     font-size: 14pt;
     font-weight: 300; 
     text-align: center;
+	margin-right: 50px;
+	margin-left: 50px;    
 }
 
 div.rightheaderbutton {
