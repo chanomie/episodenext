@@ -139,6 +139,7 @@ div.header {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #BCCADB), color-stop(1, #587396));
 	background: -moz-linear-gradient(top,  #BCCADB,  #587396);
 	position: fixed;
+    z-index: 900;
 	top: 0;
 	width: 100%; 
 	height: 44px;
