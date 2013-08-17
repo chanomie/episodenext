@@ -152,7 +152,7 @@ $(document).ready(function() {
 			console.log("Dropbox Authenticated");
 			seriesListTable = datastore.getTable('seriesListTable');
 			watchedEpisodesTable = datastore.getTable('watchedEpisodesTable');
-			checkAndSync();
+			setTimeout(checkAndSync,3000);
 
 			// Ensure that future changes update the list.
 			// datastore.recordsChanged.addListener(updateList);
