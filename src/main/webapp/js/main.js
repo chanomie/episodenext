@@ -25,6 +25,7 @@ var seriesListTable;
 var watchedEpisodesTable;
 
 var TheTbDbUrlBase = "http://thetvdb.com";
+var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
@@ -364,7 +365,7 @@ function searchDisplayShowSuccess(data, status) {
   var seriesName = $(data).find("Data Series SeriesName").text();
   var firstAiredDate = $(data).find("Data Series FirstAired").text(); 
   var overview = $(data).find("Data Series Overview").text(); 
-  var bannersrc = TheTbDbUrlBase + "/banners/" + $(data).find("Data Series banner").text();  
+  var bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
   console.log("Updating image show detail: " + seriesName);
 
   $("#addbannerimage").attr("src",bannersrc);
@@ -599,7 +600,7 @@ function seriesDisplayShowSuccess(data, status) {
   var seriesName = $(data).find("Data Series SeriesName").text();
   var firstAiredDate = $(data).find("Data Series FirstAired").text(); 
   var overview = $(data).find("Data Series Overview").text(); 
-  var bannersrc = TheTbDbUrlBase + "/banners/" + $(data).find("Data Series banner").text();  
+  var bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
   $("#seasonlist").empty();
   $("#viewbannerimage").attr("src",bannersrc);
   $("#viewshowtitle").html(seriesName);
@@ -1078,7 +1079,7 @@ function recacheSeries() {
 				  newSeries["overview"] = newSeries["overview"].substr(0,200) + "...";
 			  }
 			  
-			  newSeries["bannersrc"] = TheTbDbUrlBase + "/banners/" + $(data).find("Data Series banner").text();
+			  newSeries["bannersrc"] = bannerUrl + $(data).find("Data Series banner").text();
 			  seriesListCache[seriesId] = newSeries;
 			  var oldestUnwatchedEpisode = undefined;
 		      
@@ -1103,7 +1104,7 @@ function recacheSeries() {
 							  oldestUnwatchedEpisode["EpisodeNumber"] = $(this).find("EpisodeNumber").text();
 							  oldestUnwatchedEpisode["SeasonNumber"] = $(this).find("SeasonNumber").text();
 							  oldestUnwatchedEpisode["bannersrc"] = newSeries["bannersrc"];
-							  oldestUnwatchedEpisode["EpisodeImage"] = TheTbDbUrlBase + "/banners/" + $(this).find("filename").text();
+							  oldestUnwatchedEpisode["EpisodeImage"] = bannerUrl+ $(this).find("filename").text();
 							  oldestUnwatchedEpisode["Overview"] = $(this).find("Overview").text();
 							  if( oldestUnwatchedEpisode["Overview"].length > 200 ) {
 								  oldestUnwatchedEpisode["Overview"] = oldestUnwatchedEpisode["Overview"].substr(0,200) + "...";

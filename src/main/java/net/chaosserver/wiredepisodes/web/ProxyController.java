@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.servlet.HandlerMapping;
 
 @Controller
 @RequestMapping(value="/api")
@@ -58,6 +59,9 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
+   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
+		   response.addHeader("Expires", connection.getHeaderField("Expires"));
+		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
@@ -75,7 +79,7 @@ public class ProxyController {
 	       writer.close();
 	   }
 	   
-	   @RequestMapping(value="/{seriesId}", method = RequestMethod.GET)
+	   @RequestMapping(value="/{seriesId}", method = { RequestMethod.GET })
 	   public void getSeriesDetails(
 			   @PathVariable String seriesId,
 			   HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -88,6 +92,9 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
+   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
+		   response.addHeader("Expires", connection.getHeaderField("Expires"));
+		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
@@ -120,6 +127,9 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
+   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
+		   response.addHeader("Expires", connection.getHeaderField("Expires"));
+		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
@@ -135,7 +145,42 @@ public class ProxyController {
 		   // writer.write(method.getResponseBodyAsString());
 	       writer.flush();
 	       writer.close();
-		   
 	   }
+
+	   @RequestMapping(value="/banners/**", method = {RequestMethod.GET,RequestMethod.HEAD})
+	   public void getAllSeriesDetails(
+			   HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+	       String path = (String) request.getAttribute(
+            HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+            
+           String method = request.getMethod(); 
+           path = path.replaceAll("/api", "http://thetvdb.com");
+		   URL url = new URL(path);
+		   HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		   connection.setRequestMethod(method);
+		   connection.connect();
+		   response.setContentType(connection.getContentType());
+   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
+		   response.addHeader("Expires", connection.getHeaderField("Expires"));
+		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+
+		   
+		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
+		   BufferedOutputStream writer =
+		            new BufferedOutputStream(response.getOutputStream());
+	       
+		   
+		   byte[] buffer = new byte[1024];
+		   int len;
+		   while ((len = reader.read(buffer)) != -1) {
+			   writer.write(buffer, 0, len);
+		   }
+		   
+	       writer.flush();
+	       writer.close();
+	   }
+	   
+	   
 	   
 }
