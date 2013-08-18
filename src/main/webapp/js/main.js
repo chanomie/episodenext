@@ -31,6 +31,7 @@ var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
+var timeoutDelay = 0;
 var settings;
 
 
@@ -572,10 +573,6 @@ function buildMainScreenFromCache() {
 		$(".facebookButton").click(facebookShare);
 	}
 	stopspin();
-
-	var stop = new Date();
-	console.log("build screen end: " + stop.toLocaleString());
-	console.log("build screen Total time: " + (stop-start)/1000);
 }
 
 function deleteSeriesButton() {
@@ -713,7 +710,7 @@ function watchSeason() {
 		console.log("Watched: " + watchedEpisodeKey);
 		if(!(watchedEpisodeKey in watchedEpisodes)) {
 		  dirty = true;
-		  watchedEpisodes[watchedEpisodeKey] = true;
+		  watchedEpisodes[watchedEpisodeKey] = (new Date()).getTime();
 		  $(this).find("i.toggleWatched").each(function(i) {
 		    $(this).removeClass("icon-play-sign");
 		    $(this).addClass("icon-eye-close");
@@ -765,7 +762,7 @@ function toggleWatchShow() {
 	if($(this).hasClass("icon-play-sign")) {
 		$(this).removeClass("icon-play-sign");
 		$(this).addClass("icon-eye-close");
-		watchedEpisodes[watchedkey] = true;
+		watchedEpisodes[watchedkey] = (new Date()).getTime();
 		saveWatchedEpisodes(watchedEpisodes);
 	} else {
 		$(this).removeClass("icon-eye-close");
@@ -824,7 +821,7 @@ function facebookPlayedEpisode() {
       } else {
         console.log('Post ID: ' + response.id);
 		var watchedEpisodes = getWatchedEpisodes();
-		watchedEpisodes[episodeKey] = true;
+		watchedEpisodes[episodeKey] = (new Date()).getTime();
 		saveWatchedEpisodes(watchedEpisodes);	
         $.modal.close();
       }
@@ -838,7 +835,7 @@ function playedEpisode() {
 	var episodeKey = seriesId + "-" + episodeId;
 
 	var watchedEpisodes = getWatchedEpisodes();
-	watchedEpisodes[episodeKey] = true;
+	watchedEpisodes[episodeKey] = (new Date()).getTime();
 	saveWatchedEpisodes(watchedEpisodes);
 }
 
@@ -951,7 +948,8 @@ function syncDropbox() {
 	  localDirty = false;
 	  syncKeyArray = Object.keys(watchedEpisodesSync);
 	  syncKeyIndex = 0;
-	  setTimeout(syncWatchedEpisodesToDropbox,0);
+	  
+	  (syncWatchedEpisodesToDropbox,timeoutDelay);
     }
 }
 
@@ -962,12 +960,12 @@ function syncWatchedEpisodesToDropbox() {
 	  if(results === null || results.length === 0) {
 	      watchedEpisodesTable.insert({"episodeKey": episodeKey});
 	  }	  
-	  setTimeout(syncWatchedEpisodesToDropbox,0);	  
+	  setTimeout(syncWatchedEpisodesToDropbox,timeoutDelay);
   } else {
       console.log("All done syncing episodes.");
       syncKeyArray = getSeriesList();
       syncKeyIndex = 0;
-      setTimeout(syncSeriesToDropbox, 0);
+      setTimeout(syncSeriesToDropbox, timeoutDelay);
   }
 }
 
@@ -978,12 +976,12 @@ function syncSeriesToDropbox() {
 	  if(results === null || results.length === 0) {
 	        seriesListTable.insert({"seriesId": seriesKey});
 	  }
-	  setTimeout(syncSeriesToDropbox,0);	  
+	  setTimeout(syncSeriesToDropbox,timeoutDelay);
   } else {
       console.log("All done syncing series.");
       dropboxTableResult = watchedEpisodesTable.query();
       syncKeyIndex = 0;
-      setTimeout(syncWatchedEpisodesFromDropbox,0);
+      setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
   }
 }
 
@@ -991,15 +989,15 @@ function syncWatchedEpisodesFromDropbox() {
 	if(syncKeyIndex < dropboxTableResult.length) {
 		var episodeKey = dropboxTableResult[syncKeyIndex++].get("episodeKey");
 		if(episodeKey !== null && !(episodeKey in watchedEpisodesSync)) {
-			watchedEpisodesSync[episodeKey] = true;
+			watchedEpisodesSync[episodeKey] = (new Date()).getTime();
 			localDirty = true;
 		}
-		setTimeout(syncWatchedEpisodesFromDropbox,0);
+		setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
 	} else {
       console.log("All done syncing episodes from dropbox.");
       dropboxTableResult = seriesListTable.query();
       syncKeyIndex = 0;
-      setTimeout(syncSeriesFromDropbox,0);
+      setTimeout(syncSeriesFromDropbox,timeoutDelay);
 	}
 }
 
@@ -1021,10 +1019,10 @@ function syncSeriesFromDropbox() {
 				localDirty = true;
 			}
 		}
-		setTimeout(syncSeriesFromDropbox,0);
+		setTimeout(syncSeriesFromDropbox,timeoutDelay);
 	} else {
       console.log("All done syncing series from dropbox.");
-      setTimeout(syncDropboxComplete,0);
+      setTimeout(syncDropboxComplete,timeoutDelay);
 	}
 }
 
@@ -1056,7 +1054,7 @@ function recache() {
 		nextEpisodeCache = {};
 		seriesListCache = {};
 		seriesListIndex = 0;
-	    setTimeout(recacheSeries, 0);
+	    setTimeout(recacheSeries, timeoutDelay);
     }
 }
 
@@ -1119,7 +1117,7 @@ function recacheSeries() {
 				  nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
 			  }
 		  }});
-		  setTimeout(recacheSeries, 0);
+		  setTimeout(recacheSeries, timeoutDelay);
 	} else {
 		localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
 		localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));

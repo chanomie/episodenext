@@ -218,10 +218,18 @@ div.bold {
 
 div#unwatchedShowList {
   margin-top: 2px;
+  padding-bottom: 20px;
 }
 
 div.showlist {
 	margin: auto;
+}
+
+div#adbar {
+	margin-top: -10px;
+	border-top: solid 
+	gray 1px;
+	padding-top: 20px;
 }
 
 div.help {
@@ -272,7 +280,7 @@ div.help div.centerhelp {
 
 
 form#addshowform {
-    margin-top: 10px;
+    padding-top: 10px;
     padding-bottom: 10px;
 	text-align: center;
 	border-bottom: 1px solid black;
