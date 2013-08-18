@@ -59,9 +59,20 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
-   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
-		   response.addHeader("Expires", connection.getHeaderField("Expires"));
-		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+		   
+		   // Handle Cache Headers
+		   String lastModifiedHeader = connection.getHeaderField("Last-Modified");
+		   String expiresHeader = connection.getHeaderField("Expires");
+		   String cacheControlHeader = connection.getHeaderField("Cache-Control");
+		   if(lastModifiedHeader != null) {
+	   		   response.addHeader("Last-Modified", lastModifiedHeader);
+   		   }
+   		   if(expiresHeader != null) {
+			   response.addHeader("Expires", expiresHeader);
+   		   }
+   		   if(cacheControlHeader != null) {
+			   response.addHeader("Cache-Control", cacheControlHeader);
+   		   }
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
@@ -92,9 +103,20 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
-   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
-		   response.addHeader("Expires", connection.getHeaderField("Expires"));
-		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+
+		   // Handle Cache Headers
+		   String lastModifiedHeader = connection.getHeaderField("Last-Modified");
+		   String expiresHeader = connection.getHeaderField("Expires");
+		   String cacheControlHeader = connection.getHeaderField("Cache-Control");
+		   if(lastModifiedHeader != null) {
+	   		   response.addHeader("Last-Modified", lastModifiedHeader);
+   		   }
+   		   if(expiresHeader != null) {
+			   response.addHeader("Expires", expiresHeader);
+   		   }
+   		   if(cacheControlHeader != null) {
+			   response.addHeader("Cache-Control", cacheControlHeader);
+   		   }
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
@@ -127,9 +149,20 @@ public class ProxyController {
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
-   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
-		   response.addHeader("Expires", connection.getHeaderField("Expires"));
-		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+		   
+		   // Handle Cache Headers
+		   String lastModifiedHeader = connection.getHeaderField("Last-Modified");
+		   String expiresHeader = connection.getHeaderField("Expires");
+		   String cacheControlHeader = connection.getHeaderField("Cache-Control");
+		   if(lastModifiedHeader != null) {
+	   		   response.addHeader("Last-Modified", lastModifiedHeader);
+   		   }
+   		   if(expiresHeader != null) {
+			   response.addHeader("Expires", expiresHeader);
+   		   }
+   		   if(cacheControlHeader != null) {
+			   response.addHeader("Cache-Control", cacheControlHeader);
+   		   }
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
 		   BufferedOutputStream writer =
