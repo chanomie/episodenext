@@ -938,10 +938,13 @@ var syncKeyIndex;
 var watchedEpisodesSync;
 var seriesListSync;
 var localDirty;
+var dropBoxSyncStart = new Date();
 
 function syncDropbox() {
     if(!isDropboxSyncing && client.isAuthenticated()) {
 	  spin();
+	  var dropBoxSyncStart = new Date();
+      console.log("Starting Dropbox Sync: " + dropBoxSyncStart.toLocaleString());
       isDropboxSyncing = true;
   	  watchedEpisodesSync = getWatchedEpisodes();
 	  seriesListSync = getSeriesList();
@@ -949,7 +952,8 @@ function syncDropbox() {
 	  syncKeyArray = Object.keys(watchedEpisodesSync);
 	  syncKeyIndex = 0;
 	  
-	  (syncWatchedEpisodesToDropbox,timeoutDelay);
+	  setTimeout(syncWatchedEpisodesToDropbox,timeoutDelay);
+      console.log("Kicking off syncWatchedEpisodesToDropbox: " + ((new Date() - dropBoxSyncStart)/1000));	  
     }
 }
 

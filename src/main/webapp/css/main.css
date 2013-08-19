@@ -236,6 +236,7 @@ div.help {
     position: fixed;
     top: 45px;
     width: 100%;
+    z-index: 900;
 	font-family: 'The Girl Next Door', cursive;
 }
 
