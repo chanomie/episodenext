@@ -32,6 +32,7 @@ var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
 var timeoutDelay = 0;
+var slowTimeoutDelay = 0;
 var settings;
 
 
@@ -993,12 +994,76 @@ function syncDropbox() {
   	  watchedEpisodesSync = getWatchedEpisodes();
 	  seriesListSync = getSeriesList();
 	  localDirty = false;
-	  syncKeyArray = Object.keys(watchedEpisodesSync);
-	  syncKeyIndex = 0;
-	  setTimeout(syncWatchedEpisodesToDropbox,timeoutDelay);
-      console.log("Kicking off syncWatchedEpisodesToDropbox: " + ((new Date() - dropBoxSyncStart)/1000));	  
+      
+      // Setup to Sync Watched Episodes From Dropbox
+      dropboxTableResult = watchedEpisodesTable.query();
+      syncKeyIndex = 0;
+      setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
+
     }
 }
+
+function syncWatchedEpisodesFromDropbox() {
+	if(syncKeyIndex < dropboxTableResult.length) {
+		var episodeKey = dropboxTableResult[syncKeyIndex].get("episodeKey");
+		var dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
+		if(dropboxUpdated == null) {
+			console.log("No updated time in dropbox, updated for " + episodeKey + ": " + ((new Date() - dropBoxSyncStart)/1000));
+			dropboxUpdated = 0;
+			dropboxTableResult[syncKeyIndex].set("updated",dropboxUpdated);
+			console.log("Dropbox updated done for " + episodeKey + ": " + ((new Date() - dropBoxSyncStart)/1000));
+		}
+		
+		if(episodeKey !== null && !(episodeKey in watchedEpisodesSync)) {
+			console.log("Added local key " + episodeKey + ": " + ((new Date() - dropBoxSyncStart)/1000));
+			watchedEpisodesSync[episodeKey] = dropboxUpdated;
+			localDirty = true;
+		}
+		syncKeyIndex++;
+		setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
+	} else {
+      console.log("All done syncing episodes from dropbox." + ((new Date() - dropBoxSyncStart)/1000));
+      
+      // Setup to Sync Series from Dropbox
+      dropboxTableResult = seriesListTable.query();
+      syncKeyIndex = 0;
+      setTimeout(syncSeriesFromDropbox,timeoutDelay);
+	}
+}
+
+
+function syncSeriesFromDropbox() {
+	if(syncKeyIndex < dropboxTableResult.length) {
+		var seriesId = dropboxTableResult[syncKeyIndex].get("seriesId");
+		var dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
+		if(dropboxUpdated == null) {
+			dropboxUpdated = 0;
+			dropboxTableResult[syncKeyIndex].set("updated",dropboxUpdated);
+		}
+
+		if(seriesId !== null && !(seriesId in seriesListSync)) {
+			seriesListSync[seriesId] = dropboxUpdated;
+			localDirty = true;
+		}
+		syncKeyIndex++;
+		setTimeout(syncSeriesFromDropbox,timeoutDelay);
+	} else {
+      console.log("All done syncing series from dropbox." + ((new Date() - dropBoxSyncStart)/1000));
+		if(localDirty === true) {
+			console.log("Local is dirty, so recache." + ((new Date() - dropBoxSyncStart)/1000));
+			saveWatchedEpisodes(watchedEpisodesSync);
+			saveSeriesList(seriesListSync);
+			localDirty = false;
+			recache();
+		}
+
+	  // Setup to Sync Watched Episodes to Dropbox
+	  syncKeyArray = Object.keys(watchedEpisodesSync);
+	  syncKeyIndex = 0;
+	  setTimeout(syncWatchedEpisodesToDropbox,slowTimeoutDelay);      
+   	}
+}
+
 
 function syncWatchedEpisodesToDropbox() {  
   if(syncKeyIndex < syncKeyArray.length) {
@@ -1006,14 +1071,21 @@ function syncWatchedEpisodesToDropbox() {
 	  var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
 	  if(results === null || results.length === 0) {
 	      var episodeValue = watchedEpisodesSync[episodeKey];
+	      if(episodeValue == null) {
+		      episodeValue = 0;
+		      watchedEpisodesSync[episodeKey] = episodeValue;
+		      localDirty = true;
+	      }
 	      watchedEpisodesTable.insert({"episodeKey": episodeKey, "updated": episodeValue});
 	  }	  
-	  setTimeout(syncWatchedEpisodesToDropbox,timeoutDelay);
+	  setTimeout(syncWatchedEpisodesToDropbox,slowTimeoutDelay);
   } else {
-      console.log("All done syncing episodes." + ((new Date() - dropBoxSyncStart)/1000));
+      console.log("All done syncing episodes to Dropbox." + ((new Date() - dropBoxSyncStart)/1000));
+      
+      // Set to Sync Series to Dropbox
       syncKeyArray = Object.keys(getSeriesList());
       syncKeyIndex = 0;
-      setTimeout(syncSeriesToDropbox, timeoutDelay);
+      setTimeout(syncSeriesToDropbox, slowTimeoutDelay);
   }
 }
 
@@ -1023,54 +1095,21 @@ function syncSeriesToDropbox() {
   	  var results = seriesListTable.query({"seriesId": seriesKey}); 
 	  if(results === null || results.length === 0) {
 	        var seriesValue = seriesListSync[seriesKey];
+			if(seriesValue == null) {
+				seriesValue = 0;
+				seriesListSync[seriesKey] = seriesValue;
+				localDirty = true;
+			}
 	        seriesListTable.insert({"seriesId": seriesKey, "updated": seriesValue});
 	  }
-	  setTimeout(syncSeriesToDropbox,timeoutDelay);
+	  setTimeout(syncSeriesToDropbox,slowTimeoutDelay);
   } else {
       console.log("All done syncing series." + ((new Date() - dropBoxSyncStart)/1000));
-      dropboxTableResult = watchedEpisodesTable.query();
-      syncKeyIndex = 0;
-      setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
+      setTimeout(syncDropboxComplete,slowTimeoutDelay);
   }
 }
 
-function syncWatchedEpisodesFromDropbox() {
-	if(syncKeyIndex < dropboxTableResult.length) {
-		var episodeKey = dropboxTableResult[syncKeyIndex++].get("episodeKey");
-		if(episodeKey !== null && !(episodeKey in watchedEpisodesSync)) {
-			watchedEpisodesSync[episodeKey] = (new Date()).getTime(); // TODO: pull from dropbox
-			localDirty = true;
-		}
-		setTimeout(syncWatchedEpisodesFromDropbox,timeoutDelay);
-	} else {
-      console.log("All done syncing episodes from dropbox." + ((new Date() - dropBoxSyncStart)/1000));
-      dropboxTableResult = seriesListTable.query();
-      syncKeyIndex = 0;
-      setTimeout(syncSeriesFromDropbox,timeoutDelay);
-	}
-}
-
-function syncSeriesFromDropbox() {
-	if(syncKeyIndex < dropboxTableResult.length) {
-		var seriesId = dropboxTableResult[syncKeyIndex++].get("seriesId");
-		if(seriesId !== null && !(seriesId in seriesListSync)) {
-			seriesListSync[seriesId] = (new Date()).getTime(); // TODO: pull from dropbox
-			localDirty = true;
-		}
-		setTimeout(syncSeriesFromDropbox,timeoutDelay);
-	} else {
-      console.log("All done syncing series from dropbox." + ((new Date() - dropBoxSyncStart)/1000));
-      setTimeout(syncDropboxComplete,timeoutDelay);
-	}
-}
-
 function syncDropboxComplete() {
-	if(localDirty === true) {
-		saveWatchedEpisodes(watchedEpisodesSync);
-		saveSeriesList(seriesListSync);
-		recache();
-	}
-
 	var lastDropboxSync = new Date();
 	localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
 	updateSyncDisplay();
