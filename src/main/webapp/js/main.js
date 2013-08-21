@@ -18,9 +18,12 @@
 
 // Insert your Dropbox app key here:
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
+var GOOGLE_APP_KEY = 'AIzaSyALM0mpfNZ8MIo6fXwEL6hLVgedhHf7dbQ';
+var GOOGLE_CLIENT_ID = '602380090235.apps.googleusercontent.com';
 
 // Exposed for easy access in the browser console.
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
+
 var seriesListTable;
 var watchedEpisodesTable;
 
@@ -132,16 +135,17 @@ $(document).ready(function() {
     client.authenticate();
   });
   $('#dropboxLogoutButton').click(logoutDropbox);
+  $("#googleLoginButton").click(loginGoogle);
   $("#thetvdbsync").click(recache);
   $("#dropboxsync").change(changeSyncFrequency);
   $("#tvdbsync").change(changeSyncFrequency);
 
-  client.authenticate({interactive:false}, function (error) {
-	if (error) {
-		alert('Authentication error: ' + error);
-    }
-  });
-
+  	// Dropbox Authentications
+	client.authenticate({interactive:false}, function (error) {
+		if (error) {
+			alert('Authentication error: ' + error);
+		}
+	});
 	if (client.isAuthenticated()) {
 		// Client is authenticated. Display UI.
 		$('#dropboxlogin').hide();
@@ -161,12 +165,31 @@ $(document).ready(function() {
 			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
-  
-  checkPopupFloaters();
-  updateSyncDisplay();
-  buildMainScreenFromCache();
-  stopspin();
+	  
+	checkPopupFloaters();
+	updateSyncDisplay();
+	buildMainScreenFromCache();
+	stopspin();
 });
+
+function OnGoogleLoad() {
+	console.log("loading gapi");
+	gapi.client.setApiKey(GOOGLE_APP_KEY);
+	// Google Authentication
+	console.log("calling gapi auth");
+	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: "https://www.googleapis.com/auth/plus.me", immediate: true}, googleAuthResult);
+}
+
+function loginGoogle() {
+	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: "https://www.googleapis.com/auth/plus.me", immediate: false}, googleAuthResult);
+}
+
+function googleAuthResult(authResult) {
+	if (authResult && !authResult.error) {
+		$('#googlelogin').hide();
+		$("#googlelogout").show();
+	}	
+}
 
 function checkPopupFloaters() {
   var seriesMap = getSeriesList();
