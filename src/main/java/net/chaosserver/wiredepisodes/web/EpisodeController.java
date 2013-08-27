@@ -59,6 +59,8 @@ public class EpisodeController {
 		   if(series != null) {
 			   if(userAgent != null && userAgent.contains("facebookexternalhit") 
 					   || Boolean.parseBoolean(ignoreUA)) {
+					   
+			     resultView = "series/view";
 			   } else {
 				   resultView = "redirect:" + showInformation.getSeriesUrl(series);;
 			   }

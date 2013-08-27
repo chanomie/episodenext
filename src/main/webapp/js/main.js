@@ -20,9 +20,11 @@
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
 var GOOGLE_APP_KEY = 'AIzaSyALM0mpfNZ8MIo6fXwEL6hLVgedhHf7dbQ';
 var GOOGLE_CLIENT_ID = '602380090235.apps.googleusercontent.com';
+var GOOGLE_SCOPE = "https://www.googleapis.com/auth/userinfo.profile"
 
 // Exposed for easy access in the browser console.
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
+var googleId;
 
 var seriesListTable;
 var watchedEpisodesTable;
@@ -40,105 +42,104 @@ var settings;
 
 
 $(document).ready(function() {
-  spin();
-  $("#addshowbutton").click(function() {
-    $("#mainpage").slideUp('slow');
-    $("#searchpage").slideDown('slow');
-    $("#searchtext").focus();
+	spin();
+	$("#addshowbutton").click(function() {
+		$("#mainpage").slideUp('slow');
+		$("#searchpage").slideDown('slow');
+		$("#searchtext").focus();
+	});
 
-  });
+	$("#cancelsearch").click(function() {
+		$("#mainpage").slideDown('slow');
+		$("#searchpage").slideUp('slow');
+	});
+  
+	$("#canceladdshowpage").click(function() {
+		$("#searchpage").slideDown('slow');  
+		$("#addshowpage").slideUp('slow');
+	});
+  
+	$("#settingsbutton").click(function() {
+		updateSyncDisplay();  
+		$("#mainpage").slideUp('slow');
+		$("#settingspage").slideDown('slow');
+	});
 
-  $("#cancelsearch").click(function() {
-    $("#mainpage").slideDown('slow');
-    $("#searchpage").slideUp('slow');
-  });
+	$("#settingsdone").click(function() {
+		$("#settingspage").slideUp('slow');
+		$("#mainpage").slideDown('slow');	  
+	});
   
-  $("#canceladdshowpage").click(function() {
-	$("#searchpage").slideDown('slow');  
-	$("#addshowpage").slideUp('slow');
-  });
-  
-  $("#settingsbutton").click(function() {
-    updateSyncDisplay();  
-    $("#mainpage").slideUp('slow');
-    $("#settingspage").slideDown('slow');
-  });
+	$("#showdetailsdone").click(function() {
+		$("#showdetailspage").slideUp('slow');
+		$("#mainpage").slideDown('slow');	  
+	});
 
-  $("#settingsdone").click(function() {
-    $("#settingspage").slideUp('slow');
-    $("#mainpage").slideDown('slow');	  
-  });
+	$("#showaboutthetvdb").click(function(){
+		$("#settingspage").slideUp('slow');
+		$("#aboutthetvdb").slideDown('slow');	  	  
+	});
   
-  $("#showdetailsdone").click(function() {
-    $("#showdetailspage").slideUp('slow');
-    $("#mainpage").slideDown('slow');	  
-  });
+	$("#aboutthetvdbback").click(function(){
+		$("#aboutthetvdb").slideUp('slow');
+		$("#settingspage").slideDown('slow');	  	  
+	});
+  
+	$("#allshowsseasonbar").click(function() {
+		if($(this).attr("data-status") == "hidden") {
+		   	$(this).attr("data-status","shown");
+		   	$("#allshowsexpander").removeClass("icon-expand");
+		   	$("#allshowsexpander").addClass("icon-collapse");
+		   	$("#showlist").show();
+			$(document.body).animate({
+			    'scrollTop': $('#allshowsseasonbar').offset().top
+			}, 1000);	   	
+		} else {
+		   	$(this).attr("data-status","hidden");
+		   	$("#allshowsexpander").removeClass("icon-collapse");
+		   	$("#allshowsexpander").addClass("icon-expand");
+		   	$("#showlist").hide();
+		 }
+	});
 
-  $("#showaboutthetvdb").click(function(){
-    $("#settingspage").slideUp('slow');
-    $("#aboutthetvdb").slideDown('slow');	  	  
-  });
-  
-  $("#aboutthetvdbback").click(function(){
-    $("#aboutthetvdb").slideUp('slow');
-    $("#settingspage").slideDown('slow');	  	  
-  });
-  
-  $("#allshowsseasonbar").click(function() {
-	 if($(this).attr("data-status") == "hidden") {
-	   	$(this).attr("data-status","shown");
-	   	$("#allshowsexpander").removeClass("icon-expand");
-	   	$("#allshowsexpander").addClass("icon-collapse");
-	   	$("#showlist").show();
-		$(document.body).animate({
-		    'scrollTop': $('#allshowsseasonbar').offset().top
-		}, 1000);	   	
-	} else {
-	   	$(this).attr("data-status","hidden");
-	   	$("#allshowsexpander").removeClass("icon-collapse");
-	   	$("#allshowsexpander").addClass("icon-expand");
-	   	$("#showlist").hide();
-	 }
-  });
-
-  $("#unairedseasonbar").click(function() {
-	 if($(this).attr("data-status") == "hidden") {
-	   	$(this).attr("data-status","shown");
-	   	$("#unairedseasonexpander").removeClass("icon-expand");
-	   	$("#unairedseasonexpander").addClass("icon-collapse");
-	   	$("#unairedShowList").show();
-		$(document.body).animate({
-		    'scrollTop': $('#unairedseasonbar').offset().top
-		}, 1000);	   	
-	} else {
-	   	$(this).attr("data-status","hidden");
-	   	$("#unairedseasonexpander").removeClass("icon-collapse");
-	   	$("#unairedseasonexpander").addClass("icon-expand");
-	   	$("#unairedShowList").hide();
-	 }
-  });
+	$("#unairedseasonbar").click(function() {
+		if($(this).attr("data-status") == "hidden") {
+		   	$(this).attr("data-status","shown");
+		   	$("#unairedseasonexpander").removeClass("icon-expand");
+		   	$("#unairedseasonexpander").addClass("icon-collapse");
+		   	$("#unairedShowList").show();
+			$(document.body).animate({
+			    'scrollTop': $('#unairedseasonbar').offset().top
+			}, 1000);	   	
+		} else {
+			$(this).attr("data-status","hidden");
+			$("#unairedseasonexpander").removeClass("icon-collapse");
+			$("#unairedseasonexpander").addClass("icon-expand");
+			$("#unairedShowList").hide();
+		}
+	});
 
     
-  $("#addnewshowbutton").click(addNewShow);
-  $('#addshowform').submit(onSearch);
-  $("#recache").click(recache);
-  $("#facebookcancel").click(function() {$.modal.close()});
-  $("#facebookpost").click(facebookPlayedEpisode);
-  $("#addtohome .close").click(function() {
-	$("#addtohome").slideUp('slow');
-	localStorage.setItem("hideaddto","true");
-  });
+	$("#addnewshowbutton").click(addNewShow);
+	$('#addshowform').submit(onSearch);
+	$("#recache").click(recache);
+	$("#facebookcancel").click(function() {$.modal.close()});
+	$("#facebookpost").click(facebookPlayedEpisode);
+	$("#addtohome .close").click(function() {
+		$("#addtohome").slideUp('slow');
+		localStorage.setItem("hideaddto","true");
+	});
   
-  $("#dropboxSyncButton").click(syncDropbox);
-  $('#dropboxLoginButton').click(function (e) {
-    e.preventDefault();
-    client.authenticate();
-  });
-  $('#dropboxLogoutButton').click(logoutDropbox);
-  $("#googleLoginButton").click(loginGoogle);
-  $("#thetvdbsync").click(recache);
-  $("#dropboxsync").change(changeSyncFrequency);
-  $("#tvdbsync").change(changeSyncFrequency);
+	$("#dropboxSyncButton").click(syncDropbox);
+	$('#dropboxLoginButton').click(function (e) {
+		e.preventDefault();
+		client.authenticate();
+	});
+	$('#dropboxLogoutButton').click(logoutDropbox);
+	$("#googleLoginButton").click(loginGoogle);
+	$("#thetvdbsync").click(recache);
+	$("#dropboxsync").change(changeSyncFrequency);
+	$("#tvdbsync").change(changeSyncFrequency);
 
   	// Dropbox Authentications
 	client.authenticate({interactive:false}, function (error) {
@@ -146,6 +147,7 @@ $(document).ready(function() {
 			alert('Authentication error: ' + error);
 		}
 	});
+	
 	if (client.isAuthenticated()) {
 		// Client is authenticated. Display UI.
 		$('#dropboxlogin').hide();
@@ -177,17 +179,23 @@ function OnGoogleLoad() {
 	gapi.client.setApiKey(GOOGLE_APP_KEY);
 	// Google Authentication
 	console.log("calling gapi auth");
-	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: "https://www.googleapis.com/auth/plus.me", immediate: true}, googleAuthResult);
+	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: GOOGLE_SCOPE, immediate: true}, googleAuthResult);
 }
 
 function loginGoogle() {
-	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: "https://www.googleapis.com/auth/plus.me", immediate: false}, googleAuthResult);
+	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: GOOGLE_SCOPE, immediate: false}, googleAuthResult);
 }
 
 function googleAuthResult(authResult) {
 	if (authResult && !authResult.error) {
 		$('#googlelogin').hide();
 		$("#googlelogout").show();
+		
+		gapi.client.load('oauth2', 'v2', function() {
+		  gapi.client.oauth2.userinfo.get().execute(function(resp) {
+		    googleId = resp.id;
+		  })
+		});
 	}	
 }
 
