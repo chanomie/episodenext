@@ -18,13 +18,9 @@
 
 // Insert your Dropbox app key here:
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
-var GOOGLE_APP_KEY = 'AIzaSyALM0mpfNZ8MIo6fXwEL6hLVgedhHf7dbQ';
-var GOOGLE_CLIENT_ID = '602380090235.apps.googleusercontent.com';
-var GOOGLE_SCOPE = "https://www.googleapis.com/auth/userinfo.profile"
 
 // Exposed for easy access in the browser console.
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
-var googleId;
 
 var seriesListTable;
 var watchedEpisodesTable;
@@ -34,6 +30,7 @@ var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
+var googleRootUrl = "http://localhost:8080/api/v1/google"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
 var timeoutDelay = 0;
@@ -167,6 +164,8 @@ $(document).ready(function() {
 			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
+	
+	checkGoogleAuth();
 	  
 	checkPopupFloaters();
 	updateSyncDisplay();
@@ -174,29 +173,32 @@ $(document).ready(function() {
 	stopspin();
 });
 
-function OnGoogleLoad() {
-	console.log("loading gapi");
-	gapi.client.setApiKey(GOOGLE_APP_KEY);
-	// Google Authentication
-	console.log("calling gapi auth");
-	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: GOOGLE_SCOPE, immediate: true}, googleAuthResult);
+function checkGoogleAuth() {
+    $.ajax({
+      url: googleRootUrl+"/status?returnPath=" + encodeURIComponent(document.location),
+      async: false,
+      success: function(data, status) {
+        if(data.googleLoginStatus == "true") {
+	        $("#googlelogin").hide();
+	        $("#googlelogout").show();
+	        $("#googlelogout").click(function() {
+		        window.location.replace(data.googleLoginUrl);
+	        })	        
+        } else {
+	        $("#googlelogin").show();
+	        $("#googlelogout").hide();
+	        $("#googlelogin").click(function() {
+		        window.location.replace(data.googleLoginUrl);
+	        })	        
+        }
+      },
+      error: genericError
+    });
+
+
 }
 
 function loginGoogle() {
-	gapi.auth.authorize({client_id: GOOGLE_CLIENT_ID, scope: GOOGLE_SCOPE, immediate: false}, googleAuthResult);
-}
-
-function googleAuthResult(authResult) {
-	if (authResult && !authResult.error) {
-		$('#googlelogin').hide();
-		$("#googlelogout").show();
-		
-		gapi.client.load('oauth2', 'v2', function() {
-		  gapi.client.oauth2.userinfo.get().execute(function(resp) {
-		    googleId = resp.id;
-		  })
-		});
-	}	
 }
 
 function checkPopupFloaters() {

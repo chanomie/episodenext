@@ -17,6 +17,10 @@
  */
 package net.chaosserver.wiredepisodes.web;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.users.UserService;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -28,6 +32,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.security.Principal;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +47,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
 @Controller
@@ -47,6 +55,34 @@ import org.springframework.web.servlet.HandlerMapping;
 public class ProxyController {
 	   @Autowired
 	   private ShowInformation showInformation;
+
+	   @RequestMapping(value="/v1/google/status")
+		public @ResponseBody Map<String,String> getGoogleStatus(
+				HttpServletRequest request, 
+				HttpServletResponse response,
+				Principal principal,
+				@RequestParam(value="returnPath", required=false) String returnPath
+			) {
+		   	
+		   response.addHeader("Access-Control-Allow-Origin", "*");
+		   response.addHeader("Access-Control-Allow-Methods", "POST, GET");
+
+	       String thisURL = returnPath != null ? returnPath : request.getRequestURI();
+	       UserService userService = UserServiceFactory.getUserService();
+	       
+	       Map<String,String> urlMap = new HashMap<String,String>();
+	       urlMap.put("googleLogoutUrl", userService.createLogoutURL(thisURL));
+	       urlMap.put("googleLoginUrl", userService.createLoginURL(thisURL));
+	       if(principal != null) {
+		       urlMap.put("googleLoginStatus", "true");       
+	       } else {
+		       urlMap.put("googleLoginStatus", "false");
+	       }
+	       
+	       return urlMap;
+	   }
+	   
+	   
 
 	   @RequestMapping(value="/getseries")
 	   public void searchForSeries(
