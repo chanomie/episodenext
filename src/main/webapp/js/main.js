@@ -30,7 +30,7 @@ var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
-var googleRootUrl = "http://localhost:8080/api/v1/google"
+var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1/google"
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
 var timeoutDelay = 0;
