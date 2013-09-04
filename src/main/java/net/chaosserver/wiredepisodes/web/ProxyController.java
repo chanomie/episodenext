@@ -202,9 +202,11 @@ public class ProxyController {
 		   connection.setRequestMethod(method);
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
-   		   response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
-		   response.addHeader("Expires", connection.getHeaderField("Expires"));
-		   response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+   		   // response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
+		   // response.addHeader("Expires", connection.getHeaderField("Expires"));
+		   // response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
+		   // Just set a cache header to expire in 1 - year
+   		   response.addHeader("Cache-Control", connection.getHeaderField("public, max-age=31556926"));
 
 		   
 		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
