@@ -56,34 +56,6 @@ public class ProxyController {
 	   @Autowired
 	   private ShowInformation showInformation;
 
-	   @RequestMapping(value="/v1/google/status")
-		public @ResponseBody Map<String,String> getGoogleStatus(
-				HttpServletRequest request, 
-				HttpServletResponse response,
-				Principal principal,
-				@RequestParam(value="returnPath", required=false) String returnPath
-			) {
-		   	
-		   response.addHeader("Access-Control-Allow-Origin", "*");
-		   response.addHeader("Access-Control-Allow-Methods", "POST, GET");
-
-	       String thisURL = returnPath != null ? returnPath : request.getRequestURI();
-	       UserService userService = UserServiceFactory.getUserService();
-	       
-	       Map<String,String> urlMap = new HashMap<String,String>();
-	       urlMap.put("googleLogoutUrl", userService.createLogoutURL(thisURL));
-	       urlMap.put("googleLoginUrl", userService.createLoginURL(thisURL));
-	       if(principal != null) {
-		       urlMap.put("googleLoginStatus", "true");       
-	       } else {
-		       urlMap.put("googleLoginStatus", "false");
-	       }
-	       
-	       return urlMap;
-	   }
-	   
-	   
-
 	   @RequestMapping(value="/getseries")
 	   public void searchForSeries(
 			   @RequestParam(required = true, value = "seriesname") String seriesname,

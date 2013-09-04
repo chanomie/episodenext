@@ -68,7 +68,6 @@ Mark the episode as not watched.
 
 ## GET /shows/unwatched
 ### Accept-Encoding: application/json
-
 {
   {
     "id": "{seriesId}",
@@ -97,11 +96,15 @@ Mark the episode as not watched.
 }
 
 curl http://thetvdb.com/api/${thetvdbapikey}/series/205281/all/en.xml
-
 curl -A "facebookexternalhit/1.1" https://thewirewatcher.appspot.com/showdetails/73730/1/1
 
-export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+## API Testing:
+curl -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series
+curl -d seriesId=205281 -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series
+curl -X DELETE -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series/205281
 
+
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 mvn verify - verify the build
 mvn appengine:devserver - run the dev server
 mvn eclipse:eclipse

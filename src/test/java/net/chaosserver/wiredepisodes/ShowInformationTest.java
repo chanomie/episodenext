@@ -32,9 +32,12 @@ public class ShowInformationTest {
 	 @Test
 	 public void testGetShow() {
 		 ShowInformation showInformation = new ShowInformation();
-
+		 System.out.println("currenttime: " + System.currentTimeMillis());
+		 System.out.println("currenttime: " + new Date(0));
+		 
 		 Episode episode = showInformation.getEpisode("80379", 1, 1);
 		 System.out.println(episode);
 		 assertNotNull(episode);
+		 
 	 }
 }
