@@ -40,6 +40,9 @@ var settings;
 
 $(document).ready(function() {
 	spin();
+	// Update the display first!
+	buildMainScreenFromCache();
+
 	$("#addshowbutton").click(function() {
 		$("#mainpage").slideUp('slow');
 		$("#searchpage").slideDown('slow');
@@ -158,18 +161,15 @@ $(document).ready(function() {
 			console.log("Dropbox Authenticated");
 			seriesListTable = datastore.getTable('seriesListTable');
 			watchedEpisodesTable = datastore.getTable('watchedEpisodesTable');
-			setTimeout(checkAndSync,5000);
-
-			// Ensure that future changes update the list.
-			// datastore.recordsChanged.addListener(updateList);
 		});
 	}
 	
 	checkGoogleAuth();
-	  
 	checkPopupFloaters();
 	updateSyncDisplay();
-	buildMainScreenFromCache();
+	
+	// Wait 5 seconds and then check
+	setTimeout(checkAndSync,5000);
 	stopspin();
 });
 
