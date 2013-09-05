@@ -46,7 +46,26 @@ import com.google.appengine.api.datastore.KeyFactory;
 public class StorageController {
        private static final Logger log = Logger.getLogger(StorageController.class.getName());
 	   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  
+	   
+	   /** 
+	    * Create a warmpup API inside of the Spring Framework.
+	    * 
+	    * Google App Engine will take the app out of memory if nothing is hitting it, which
+	    * causes the first request to the app to take 30+ seconds.  To try and mitigate this problem
+	    * the warmup API is called directly to by the HTML on load.
+	    * 
+	    * @return
+	    */
+	   @RequestMapping(value="/v1/warmup", produces = "text/css")
+	   public String warmpup(HttpServletResponse response) {
+		   response.setContentType("text/css");
+		   response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+		   response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+		   response.setDateHeader("Expires", 0); // Proxies.
+		   return "warmup";
+	   }
+	   
+	   
 	   /**
 	    * This method is used to determine the authentication status of the user.  It will
 	    * also return the paths for the login and logout URL
