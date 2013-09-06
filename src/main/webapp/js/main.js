@@ -18,6 +18,7 @@
 
 // Insert your Dropbox app key here:
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
+var googleAnalyticsAccount = 'UA-210230-2';
 
 // Exposed for easy access in the browser console.
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
@@ -52,43 +53,51 @@ $(document).ready(function() {
 	$("#addshowbutton").click(function() {
 		$("#mainpage").slideUp('slow');
 		$("#searchpage").slideDown('slow');
+		trackPageView("/searchpage");
 		$("#searchtext").focus();
 	});
 
 	$("#cancelsearch").click(function() {
 		$("#mainpage").slideDown('slow');
 		$("#searchpage").slideUp('slow');
+		trackPageView("/index.html");
 	});
   
 	$("#canceladdshowpage").click(function() {
 		$("#searchpage").slideDown('slow');  
 		$("#addshowpage").slideUp('slow');
+		trackPageView("/searchpage");
 	});
   
 	$("#settingsbutton").click(function() {
 		updateSyncDisplay();  
 		$("#mainpage").slideUp('slow');
 		$("#settingspage").slideDown('slow');
+		trackPageView("/settingspage");
 	});
 
 	$("#settingsdone").click(function() {
 		$("#settingspage").slideUp('slow');
 		$("#mainpage").slideDown('slow');	  
+		trackPageView("/index.html");
 	});
   
 	$("#showdetailsdone").click(function() {
 		$("#showdetailspage").slideUp('slow');
 		$("#mainpage").slideDown('slow');	  
+		trackPageView("/index.html");
 	});
 
 	$("#showaboutthetvdb").click(function(){
 		$("#settingspage").slideUp('slow');
-		$("#aboutthetvdb").slideDown('slow');	  	  
+		$("#aboutthetvdb").slideDown('slow');
+		trackPageView("/aboutthetvdb");
 	});
   
 	$("#aboutthetvdbback").click(function(){
 		$("#aboutthetvdb").slideUp('slow');
-		$("#settingspage").slideDown('slow');	  	  
+		$("#settingspage").slideDown('slow');
+		trackPageView("/settingspage");
 	});
   
 	$("#allshowsseasonbar").click(function() {
@@ -139,6 +148,7 @@ $(document).ready(function() {
 	$("#dropboxSyncButton").click(syncDropbox);
 	$('#dropboxLoginButton').click(function (e) {
 		e.preventDefault();
+  	    trackSyncService("Dropbox","Login");
 		client.authenticate();
 	});
 	$('#dropboxLogoutButton').click(logoutDropbox);
@@ -158,6 +168,8 @@ $(document).ready(function() {
 	});
 	
 	if (client.isAuthenticated()) {
+		trackSyncService("Dropbox","Authorized");
+		
 		// Client is authenticated. Display UI.
 		$('#dropboxlogin').hide();
 		$("#dropboxlogout").show();
@@ -188,13 +200,16 @@ function checkGoogleAuth() {
       async: false,
       success: function(data, status) {
         if(data.googleLoginStatus == "true") {
+        	trackSyncService("Google","Authorized");
         	googleAuth = true;
 	        $("#googlelogin").hide();
 	        $("#googlelogout").show();
 	        $("#googleLoginButton").click(function() {
+	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        })	        
 	        $("#googleLogoutButton").click(function() {
+	        	trackSyncService("Google","Logout");
 		        window.location.replace(data.googleLogoutUrl);
 	        })	        
         } else {
@@ -202,9 +217,11 @@ function checkGoogleAuth() {
 	        $("#googlelogin").show();
 	        $("#googlelogout").hide();
 	        $("#googleLoginButton").click(function() {
+	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        })	        
 	        $("#googleLogoutButton").click(function() {
+	        	trackSyncService("Google","Logout");
 		        window.location.replace(data.googleLogoutUrl);
 	        })	        
         }
@@ -226,7 +243,8 @@ function checkPopupFloaters() {
 	      && window.navigator
 	      && window.navigator.standalone == false) {
 	      
-		$("#addtohome").slideDown('slow');	  
+		$("#addtohome").slideDown('slow');
+		trackPageView("/addtohome");
 	  }
   }
 
@@ -290,6 +308,7 @@ function changeSyncFrequency() {
 
 function logoutDropbox() {
 	if (client.isAuthenticated()) {
+	  trackSyncService("Dropbox","Logout");
 	  client.signOut(function(){
 		$("#dropboxlogout").hide();		  
 		$('#dropboxlogin').show();
@@ -438,6 +457,8 @@ function searchDisplayShowSuccess(data, status) {
   
   $("#searchpage").slideUp('slow');
   $("#addshowpage").slideDown('slow');
+  trackPageView("/addshowpage");
+
   stopspin(); 
 }
 
@@ -446,6 +467,7 @@ function addNewShow() {
 	addShowToSeriesList(seriesid);
     $("#addshowpage").slideUp('slow');
     $("#mainpage").slideDown('slow');
+    trackPageView("/index.html");
 	
 }
 
@@ -668,6 +690,7 @@ function seriesDisplayShowSuccess(data, status) {
   
   $("#mainpage").slideUp('slow');
   $("#showdetailspage").slideDown('slow');
+  trackPageView("/showdetailspage");
   
   $(data).find("Data Episode").each(function(i) {
     var episodeName = $(this).find("EpisodeName").text();
@@ -841,13 +864,14 @@ function toggleWatchShow() {
 	if($(this).hasClass("icon-play-sign")) {
 		$(this).removeClass("icon-play-sign");
 		$(this).addClass("icon-eye-close");
-
+		// Tracking inside this method
 		watchSingleEpisode(watchedkey);		
 	} else {
 		var watchedEpisodes = getWatchedEpisodes();
 		$(this).removeClass("icon-eye-close");
 		$(this).addClass("icon-play-sign");
 		delete watchedEpisodes[watchedkey];
+		trackShowAction("Episode", "Delete", watchedkey);
 		saveWatchedEpisodes(watchedEpisodes);
    	    // Delete realtime from Dropbox
 		if(watchedEpisodesTable) {
@@ -888,7 +912,8 @@ function facebookShare() {
 			$("#facebookmodal").modal();
 		} else {
 			$("#mainpage").slideUp('slow');
-			$("#settingspage").slideDown('slow');		
+			$("#settingspage").slideDown('slow');
+			trackPageView("/settingspage");
 		}
 	});
 }
@@ -930,6 +955,8 @@ function addShowToSeriesList(seriesId) {
 	var seriesList = getSeriesList();
 	var addTime = (new Date()).getTime();
 	seriesList[seriesId] = addTime;
+	trackShowAction("Series", "Add", seriesId);
+	
 	// Realtime Add to Dropbox
 	if(seriesListTable) {
 		var results = seriesListTable.query({"seriesId": seriesId});
@@ -945,6 +972,7 @@ function deleteSeries(seriesId) {
     // Treat as Map
 	var seriesList = getSeriesList();
 	delete seriesList[seriesId];
+	trackShowAction("Series", "Delete", seriesId);
 	saveSeriesList(seriesList);
     checkPopupFloaters();
 	if(seriesListTable) {
@@ -1041,6 +1069,8 @@ function watchSingleEpisode(watchedEpisodeKey) {
     var watchedEpisodes = getWatchedEpisodes();
 	var watchedTime = (new Date()).getTime();
 	watchedEpisodes[watchedEpisodeKey] = watchedTime;
+	trackShowAction("Episode", "Add", watchedEpisodeKey);
+
 	// Realtime Add to Dropbox
 	if(watchedEpisodesTable) {
 		var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
@@ -1077,6 +1107,7 @@ var dropBoxSyncStart = new Date();
 function syncDropbox() {
     if(!isDropboxSyncing && client.isAuthenticated()) {
 	  spin();
+	  trackSyncService("Dropbox","Sync Start");
 	  dropBoxSyncStart = new Date();
       console.log("Starting Dropbox Sync: " + dropBoxSyncStart.toLocaleString());
       isDropboxSyncing = true;
@@ -1202,6 +1233,7 @@ function syncDropboxComplete() {
 	updateSyncDisplay();
     stopspin();
     checkPopupFloaters();
+    trackSyncComplete("Dropbox","Sync Complete","Time",((new Date() - dropBoxSyncStart)/1000));
 	isDropboxSyncing = false;
     console.log("Dropbox sync marked complete." + ((new Date() - dropBoxSyncStart)/1000));
 }
@@ -1221,6 +1253,7 @@ var googleLastSyncTime = 0;
 function syncGoogle() {
     if(!isGoogleSyncing && googleAuth) {
 	  spin();
+	  trackSyncService("Google","Sync Start");
 	  googleSyncStart = new Date();
 	  if(localStorage.getItem("lastGoogleSync") != null) {
 		  googleLastSyncTime = localStorage.getItem("lastGoogleSync");
@@ -1394,6 +1427,7 @@ function syncGoogleComplete() {
 	updateSyncDisplay();
     stopspin();
     checkPopupFloaters();
+    trackSyncComplete("Google","Sync Complete","Time",((new Date() - googleSyncStart)/1000));
     isGoogleSyncing = false;
     console.log("Google sync marked complete. " + ((new Date() - googleSyncStart)/1000));
 }
@@ -1411,6 +1445,7 @@ function recache() {
     spin();
     if(!isRecaching) {
         isRecaching = true;
+    	trackSyncService("TheTVDB","Sync Start");
         recacheStart = new Date();
         console.log("Starting recache. " + ((new Date() - recacheStart)/1000));
 		seriesListRecache = Object.keys(getSeriesList());
@@ -1490,6 +1525,7 @@ function recacheSeries() {
 		localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
 		updateSyncDisplay();
 		stopspin();		
+	    trackSyncComplete("TheTVDB","Sync Complete","Time",((new Date() - recacheStart)/1000));
 		isRecaching = false;
         console.log("Finished recache. " + ((new Date() - recacheStart)/1000));
 	}	
@@ -1501,6 +1537,34 @@ function parseDate(input) {
   return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 }
 
+/** Google Analytics */
+function trackPageView(pagename) {
+    var _gaq = _gaq || [];
+    
+ 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
+    _gaq.push(['_trackPageview', pagename]);
+}
+
+function trackSyncService(serviceName, action) {
+    var _gaq = _gaq || [];
+    
+ 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
+    _gaq.push(['_trackEvent', serviceName, action]);
+}
+
+function trackSyncComplete(serviceName, action, label, value) {
+    var _gaq = _gaq || [];
+    
+ 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
+    _gaq.push(['_trackEvent', serviceName, action, label, value]);
+}
+
+function trackShowAction(category, action, label) {
+    var _gaq = _gaq || [];
+    
+ 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
+    _gaq.push(['_trackEvent', category, action, label]);
+}
 
 /** Facebook Fun */
   // Additional JS functions here
