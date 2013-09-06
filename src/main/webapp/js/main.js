@@ -159,7 +159,7 @@ $(document).ready(function() {
 	$("#dropboxsync").change(changeSyncFrequency);
 	$("#tvdbsync").change(changeSyncFrequency);
 	$("#googlesync").change(changeSyncFrequency);
-
+	
   	// Dropbox Authentications
 	client.authenticate({interactive:false}, function (error) {
 		if (error) {
