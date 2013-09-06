@@ -61,8 +61,6 @@ public class ProxyController {
 			   @RequestParam(required = true, value = "seriesname") String seriesname,
 			   HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		   response.addHeader("Access-Control-Allow-Origin", "*");
-		   response.addHeader("Access-Control-Allow-Methods", "POST, GET");
 		   URL url = new URL("http://thetvdb.com/api/GetSeries.php?seriesname=" + URLEncoder.encode(seriesname));
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
@@ -104,8 +102,6 @@ public class ProxyController {
 			   HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		   response.setContentType(request.getContentType());
-		   response.addHeader("Access-Control-Allow-Origin", "*");
-		   response.addHeader("Access-Control-Allow-Methods", "POST, GET");
 		   URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
 				   + "/series/" + URLEncoder.encode(seriesId) + "/en.xml");
 		   URLConnection connection = url.openConnection();
@@ -150,8 +146,6 @@ public class ProxyController {
 			   HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		   response.setContentType(request.getContentType());
-		   response.addHeader("Access-Control-Allow-Origin", "*");
-		   response.addHeader("Access-Control-Allow-Methods", "POST, GET");
 		   URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
 				   + "/series/" + URLEncoder.encode(seriesId) + "/all/en.xml");
 		   URLConnection connection = url.openConnection();

@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -57,12 +58,12 @@ public class StorageController {
 	    * @return
 	    */
 	   @RequestMapping(value="/v1/warmup", produces = "text/css")
-	   public String warmpup(HttpServletResponse response) {
+	   public @ResponseBody String warmpup(HttpServletResponse response) {
 		   response.setContentType("text/css");
 		   response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
 		   response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 		   response.setDateHeader("Expires", 0); // Proxies.
-		   return "warmup";
+		   return "";
 	   }
 	   
 	   
@@ -112,12 +113,29 @@ public class StorageController {
 	   public @ResponseBody List<Map<String,String>> getSeries(
 	           HttpServletRequest request, 
 			   HttpServletResponse response,
+			   @RequestParam(value="updated", required=false) String updated,
 			   Principal principal) {
 		   
-		   
 		   if(principal == null) throw new SecurityException("Requires user principal");
+		   
+		   Date updatedDate = null;
+		   try {
+			   if(updated != null) {
+				   long updatedLong = Long.parseLong(updated);
+				   updatedDate = new Date(updatedLong);
+			   }
+		   } catch (Throwable t) {
+			   throw new IllegalArgumentException("Unable to convert updated to epoch");
+		   }
+		   
+		   
 		   Query q = new Query("SeriesList");
 		   q.setAncestor(getPrincipalKey(principal));
+		   
+		   if(updatedDate != null) {
+			   Filter lastUpdatedFilter = new Query.FilterPredicate("updated", FilterOperator.GREATER_THAN_OR_EQUAL, updatedDate);
+			   q.setFilter(lastUpdatedFilter);
+		   }
 	       
 	       List<Map<String,String>> seriesList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);
@@ -137,9 +155,6 @@ public class StorageController {
 			   Principal principal) {
 		   
 		   
-		   // java currenttime:      1377823302071
-		   // javascript currentime: 1377061514516
-
 		   if(principal == null) throw new SecurityException("Requires user principal");
 		   if(seriesId == null) throw new IllegalArgumentException("Missing series Id");
 		   
@@ -196,12 +211,27 @@ public class StorageController {
 	   public @ResponseBody List<Map<String,String>> getWatched(
 	           HttpServletRequest request, 
 			   HttpServletResponse response,
+			   @RequestParam(value="updated", required=false) String updated,
 			   Principal principal) {
 		   
 		   
 		   if(principal == null) throw new SecurityException("Requires user principal");
+		   Date updatedDate = null;
+		   try {
+			   if(updated != null) {
+				   long updatedLong = Long.parseLong(updated);
+				   updatedDate = new Date(updatedLong);
+			   }
+		   } catch (Throwable t) {
+			   throw new IllegalArgumentException("Unable to convert updated to epoch");
+		   }
+
 		   Query q = new Query("WatchedEpisodes");
 		   q.setAncestor(getPrincipalKey(principal));
+		   if(updatedDate != null) {
+			   Filter lastUpdatedFilter = new Query.FilterPredicate("updated", FilterOperator.GREATER_THAN_OR_EQUAL, updatedDate);
+			   q.setFilter(lastUpdatedFilter);
+		   }
 	       
 	       List<Map<String,String>> watchedEpisodeList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);

@@ -100,6 +100,7 @@ curl -A "facebookexternalhit/1.1" https://thewirewatcher.appspot.com/showdetails
 
 ## API Testing:
 curl -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series
+curl -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/watched
 curl -d seriesId=205281 -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series
 curl -X DELETE -b dev_appserver_login=test@example.com:false:18580476422013912411 http://localhost:8080/api/v1/data/series/205281
 

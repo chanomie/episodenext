@@ -21,6 +21,7 @@ var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
 
 // Exposed for easy access in the browser console.
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
+var googleAuth = false;
 
 var seriesListTable;
 var watchedEpisodesTable;
@@ -29,9 +30,14 @@ var TheTbDbUrlBase = "http://thetvdb.com";
 var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
-var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
-var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1/google"
-var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+
+//var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
+var getSeriesAllDetailsUrl = "http://localhost:8080/api/all/"
+
+//var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1/google"
+var googleRootUrl = "http://localhost:8080/api/v1"
+
+	var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
 var timeoutDelay = 0;
 var slowTimeoutDelay = 0;
@@ -136,10 +142,13 @@ $(document).ready(function() {
 		client.authenticate();
 	});
 	$('#dropboxLogoutButton').click(logoutDropbox);
-	$("#googleLoginButton").click(loginGoogle);
+
+	$("#googleSyncButton").click(syncGoogle);
 	$("#thetvdbsync").click(recache);
+	
 	$("#dropboxsync").change(changeSyncFrequency);
 	$("#tvdbsync").change(changeSyncFrequency);
+	$("#googlesync").change(changeSyncFrequency);
 
   	// Dropbox Authentications
 	client.authenticate({interactive:false}, function (error) {
@@ -175,20 +184,28 @@ $(document).ready(function() {
 
 function checkGoogleAuth() {
     $.ajax({
-      url: googleRootUrl+"/status?returnPath=" + encodeURIComponent(document.location),
+      url: googleRootUrl+"/google/status?returnPath=" + encodeURIComponent(document.location),
       async: false,
       success: function(data, status) {
         if(data.googleLoginStatus == "true") {
+        	googleAuth = true;
 	        $("#googlelogin").hide();
 	        $("#googlelogout").show();
-	        $("#googlelogout").click(function() {
+	        $("#googleLoginButton").click(function() {
 		        window.location.replace(data.googleLoginUrl);
 	        })	        
+	        $("#googleLogoutButton").click(function() {
+		        window.location.replace(data.googleLogoutUrl);
+	        })	        
         } else {
+        	googleAuth = false;
 	        $("#googlelogin").show();
 	        $("#googlelogout").hide();
-	        $("#googlelogin").click(function() {
+	        $("#googleLoginButton").click(function() {
 		        window.location.replace(data.googleLoginUrl);
+	        })	        
+	        $("#googleLogoutButton").click(function() {
+		        window.location.replace(data.googleLogoutUrl);
 	        })	        
         }
       },
@@ -196,9 +213,6 @@ function checkGoogleAuth() {
     });
 
 
-}
-
-function loginGoogle() {
 }
 
 function checkPopupFloaters() {
@@ -234,6 +248,22 @@ function updateSyncDisplay() {
    if(dropboxFrequencySetting !== undefined && dropboxFrequencySetting !== null) {
 	   $("#dropboxsync").val(dropboxFrequencySetting);
    }
+   
+   var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
+   if(lastGoogleSyncEpoch != null) {
+	   lastGoogleSync = new Date(parseInt(lastGoogleSyncEpoch));
+	   
+	   if(today.toDateString() == lastGoogleSync.toDateString()) {
+	       $("#googlesynctime").text(lastGoogleSync.toLocaleTimeString());
+       } else {
+	       $("#googlesynctime").text(lastGoogleSync.toLocaleDateString());	       
+       }
+   }
+   var googleFrequencySetting = getSetting("google.frequency");
+   if(googleFrequencySetting !== undefined && googleFrequencySetting !== null) {
+	   $("#googlesynctime").val(googleFrequencySetting);
+   }
+   
 
    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
    if(lastTheTvDbSyncEpoch != null) {
@@ -785,6 +815,15 @@ function unwatchSeason() {
 		      }			  
 		  }
 		  
+		  // Delete realtime from Google
+		  if(googleAuth) {
+			  $.ajax({
+		          url: googleRootUrl+"/data/watched/"+watchedEpisodeKey,
+		          type: "DELETE",
+		          error: genericError
+		        });
+		  }
+		  
 		  $(this).find("i.toggleWatched").each(function(i) {
             // console.log("Toggle Eye key: " + watchedEpisodeKey);
 		    $(this).removeClass("icon-eye-close");
@@ -817,6 +856,15 @@ function toggleWatchShow() {
 		      results[i].deleteRecord();
 		    }			  
 		}
+		
+		// Delete realtime for Google
+    	if(googleAuth) {
+    		$.ajax({
+		        url: googleRootUrl+"/data/watched/"+watchedEpisodeKey,
+		        type: "DELETE",
+		        error: genericError
+		    });
+		  }
 		
 	}
 }
@@ -905,6 +953,14 @@ function deleteSeries(seriesId) {
         results[i].deleteRecord();
       }
 	}
+	if(googleAuth) {
+		$.ajax({
+	        url: googleRootUrl+"/data/series/"+seriesId,
+	        type: "DELETE",
+	        error: genericError
+	    });
+	  }
+
 }
 
 function getSeriesList() {
@@ -1021,7 +1077,7 @@ var dropBoxSyncStart = new Date();
 function syncDropbox() {
     if(!isDropboxSyncing && client.isAuthenticated()) {
 	  spin();
-	  var dropBoxSyncStart = new Date();
+	  dropBoxSyncStart = new Date();
       console.log("Starting Dropbox Sync: " + dropBoxSyncStart.toLocaleString());
       isDropboxSyncing = true;
   	  watchedEpisodesSync = getWatchedEpisodes();
@@ -1064,7 +1120,6 @@ function syncWatchedEpisodesFromDropbox() {
 	}
 }
 
-
 function syncSeriesFromDropbox() {
 	if(syncKeyIndex < dropboxTableResult.length) {
 		var seriesId = dropboxTableResult[syncKeyIndex].get("seriesId");
@@ -1096,7 +1151,6 @@ function syncSeriesFromDropbox() {
 	  setTimeout(syncWatchedEpisodesToDropbox,slowTimeoutDelay);      
    	}
 }
-
 
 function syncWatchedEpisodesToDropbox() {  
   if(syncKeyIndex < syncKeyArray.length) {
@@ -1151,6 +1205,200 @@ function syncDropboxComplete() {
 	isDropboxSyncing = false;
     console.log("Dropbox sync marked complete." + ((new Date() - dropBoxSyncStart)/1000));
 }
+
+
+/** Google Sync State Stuff **/
+var isGoogleSyncing = false;
+var googleSyncKeyArray;
+var googleArrayResult;
+var googleArrayIndex;
+var googleWatchedEpisodesSync;
+var googleSeriesListSync;
+var googleLocalDirty;
+var googleSyncStart = new Date();
+var googleLastSyncTime = 0;
+
+function syncGoogle() {
+    if(!isGoogleSyncing && googleAuth) {
+	  spin();
+	  googleSyncStart = new Date();
+	  if(localStorage.getItem("lastGoogleSync") != null) {
+		  googleLastSyncTime = localStorage.getItem("lastGoogleSync");
+	  }
+
+      console.log("Starting Google Sync: " + googleSyncStart.toLocaleString());
+      isGoogleSyncing = true;
+      googleWatchedEpisodesSync = getWatchedEpisodes();
+      googleSeriesListSync = getSeriesList();
+      googleLocalDirty = false;
+      googleArrayResult = [];
+      googleArrayIndex = 0;
+      
+      // Setup to Sync Watched Episodes From Google
+      $.ajax({
+          url: googleRootUrl+"/data/watched?updated="+googleLastSyncTime,
+          success: function(data, status) {
+        	  googleArrayResult = data;
+        	  googleArrayIndex = 0;
+        	  console.log("Got watched episodes from Google: " + ((new Date() - googleSyncStart)/1000));
+          },
+          complete: function(jqXHR,textStatus) {
+        	  setTimeout(syncWatchedEpisodesFromGoogle,timeoutDelay);
+          },
+          error: genericError
+        });
+    }
+}
+
+function syncWatchedEpisodesFromGoogle() {
+	if(googleArrayIndex < googleArrayResult.length) {
+		var episodeKey = googleArrayResult[googleArrayIndex].watchedKey;
+		var googleUpdated = googleArrayResult[googleArrayIndex].updated;
+		if(googleUpdated == null) {
+			googleUpdated = 0;
+			googleArrayResult[googleArrayIndex].updated = googleUpdated;
+		}
+		
+		if(episodeKey !== null && !(episodeKey in googleWatchedEpisodesSync)) {
+			console.log("Added local key " + episodeKey + ": " + ((new Date() - googleSyncStart)/1000));
+			googleWatchedEpisodesSync[episodeKey] = googleUpdated;
+			localDirty = true;
+		}
+		googleArrayIndex++;
+		setTimeout(syncWatchedEpisodesFromGoogle,timeoutDelay);
+	} else {
+      console.log("All done syncing episodes from Google. " + ((new Date() - googleSyncStart)/1000));
+      
+      if(googleLocalDirty) {
+	      // Done with local sync
+	      console.log("Local is dirty, so recache." + ((new Date() - dropBoxSyncStart)/1000));
+		  saveWatchedEpisodes(googleWatchedEpisodesSync);
+		  saveSeriesList(googleSeriesListSync);
+          googleLocalDirty = false;
+          recache();
+      }
+      
+      // Setup to Sync Series Google
+      googleArrayResult = [];
+      googleArrayIndex = 0;
+      // Setup to Sync Watched Episodes From Google
+      $.ajax({
+          url: googleRootUrl+"/data/series?updated="+googleLastSyncTime,
+          success: function(data, status) {
+        	  googleArrayResult = data;
+        	  googleArrayIndex = 0;
+        	  console.log("Got series from Google: " + ((new Date() - googleSyncStart)/1000));
+          },
+          complete: function(jqXHR,textStatus) {
+        	  setTimeout(syncSeriesFromGoogle,timeoutDelay);
+          },
+          error: genericError
+        });
+	}
+}
+
+function syncSeriesFromGoogle() {
+	if(googleArrayIndex < googleArrayResult.length) {
+		var seriesId = googleArrayResult[googleArrayIndex].seriesId;
+		var googleUpdated = googleArrayResult[googleArrayIndex].updated;
+		if(googleUpdated == null) {
+			googleUpdated = 0;
+			googleArrayResult[googleArrayIndex].updated = googleUpdated;
+		}
+
+		if(seriesId !== null && !(seriesId in googleSeriesListSync)) {
+			googleSeriesListSync[seriesId] = googleUpdated;
+			localDirty = true;
+		}
+		googleArrayIndex++;
+		setTimeout(syncSeriesFromGoogle,timeoutDelay);
+	} else {
+      console.log("All done syncing series from Google. " + ((new Date() - googleSyncStart)/1000));
+      if(googleLocalDirty) {
+	      // Done with local sync
+	      console.log("Local is dirty, so recache." + ((new Date() - googleSyncStart)/1000));
+		  saveWatchedEpisodes(googleWatchedEpisodesSync);
+		  saveSeriesList(googleSeriesListSync);
+          googleLocalDirty = false;
+          recache();
+      }
+
+      // Setup to Sync Watched Episode To Google
+      googleArrayResult = Object.keys(googleWatchedEpisodesSync);
+      googleArrayIndex = 0;
+	  setTimeout(syncWatchedEpisodesToGoogle,slowTimeoutDelay);      
+   	}
+}
+
+function syncWatchedEpisodesToGoogle() {  
+	  if(googleArrayIndex < googleArrayResult.length) {
+		  var episodeKey = googleArrayResult[googleArrayIndex++];
+		  var episodeValue = googleWatchedEpisodesSync[episodeKey];
+		  googleArrayIndex++;
+		  
+		  if(episodeValue >= googleLastSyncTime) {
+			  $.ajax({
+			          url: googleRootUrl+"/data/watched",
+			          type: "POST",
+			          data: { "watchedKey": episodeKey, "updated": episodeValue },
+			          error: genericError,
+			          complete: function(jqXHR,textStatus) {
+			        	  setTimeout(syncWatchedEpisodesToGoogle,timeoutDelay);
+			          }
+			        });
+		  } else {
+        	  setTimeout(syncWatchedEpisodesToGoogle,timeoutDelay);			  
+		  }
+	  } else {
+	      console.log("All done syncing episodes to Google. " + ((new Date() - googleSyncStart)/1000));
+	      
+	      // Set to Sync Series to Google
+	      googleArrayResult = Object.keys(googleSeriesListSync);
+	      googleArrayIndex = 0;
+	      setTimeout(syncSeriesToGoogle, slowTimeoutDelay);
+	  }
+}
+
+function syncSeriesToGoogle() {
+	  if(googleArrayIndex < googleArrayResult.length) {
+		  var seriesKey = googleArrayResult[googleArrayIndex++];
+		  var seriesValue = googleSeriesListSync[seriesKey];
+          if(seriesValue == null) {
+		      seriesValue = 0;
+		      googleSeriesListSync[seriesKey] = seriesValue;
+			  localDirty = true;
+		  }
+
+		  if(seriesValue >= googleLastSyncTime) {          
+			  $.ajax({
+		          url: googleRootUrl+"/data/series",
+		          type: "POST",
+		          data: { "seriesId": seriesKey, "updated": seriesValue },
+		          error: genericError,
+		          complete: function(jqXHR,textStatus) {
+		        	  setTimeout(syncSeriesToGoogle,timeoutDelay);
+		          }	          
+		        });
+		  } else {
+			  setTimeout(syncSeriesToGoogle,timeoutDelay);
+		  }
+	  } else {
+	      console.log("All done syncing series to Google. " + ((new Date() - googleSyncStart)/1000));
+	      setTimeout(syncGoogleComplete,slowTimeoutDelay);
+	  }
+}
+
+function syncGoogleComplete() {
+	var lastGoogleSync = new Date();
+	localStorage.setItem("lastGoogleSync",lastGoogleSync.getTime());
+	updateSyncDisplay();
+    stopspin();
+    checkPopupFloaters();
+    isGoogleSyncing = false;
+    console.log("Google sync marked complete. " + ((new Date() - googleSyncStart)/1000));
+}
+/** End of the Sync Google Code **/
+
 
 // Start the Recache
 var isRecaching = false;
