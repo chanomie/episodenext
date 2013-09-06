@@ -261,7 +261,7 @@ function updateSyncDisplay() {
    }
    var googleFrequencySetting = getSetting("google.frequency");
    if(googleFrequencySetting !== undefined && googleFrequencySetting !== null) {
-	   $("#googlesynctime").val(googleFrequencySetting);
+	   $("#googlesync").val(googleFrequencySetting);
    }
    
 
