@@ -31,11 +31,11 @@ var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 
-//var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
-var getSeriesAllDetailsUrl = "http://localhost:8080/api/all/"
+var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
+// var getSeriesAllDetailsUrl = "http://localhost:8080/api/all/"
 
-//var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1/google"
-var googleRootUrl = "http://localhost:8080/api/v1"
+var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1/google"
+// var googleRootUrl = "http://localhost:8080/api/v1"
 
 	var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 var spinCount = 0;
