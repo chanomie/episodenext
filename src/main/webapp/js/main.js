@@ -46,7 +46,7 @@ var settings;
 
 
 $(document).ready(function() {
-	spin();
+	spin("Ready");
 	// Update the display first!
 	buildMainScreenFromCache();
 
@@ -191,7 +191,7 @@ $(document).ready(function() {
 	
 	// Wait 5 seconds and then check
 	setTimeout(checkAndSync,5000);
-	stopspin();
+	stopspin("Ready");
 });
 
 function checkGoogleAuth() {
@@ -353,13 +353,15 @@ function checkAndSync() {
 
 }
 
-function spin() {
+function spin(desc) {
+  console.log("Spin Start: " + desc);
   spinCount++;
   $("#spinner").show();
   $("#spinner").spin();	
 }
 
-function stopspin() {
+function stopspin(desc) {
+  console.log("Spin Stop: " + desc);
   spinCount--;
   if(spinCount <= 0) {
     spinCount = 0;
@@ -384,7 +386,7 @@ function searchForShow(showname) {
     var encodedName = encodeURIComponent(showname);
     var searchUrl = getSeriesUrl + encodedName;
     
-    spin();
+    spin("searchForShow");
     $.ajax({
       url: searchUrl,
       success: searchForShowSuccess,
@@ -425,7 +427,7 @@ function searchForShowSuccess(data, status) {
 	});
 	
 	$(".seriesrow").click(displayShowDetails);
-    stopspin();
+    stopspin("searchForShow");
 }
 
 function displayShowDetails() {
@@ -433,7 +435,7 @@ function displayShowDetails() {
     // console.log("Getting show detail: " + seriesid);
     var searchUrl = getSeriesDetailsUrl + seriesid;
 
-	spin();
+	spin("displayShowDetails");
     $.ajax({
       url: searchUrl,
       success: searchDisplayShowSuccess,
@@ -459,7 +461,7 @@ function searchDisplayShowSuccess(data, status) {
   $("#addshowpage").slideDown('slow');
   trackPageView("/addshowpage");
 
-  stopspin(); 
+  stopspin("displayShowDetails"); 
 }
 
 function addNewShow() {
@@ -475,7 +477,7 @@ function buildMainScreenFromCache() {
     var start = new Date();
     console.log("Build screen start: " + start.toLocaleString());
 
-    spin();
+    spin("buildMainScreenFromCache");
 	$("#showlist").empty();
 	
 	var seriesListCacheJson = localStorage.getItem("seriesListCache");
@@ -656,7 +658,7 @@ function buildMainScreenFromCache() {
 	}
     console.log("Build screen stop: " + ((new Date() - dropBoxSyncStart)/1000));	  
 
-	stopspin();
+	stopspin("buildMainScreenFromCache");
 }
 
 function deleteSeriesButton() {
@@ -668,7 +670,7 @@ function showInfoShow() {
     var seriesid = $(this).attr("data-seriesid");
     var seriesUrl = getSeriesAllDetailsUrl + seriesid;
 
-	spin();
+	spin("showInfoShow");
     $.ajax({
       url: seriesUrl,
       success: seriesDisplayShowSuccess,
@@ -781,7 +783,7 @@ function seriesDisplayShowSuccess(data, status) {
   $(".watchseason").click(watchSeason);
   $(".unwatchseason").click(unwatchSeason);
   $(".toggleWatched").click(toggleWatchShow);
-  stopspin();
+  stopspin("showInfoShow");
 }
 
 function watchSeason() {
@@ -927,7 +929,7 @@ function facebookPlayedEpisode() {
 	var episodeKey = seriesId + "-" + episodeId;
 	
 	var showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
-	spin();	
+	spin("facebookPlayedEpisode");	
     FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
 	  if (!response || response.error) {
         alert('Error occured: ' + response.error);
@@ -938,7 +940,7 @@ function facebookPlayedEpisode() {
         $.modal.close();
       }
     });	
-    stopspin();
+    stopspin("facebookPlayedEpisode");
 }
 
 function playedEpisode() {
@@ -1089,7 +1091,7 @@ function saveWatchedEpisodes(watchedEpisodes) {
 
 
 function genericError(jqXHR, textStatus) {
-    stopspin();
+    stopspin("genericError");
 	alert("Failure: " + textStatus);
 }
 
@@ -1106,7 +1108,7 @@ var dropBoxSyncStart = new Date();
 
 function syncDropbox() {
     if(!isDropboxSyncing && client.isAuthenticated()) {
-	  spin();
+	  spin("syncDropbox");
 	  trackSyncService("Dropbox","Sync Start");
 	  dropBoxSyncStart = new Date();
       console.log("Starting Dropbox Sync: " + dropBoxSyncStart.toLocaleString());
@@ -1231,7 +1233,7 @@ function syncDropboxComplete() {
 	var lastDropboxSync = new Date();
 	localStorage.setItem("lastDropboxSync",lastDropboxSync.getTime());
 	updateSyncDisplay();
-    stopspin();
+    stopspin("syncDropbox");
     checkPopupFloaters();
     trackSyncComplete("Dropbox","Sync Complete","Time",((new Date() - dropBoxSyncStart)/1000));
 	isDropboxSyncing = false;
@@ -1252,7 +1254,7 @@ var googleLastSyncTime = 0;
 
 function syncGoogle() {
     if(!isGoogleSyncing && googleAuth) {
-	  spin();
+	  spin("syncGoogle");
 	  trackSyncService("Google","Sync Start");
 	  googleSyncStart = new Date();
 	  if(localStorage.getItem("lastGoogleSync") != null) {
@@ -1425,7 +1427,7 @@ function syncGoogleComplete() {
 	var lastGoogleSync = new Date();
 	localStorage.setItem("lastGoogleSync",lastGoogleSync.getTime());
 	updateSyncDisplay();
-    stopspin();
+    stopspin("syncGoogle");
     checkPopupFloaters();
     trackSyncComplete("Google","Sync Complete","Time",((new Date() - googleSyncStart)/1000));
     isGoogleSyncing = false;
@@ -1442,7 +1444,7 @@ var nextEpisodeCache = {};
 var seriesListCache = {};
 var recacheStart = new Date();
 function recache() {
-    spin();
+    spin("recache");
     if(!isRecaching) {
         isRecaching = true;
     	trackSyncService("TheTVDB","Sync Start");
@@ -1524,7 +1526,7 @@ function recacheSeries() {
 		var lastTheTvDbSync = new Date();
 		localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
 		updateSyncDisplay();
-		stopspin();		
+		stopspin("recache");		
 	    trackSyncComplete("TheTVDB","Sync Complete","Time",((new Date() - recacheStart)/1000));
 		isRecaching = false;
         console.log("Finished recache. " + ((new Date() - recacheStart)/1000));
@@ -1539,31 +1541,31 @@ function parseDate(input) {
 
 /** Google Analytics */
 function trackPageView(pagename) {
-    var _gaq = _gaq || [];
+    var g = window._gaq || (window._gaq = []);
     
- 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
-    _gaq.push(['_trackPageview', pagename]);
+ 	g.push(['_setAccount', googleAnalyticsAccount]);
+    g.push(['_trackPageview', pagename]);
 }
 
 function trackSyncService(serviceName, action) {
-    var _gaq = _gaq || [];
+    var g = window._gaq || (window._gaq = []);
     
- 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
-    _gaq.push(['_trackEvent', serviceName, action]);
+ 	g.push(['_setAccount', googleAnalyticsAccount]);
+    g.push(['_trackEvent', serviceName, action]);
 }
 
 function trackSyncComplete(serviceName, action, label, value) {
-    var _gaq = _gaq || [];
+    var g = window._gaq || (window._gaq = []);
     
- 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
-    _gaq.push(['_trackEvent', serviceName, action, label, value]);
+ 	g.push(['_setAccount', googleAnalyticsAccount]);
+    g.push(['_trackEvent', serviceName, action, label, value]);
 }
 
 function trackShowAction(category, action, label) {
-    var _gaq = _gaq || [];
+    var g = window._gaq || (window._gaq = []);
     
- 	_gaq.push(['_setAccount', googleAnalyticsAccount]);
-    _gaq.push(['_trackEvent', category, action, label]);
+ 	g.push(['_setAccount', googleAnalyticsAccount]);
+    g.push(['_trackEvent', category, action, label]);
 }
 
 /** Facebook Fun */
