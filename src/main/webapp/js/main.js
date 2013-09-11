@@ -223,7 +223,7 @@ function checkGoogleAuth() {
 	        $("#googleLogoutButton").click(function() {
 	        	trackSyncService("Google","Logout");
 		        window.location.replace(data.googleLogoutUrl);
-	        })	        
+	        })
         }
       },
       error: genericError
@@ -317,9 +317,24 @@ function logoutDropbox() {
 }
 
 function checkAndSync() {
+	var googleFrequencyString = getSetting("google.frequency");
 	var dropboxFrequencyString = getSetting("dropbox.frequency");
 	var thetvdbFrequencyString = getSetting("thetvdb.frequency");
 	var now = new Date();
+
+    if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
+	    var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
+	    if(lastGoogleSyncEpoch == null) {
+	      lastGoogleSyncEpoch = 0;
+	    }
+        var googleFrequency = parseInt(googleFrequencyString);
+	    lastGoogleSync = new Date(parseInt(lastGoogleSyncEpoch));
+		var difference = now - lastGoogleSync;             
+		difference = difference / 60 / 1000;         
+         if(difference > googleFrequency) {
+	         syncGoogle();
+         }
+    }
 		
     if(dropboxFrequencyString !== undefined && dropboxFrequencyString !== null && dropboxFrequencyString !== "0") {
 	    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
@@ -656,7 +671,7 @@ function buildMainScreenFromCache() {
 		$(".playedButton").click(playedEpisode);
 		$(".facebookButton").click(facebookShare);
 	}
-    console.log("Build screen stop: " + ((new Date() - dropBoxSyncStart)/1000));	  
+    console.log("Build screen stop: " + ((new Date() - start)/1000));	  
 
 	stopspin("buildMainScreenFromCache");
 }
