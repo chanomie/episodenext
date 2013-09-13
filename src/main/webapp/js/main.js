@@ -1459,8 +1459,8 @@ var nextEpisodeCache = {};
 var seriesListCache = {};
 var recacheStart = new Date();
 function recache() {
-    spin("recache");
     if(!isRecaching) {
+	    spin("recache");
         isRecaching = true;
     	trackSyncService("TheTVDB","Sync Start");
         recacheStart = new Date();
