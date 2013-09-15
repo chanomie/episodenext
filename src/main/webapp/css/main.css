@@ -453,7 +453,7 @@ div.episodelistdetail {
 }
 
 #simplemodal-overlay {background-color:#000;}
-div#facebookmodal {
+div.pagemodal {
     background: white;
 	border: solid darkgrey 1px;
 	padding: 10px;
@@ -486,6 +486,21 @@ div.modalbuttons span.facebook {
 	border-right-color: rgb(41, 68, 126);
 	border-top-color: rgb(41, 68, 126);
 	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0
+}
+
+div.modalbuttons span.googlebutton {
+    cursor:default;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px;
+	border: solid 1px;
+	color: #FFFFFF;
+	background: rgb(190, 60, 43);
+	border-bottom-color: rgb(167, 52, 37);
+	border-left-color: rgb(167, 52, 37);
+	border-right-color: rgb(167, 52, 37);
+	border-top-color: rgb(167, 52, 37);
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0	
 }
 
 div.modalbuttons span.cancel {

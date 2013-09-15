@@ -1,49 +1,100 @@
 /**
- Copyright 2013 Jordan Reed
+ * @preserve Copyright 2013 Jordan Reed
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *  
+ *  http://code.google.com/p/thewirewatcher/
+ */
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-   
-   http://code.google.com/p/thewirewatcher/
-**/
-
-// Insert your Dropbox app key here:
+/** 
+ * The Dropbox App Key used to identify to Dropbox for the OAuth connection
+ * @define {string}
+ */
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
+
+/** 
+ * Google Analytics account used to push actions to GA
+ * @define {string} 
+ */
 var googleAnalyticsAccount = 'UA-210230-2';
 
-// Exposed for easy access in the browser console.
+/** Dropbox Client exposed for easy access in the browser console. */
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
+
+/**
+ * Defines if the Google Authenticated Session has been established.
+ * @type {boolean+
+ */
 var googleAuth = false;
 
+/** The Dropbox Table that holds a list of series that are being tracked. */
 var seriesListTable;
+
+/** The Dropbox Table that holdsa list of espides that are watched. */
 var watchedEpisodesTable;
 
+/**
+ * The TV DB URL base for the API
+ * @define {string}
+ */
 var TheTbDbUrlBase = "http://thetvdb.com";
+
+/**
+ * The base URL for loading banner images from the TV DB API
+ * @define {string}
+ */
 var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
+
+/**
+ * The base URL for loading series search information.
+ * @define {string}
+ */
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
+
+/**
+ * The base URL for the get seires API.  This proxies the request to 
+ * The TV DB APIs
+ *
+ * @define {string}
+ */
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 
+/**
+ * The base URL for the get series episodes API.  This proxies the request to 
+ * The TV DB APIs
+ *
+ * @define {string}
+ */
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 // var getSeriesAllDetailsUrl = "http://localhost:8080/api/all/"
 
+/**
+ * The base URL for Syncing with the Google Cloud Backend API.
+ * @define {string}
+ */
 var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1"
 // var googleRootUrl = "http://localhost:8080/api/v1"
 
-	var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+/**
+ * The base URL for the Open Graph object of shows
+ * @define {string}
+ */
+var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+
 var spinCount = 0;
 var timeoutDelay = 0;
 var slowTimeoutDelay = 0;
 var settings;
-
 
 $(document).ready(function() {
 	spin("Ready");
@@ -140,6 +191,7 @@ $(document).ready(function() {
 	$("#recache").click(recache);
 	$("#facebookcancel").click(function() {$.modal.close()});
 	$("#facebookpost").click(facebookPlayedEpisode);
+	$("#googlecancel").click(function() {$.modal.close()});
 	$("#addtohome .close").click(function() {
 		$("#addtohome").slideUp('slow');
 		localStorage.setItem("hideaddto","true");
@@ -190,7 +242,7 @@ $(document).ready(function() {
 	updateSyncDisplay();
 	
 	// Wait 5 seconds and then check
-	setTimeout(checkAndSync,5000);
+	setTimeout(checkAndSync,10000);
 	stopspin("Ready");
 });
 
@@ -207,11 +259,15 @@ function checkGoogleAuth() {
 	        $("#googleLoginButton").click(function() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
-	        })	        
+	        });
+	        $("#googlelogin").click(function() {
+	        	trackSyncService("Google","Login");
+		        window.location.replace(data.googleLoginUrl);
+	        });	        
 	        $("#googleLogoutButton").click(function() {
 	        	trackSyncService("Google","Logout");
 		        window.location.replace(data.googleLogoutUrl);
-	        })	        
+	        });	        
         } else {
         	googleAuth = false;
 	        $("#googlelogin").show();
@@ -219,11 +275,15 @@ function checkGoogleAuth() {
 	        $("#googleLoginButton").click(function() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
-	        })	        
+	        });
+	        $("#googlelogin").click(function() {
+	        	trackSyncService("Google","Login");
+		        window.location.replace(data.googleLoginUrl);
+	        });	        
 	        $("#googleLogoutButton").click(function() {
 	        	trackSyncService("Google","Logout");
 		        window.location.replace(data.googleLogoutUrl);
-	        })
+	        });
         }
       },
       error: genericError
@@ -321,9 +381,13 @@ function checkAndSync() {
 	var dropboxFrequencyString = getSetting("dropbox.frequency");
 	var thetvdbFrequencyString = getSetting("thetvdb.frequency");
 	var now = new Date();
+	
 
     if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
 	    var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
+		if(!googleAuth && lastGoogleSyncEpoch) {
+			$("#googlemodal").modal();
+		}	    
 	    if(lastGoogleSyncEpoch == null) {
 	      lastGoogleSyncEpoch = 0;
 	    }
@@ -757,10 +821,8 @@ function seriesDisplayShowSuccess(data, status) {
     // console.log("Checking for: " + watchedEpisodeKey);
     if(watchedEpisodeKey in watchedEpisodes) {
 	    toggleIcon = "icon-eye-close";
-	    // console.log("Found already watched.");
     } else {
 	    toggleIcon = "icon-play-sign";
-	    // console.log("Not found already watched.");
     }
     
     appendElement.append(
@@ -815,13 +877,9 @@ function watchSeason() {
 		  var watchedTime = (new Date()).getTime();
 		  watchedEpisodes[watchedEpisodeKey] = watchedTime;
 
-		  // Realtime Add to Dropbox
-		  if(watchedEpisodesTable) {
-			  var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
-			  if(results === null || results.length === 0) {
-			      watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": watchedTime});
-			  }
-		  }
+		  // Realtime Add to Cloud
+		  addEpisodeToCloud(watchedEpisodeKey, watchedTime);
+		  
 		  $(this).find("i.toggleWatched").each(function(i) {
 		    $(this).removeClass("icon-play-sign");
 		    $(this).addClass("icon-eye-close");
@@ -830,10 +888,16 @@ function watchSeason() {
 	});
 	
 	if(dirty) {
-		saveWatchedEpisodes(watchedEpisodes);
+		saveWatchedEpisodes(watchedEpisodes, true);
 	}
 }
 
+/**
+ * Triggered from the DOM - marks an entire season as unwatched by working
+ * all of the child elements and pulling out the episode keys.
+ *
+ * @this {element} The dom element that holds the season
+ */
 function unwatchSeason() {
 	var seasonid = $(this).attr("data-seasonid");
 	var dirty = false;
@@ -847,22 +911,7 @@ function unwatchSeason() {
 		  dirty=true;
 		  delete watchedEpisodes[watchedEpisodeKey];
 		  
-		  // Delete realtime from Dropbox
-		  if(watchedEpisodesTable) {
-			  var results = watchedEpisodesTable.query({"episodeKey": watchedEpisodeKey}); 
-		      for(var i=0; i< results.length; i++) {
-		        results[i].deleteRecord();
-		      }			  
-		  }
-		  
-		  // Delete realtime from Google
-		  if(googleAuth) {
-			  $.ajax({
-		          url: googleRootUrl+"/data/watched/"+watchedEpisodeKey,
-		          type: "DELETE",
-		          error: genericError
-		        });
-		  }
+		  deleteEpisodeFromCloud(watchedEpisodeKey);
 		  
 		  $(this).find("i.toggleWatched").each(function(i) {
             // console.log("Toggle Eye key: " + watchedEpisodeKey);
@@ -872,7 +921,7 @@ function unwatchSeason() {
 		}
 	});
 	if(dirty) {
-		saveWatchedEpisodes(watchedEpisodes);
+		saveWatchedEpisodes(watchedEpisodes, true);
 	}
 }
 
@@ -881,32 +930,21 @@ function toggleWatchShow() {
 	if($(this).hasClass("icon-play-sign")) {
 		$(this).removeClass("icon-play-sign");
 		$(this).addClass("icon-eye-close");
+
 		// Tracking inside this method
-		watchSingleEpisode(watchedkey);		
+		watchSingleEpisode(watchedkey, true);
 	} else {
 		var watchedEpisodes = getWatchedEpisodes();
 		$(this).removeClass("icon-eye-close");
 		$(this).addClass("icon-play-sign");
 		delete watchedEpisodes[watchedkey];
 		trackShowAction("Episode", "Delete", watchedkey);
-		saveWatchedEpisodes(watchedEpisodes);
-   	    // Delete realtime from Dropbox
-		if(watchedEpisodesTable) {
-			var results = watchedEpisodesTable.query({"episodeKey": watchedkey}); 
-		    for(var i=0; i< results.length; i++) {
-		      results[i].deleteRecord();
-		    }			  
-		}
 		
-		// Delete realtime for Google
-    	if(googleAuth) {
-    		$.ajax({
-		        url: googleRootUrl+"/data/watched/"+watchedEpisodeKey,
-		        type: "DELETE",
-		        error: genericError
-		    });
-		  }
-		
+		// TODO: Change Save Watched to False and just recache a single episode
+		saveWatchedEpisodes(watchedEpisodes, true);
+   	    
+   	    // Delete realtime from Cloud
+   	    deleteEpisodeFromCloud(watchedkey);		
 	}
 }
 
@@ -951,7 +989,7 @@ function facebookPlayedEpisode() {
         $.modal.close();
       } else {
         console.log('Post ID: ' + response.id);
-        watchSingleEpisode(episodeKey);
+        watchSingleEpisode(episodeKey, true);
         $.modal.close();
       }
     });	
@@ -963,28 +1001,29 @@ function playedEpisode() {
 	var episodeId = $(this).attr("data-episodeId");
 	var episodeKey = seriesId + "-" + episodeId;
 
-    watchSingleEpisode(episodeKey);
+    watchSingleEpisode(episodeKey, true);
 }
 
-
-
+/**
+ * Adds a show to the series list locally and into the cloud systems.
+ *
+ * @param {string} seriesId the key for the series that is going to be tracked
+ */
 function addShowToSeriesList(seriesId) {
 	var seriesList = getSeriesList();
 	var addTime = (new Date()).getTime();
 	seriesList[seriesId] = addTime;
 	trackShowAction("Series", "Add", seriesId);
-	
-	// Realtime Add to Dropbox
-	if(seriesListTable) {
-		var results = seriesListTable.query({"seriesId": seriesId});
-		if(results === null || results.length === 0) {
-			seriesListTable.insert({"seriesId": seriesId, "updated": addTime});
-		}
-	}
+	addSeriesToCloud(seriesId, addTime);
 	saveSeriesList(seriesList);
     checkPopupFloaters();
 }
 
+/**
+ * Delete the series from the local storage and cloud.
+ *
+ * @param {string} seriesId the key of the series to be deleted
+ */
 function deleteSeries(seriesId) {
     // Treat as Map
 	var seriesList = getSeriesList();
@@ -992,20 +1031,7 @@ function deleteSeries(seriesId) {
 	trackShowAction("Series", "Delete", seriesId);
 	saveSeriesList(seriesList);
     checkPopupFloaters();
-	if(seriesListTable) {
-	  var results = seriesListTable.query({"seriesId": seriesId}); 
-      for(var i=0; i< results.length; i++) {
-        results[i].deleteRecord();
-      }
-	}
-	if(googleAuth) {
-		$.ajax({
-	        url: googleRootUrl+"/data/series/"+seriesId,
-	        type: "DELETE",
-	        error: genericError
-	    });
-	  }
-
+    deleteSeriesFromCloud(seriesId);
 }
 
 function getSeriesList() {
@@ -1082,26 +1108,38 @@ function setSetting(settingKey, settingValue) {
 	localStorage.setItem("settings", JSON.stringify(settings));
 }
 
-function watchSingleEpisode(watchedEpisodeKey) {
+/**
+ * Adds a single watch key into the local store and the cloud.
+ *
+ * @param {string} watchedEpisodeKey the key of the episode to mark as watched
+ *        in the format of "{seriesId}-{episodeId}"
+ * @param {boolean} requestRecache indicates if the system should
+ *        automatically recache the system after adding the episode
+ */
+function watchSingleEpisode(watchedEpisodeKey, requestRecache) {
     var watchedEpisodes = getWatchedEpisodes();
 	var watchedTime = (new Date()).getTime();
 	watchedEpisodes[watchedEpisodeKey] = watchedTime;
 	trackShowAction("Episode", "Add", watchedEpisodeKey);
 
-	// Realtime Add to Dropbox
-	if(watchedEpisodesTable) {
-		var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
-		if(results === null || results.length === 0) {
-			watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": watchedTime});
-		}
-	}
-	saveWatchedEpisodes(watchedEpisodes);
+	// Realtime Add to Cloud
+    addEpisodeToCloud(watchedEpisodeKey, watchedTime);
+    saveWatchedEpisodes(watchedEpisodes, requestRecache);
 }
 
-function saveWatchedEpisodes(watchedEpisodes) {
+/**
+ * Saves the watched episode list into the localstorage object
+ *
+ * @param {Array.Object} watchedEpisodes is a array of watched episode objects
+ * @param {boolean} requestRecache says whether this update should also
+ *        trigger a full recache.
+ */
+function saveWatchedEpisodes(watchedEpisodes, requestRecache) {
 	var watchedEpisodesJson = JSON.stringify(watchedEpisodes);
 	localStorage.setItem("watchedEpisodes", watchedEpisodesJson);
-	recache();
+	if(requestRecache == true) {
+		recache();
+	}
 }
 
 
@@ -1110,6 +1148,113 @@ function genericError(jqXHR, textStatus) {
 	alert("Failure: " + textStatus);
 }
 
+
+/**
+ * Does a realtime add of a watched key into the cloud stores if they are
+ * authenticated.
+ *
+ * @param {string} watchedEpisodeKey Provides the key to the episode that
+ *        has been watched.  They key is in the format of
+ *        "{seriesId}-{episodeId}"
+ * @param {number} watchedTime an epoch indicator of when the show was watched
+ */
+function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
+	// If the Dropbox Table Exists add to it
+	if(watchedEpisodesTable) {
+		var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
+		if(results === null || results.length === 0) {
+			watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": watchedTime});
+		}
+	}
+	
+	// If Google is Auth'ed add to it:
+	if(googleAuth) {
+		$.ajax({
+			url: googleRootUrl+"/data/watched",
+			type: "POST",
+			data: { "watchedKey": episodeKey, "updated": episodeValue },
+			error: genericError
+	    });
+	}	
+}
+
+/**
+ * Does a realtime add of a series into the cloud stores if they are
+ * authenticated.
+ *
+ * @param {string} seriesKey Provides the key to the series that should
+ *        be tracked
+ * @param {number} watchedTime an epoch indicator of when the show was watched
+ */
+function addSeriesToCloud(seriesKey, watchedTime) {
+	// If the Dropbox Table Exists add to it
+	if(seriesListTable) {
+		var results = seriesListTable.query({"seriesId": seriesKey});
+		if(results === null || results.length === 0) {
+			seriesListTable.insert({"seriesId": seriesKey, "updated": watchedTime});
+		}
+	}
+	
+	// If Google is Auth'ed add to it:
+	if(googleAuth) {
+		$.ajax({
+			url: googleRootUrl+"/data/series",
+			type: "POST",
+			data: { "seriesId": seriesKey, "updated": seriesValue },
+			error: genericError
+		});
+	}	
+}
+
+/**
+ * Does a realtime delete of a watched key from the cloud stores if they are
+ * authenticated.
+ *
+ * @param {string} watchedEpisodeKey Provides the key to the episode that
+ *        has been watched. The key is in the format of
+ *        "{seriesId}-{episodeId}"
+ */
+function deleteEpisodeFromCloud(watchedEpisodeKey) {
+	// Delete realtime from Dropbox
+	if(watchedEpisodesTable) {
+		var results = watchedEpisodesTable.query({"episodeKey": watchedEpisodeKey}); 
+		for(var i=0; i< results.length; i++) {
+			results[i].deleteRecord();
+		}			  
+	}
+	
+	// Delete realtime from Google
+	if(googleAuth) {
+		$.ajax({
+			url: googleRootUrl+"/data/watched/"+watchedEpisodeKey,
+			type: "DELETE",
+			error: genericError
+		});
+	}	
+}
+
+/**
+ * Does a realtime delete of a series from the cloud stores if they are
+ * authenticated.
+ *
+ * @param {string} seriesId the key of the series to remove
+ */
+function deleteSeriesFromCloud(seriesId) {
+	if(seriesListTable) {
+		var results = seriesListTable.query({"seriesId": seriesId}); 
+		for(var i=0; i< results.length; i++) {
+			results[i].deleteRecord();
+		}
+	}
+
+	if(googleAuth) {
+		$.ajax({
+			url: googleRootUrl+"/data/series/"+seriesId,
+			type: "DELETE",
+			error: genericError
+		});
+	}
+}
 
 /** Dropbox Sync State Stuff **/
 var isDropboxSyncing = false;
@@ -1187,7 +1332,7 @@ function syncSeriesFromDropbox() {
       console.log("All done syncing series from dropbox." + ((new Date() - dropBoxSyncStart)/1000));
 		if(localDirty === true) {
 			console.log("Local is dirty, so recache." + ((new Date() - dropBoxSyncStart)/1000));
-			saveWatchedEpisodes(watchedEpisodesSync);
+			saveWatchedEpisodes(watchedEpisodesSync, false); // don't recache
 			saveSeriesList(seriesListSync);
 			localDirty = false;
 			recache();
@@ -1322,7 +1467,7 @@ function syncWatchedEpisodesFromGoogle() {
       if(googleLocalDirty) {
 	      // Done with local sync
 	      console.log("Local is dirty, so recache." + ((new Date() - dropBoxSyncStart)/1000));
-		  saveWatchedEpisodes(googleWatchedEpisodesSync);
+		  saveWatchedEpisodes(googleWatchedEpisodesSync, false); // don't recache
 		  saveSeriesList(googleSeriesListSync);
           googleLocalDirty = false;
           recache();
@@ -1367,7 +1512,7 @@ function syncSeriesFromGoogle() {
       if(googleLocalDirty) {
 	      // Done with local sync
 	      console.log("Local is dirty, so recache." + ((new Date() - googleSyncStart)/1000));
-		  saveWatchedEpisodes(googleWatchedEpisodesSync);
+		  saveWatchedEpisodes(googleWatchedEpisodesSync, false); // don't recache
 		  saveSeriesList(googleSeriesListSync);
           googleLocalDirty = false;
           recache();
@@ -1554,7 +1699,11 @@ function parseDate(input) {
   return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
 }
 
-/** Google Analytics */
+/** START: Google Analytics */
+/**
+ * Tracks a page view event.
+ * @param {string} pagename the name of the page to be tracked.
+ */
 function trackPageView(pagename) {
     var g = window._gaq || (window._gaq = []);
     
@@ -1562,6 +1711,11 @@ function trackPageView(pagename) {
     g.push(['_trackPageview', pagename]);
 }
 
+/**
+ * Tracks an action against a sync service
+ * @param {string} serviceName the name of the service being synced
+ * @param {string} action the action of the syncronization
+ */
 function trackSyncService(serviceName, action) {
     var g = window._gaq || (window._gaq = []);
     
@@ -1569,6 +1723,13 @@ function trackSyncService(serviceName, action) {
     g.push(['_trackEvent', serviceName, action]);
 }
 
+/**
+ * Tracks the completion of syncronization
+ * @param {string} serviceName the name of the service being synced
+ * @param {string} action the action of the syncronization
+ * @param {string} label the completion action (e.g. Time)
+ * @param {number} value the value, typically the amount of milliseconds to sync
+ */
 function trackSyncComplete(serviceName, action, label, value) {
     var g = window._gaq || (window._gaq = []);
     
@@ -1576,50 +1737,37 @@ function trackSyncComplete(serviceName, action, label, value) {
     g.push(['_trackEvent', serviceName, action, label, value]);
 }
 
+/**
+ * Tracks the action against a show
+ * @param {string} category either "Series" or "Episode"
+ * @param {string} action the action taken to the series or episode
+ * @param {string} label the label for the action - which series or episode
+ */
 function trackShowAction(category, action, label) {
     var g = window._gaq || (window._gaq = []);
     
  	g.push(['_setAccount', googleAnalyticsAccount]);
     g.push(['_trackEvent', category, action, label]);
 }
+/** END: Google Analytics */
 
-/** Facebook Fun */
-  // Additional JS functions here
-  window.fbAsyncInit = function() {
-    console.log("running async");
-    FB.init({
-      appId      : '132823190241236', // App ID
-      channelUrl : '//thewirewatcher.appspot.com/channel.html', // Channel File
-      status     : true, // check login status
-      cookie     : true, // enable cookies to allow the server to access the session
-      xfbml      : true  // parse XFBML
-    });
 
-    console.log("Gettin facebook status");
-	FB.getLoginStatus(function(response) {
-	  if (response.status === 'connected') {
-	    // the user is logged in and has authenticated your
-	    // app, and response.authResponse supplies
-	    // the user's ID, a valid access token, a signed
-	    // request, and the time the access token 
-	    // and signed request each expire
-	    var uid = response.authResponse.userID;
-	    var accessToken = response.authResponse.accessToken;
-	  } else if (response.status === 'not_authorized') {
-	    // the user is logged in to Facebook, 
-	    // but has not authenticated your app
-	  } else {
-	    // the user isn't logged in to Facebook.
-	  }
-	 });
-  };
-
-  // Load the SDK asynchronously
-  (function(d){
-     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement('script'); js.id = id; js.async = true;
-     js.src = "//connect.facebook.net/en_US/all.js";
-     ref.parentNode.insertBefore(js, ref);
-   }(document));
-
+/** START: Facebook Integration */
+window.fbAsyncInit = function() {
+	FB.init({
+		appId      : '132823190241236', // App ID
+		channelUrl : '//thewirewatcher.appspot.com/channel.html', // Channel File
+		status     : true, // check login status
+		cookie     : true, // enable cookies to allow the server to access the session
+		xfbml      : true  // parse XFBML
+	});
+};
+// Load the SDK asynchronously
+(function(d){
+	var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement('script'); js.id = id; js.async = true;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	ref.parentNode.insertBefore(js, ref);
+}(document));
+/** END: Facebook Integration */
