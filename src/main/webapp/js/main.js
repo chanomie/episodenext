@@ -260,7 +260,7 @@ function checkGoogleAuth() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        });
-	        $("#googlelogin").click(function() {
+	        $("#googleloginmod").click(function() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        });	        
@@ -276,7 +276,7 @@ function checkGoogleAuth() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        });
-	        $("#googlelogin").click(function() {
+	        $("#googleloginmod").click(function() {
 	        	trackSyncService("Google","Login");
 		        window.location.replace(data.googleLoginUrl);
 	        });	        
