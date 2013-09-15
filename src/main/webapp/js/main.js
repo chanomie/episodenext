@@ -1172,7 +1172,7 @@ function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
 		$.ajax({
 			url: googleRootUrl+"/data/watched",
 			type: "POST",
-			data: { "watchedKey": episodeKey, "updated": episodeValue },
+			data: { "watchedKey": watchedEpisodeKey, "updated": watchedTime },
 			error: genericError
 	    });
 	}	
@@ -1200,7 +1200,7 @@ function addSeriesToCloud(seriesKey, watchedTime) {
 		$.ajax({
 			url: googleRootUrl+"/data/series",
 			type: "POST",
-			data: { "seriesId": seriesKey, "updated": seriesValue },
+			data: { "seriesId": seriesKey, "updated": watchedTime },
 			error: genericError
 		});
 	}	
