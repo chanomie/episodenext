@@ -106,12 +106,12 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
+                	<warSourceExcludes>**/*.js</warSourceExcludes>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
                         <!-- in order to interpolate version from pom into appengine-web.xml -->
@@ -124,18 +124,19 @@
                             <directory>${basedir}/src/main/webapp</directory>
                             <includes>
                               <include>*.html</include>
+                              <include>**/*min.js</include>
                             </includes>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.target.version}</version>
             </plugin>
+
 	      <plugin>
 	        <groupId>net.alchim31.maven</groupId>
 	        <artifactId>yuicompressor-maven-plugin</artifactId>
@@ -144,6 +145,7 @@
 	            <goals>
 	              <goal>compress</goal>
 	            </goals>
+				<phase>prepare-package</phase>
 	          </execution>
 	        </executions>        
             <configuration>
@@ -178,7 +180,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>	         
+            </plugin>
         </plugins>
     </build>
     <repositories>
