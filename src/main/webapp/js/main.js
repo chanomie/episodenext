@@ -19,45 +19,60 @@
 /** 
  * The Dropbox App Key used to identify to Dropbox for the OAuth connection
  * @define {string}
+ * @private
  */
 var DROPBOX_APP_KEY = 'daywyfneqb6yg8i';
 
 /** 
  * Google Analytics account used to push actions to GA
  * @define {string} 
+ * @private
  */
 var googleAnalyticsAccount = 'UA-210230-2';
 
-/** Dropbox Client exposed for easy access in the browser console. */
+/** 
+ * Dropbox Client exposed for easy access in the browser console. 
+ * @private
+ */
 var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
 
 /**
  * Defines if the Google Authenticated Session has been established.
  * @type {boolean+
+ * @private
  */
 var googleAuth = false;
 
-/** The Dropbox Table that holds a list of series that are being tracked. */
+/** 
+ * The Dropbox Table that holds a list of series that are being tracked. 
+ * @private
+ */
 var seriesListTable;
 
-/** The Dropbox Table that holdsa list of espides that are watched. */
+/** 
+ * The Dropbox Table that holdsa list of espides that are watched.
+ * @private
+ */
 var watchedEpisodesTable;
 
 /**
  * The TV DB URL base for the API
  * @define {string}
+ * @private
  */
 var TheTbDbUrlBase = "http://thetvdb.com";
 
 /**
  * The base URL for loading banner images from the TV DB API
  * @define {string}
+ * @private
  */
 var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 
 /**
  * The base URL for loading series search information.
  * @define {string}
+ * @private
  */
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
 
@@ -66,6 +81,7 @@ var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=
  * The TV DB APIs
  *
  * @define {string}
+ * @private
  */
 var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
 
@@ -74,6 +90,7 @@ var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
  * The TV DB APIs
  *
  * @define {string}
+ * @private
  */
 var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 // var getSeriesAllDetailsUrl = "http://localhost:8080/api/all/"
@@ -81,6 +98,7 @@ var getSeriesAllDetailsUrl = "https://thewirewatcher.appspot.com/api/all/"
 /**
  * The base URL for Syncing with the Google Cloud Backend API.
  * @define {string}
+ * @private
  */
 var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1"
 // var googleRootUrl = "http://localhost:8080/api/v1"
@@ -88,12 +106,38 @@ var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1"
 /**
  * The base URL for the Open Graph object of shows
  * @define {string}
+ * @private
  */
 var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
 
+/**
+ * Counter for spin requests.  Each request to start the spinner increments
+ * this counter and each request to stop the spin decrements this counter.
+ * When the counter is at zero, the spinning stops.
+ * @type {number}
+ */
 var spinCount = 0;
+
+/**
+ * When running through loops of synchronization, this indicates the amount
+ * of time to wait in between loops while doing high priority work.
+ * @define {number}
+ */
 var timeoutDelay = 0;
-var slowTimeoutDelay = 0;
+
+/**
+ * When running through loops of synchronization, this indicates a longer
+ * wait time to use for lower priority tasks so there is more CPU for the
+ * user interactions.
+ * @define {number}
+ */
+var slowTimeoutDelay = 100;
+
+/**
+ * Holds a simple local settings mapping.
+ * @type {Object.<string,string>}
+ * @private
+ */
 var settings;
 
 $(document).ready(function() {
@@ -246,52 +290,63 @@ $(document).ready(function() {
 	stopspin("Ready");
 });
 
+/**
+ * Checks the Google Authentication Status by making a JSON call tot he status
+ * API.
+ */
 function checkGoogleAuth() {
     $.ajax({
       url: googleRootUrl+"/google/status?returnPath=" + encodeURIComponent(document.location),
-      async: false,
-      success: function(data, status) {
-        if(data.googleLoginStatus == "true") {
-        	trackSyncService("Google","Authorized");
-        	googleAuth = true;
-	        $("#googlelogin").hide();
-	        $("#googlelogout").show();
-	        $("#googleLoginButton").click(function() {
-	        	trackSyncService("Google","Login");
-		        window.location.replace(data.googleLoginUrl);
-	        });
-	        $("#googleloginmod").click(function() {
-	        	trackSyncService("Google","Login");
-		        window.location.replace(data.googleLoginUrl);
-	        });	        
-	        $("#googleLogoutButton").click(function() {
-	        	trackSyncService("Google","Logout");
-		        window.location.replace(data.googleLogoutUrl);
-	        });	        
-        } else {
-        	googleAuth = false;
-	        $("#googlelogin").show();
-	        $("#googlelogout").hide();
-	        $("#googleLoginButton").click(function() {
-	        	trackSyncService("Google","Login");
-		        window.location.replace(data.googleLoginUrl);
-	        });
-	        $("#googleloginmod").click(function() {
-	        	trackSyncService("Google","Login");
-		        window.location.replace(data.googleLoginUrl);
-	        });	        
-	        $("#googleLogoutButton").click(function() {
-	        	trackSyncService("Google","Logout");
-		        window.location.replace(data.googleLogoutUrl);
-	        });
-        }
-      },
+      success: checkGoogleAuthSuccess,
       error: genericError
     });
-
-
 }
 
+/**
+ * Success result from the Check Google auth function.  This will update the Google
+ * login screen as appropriate.
+ */
+function checkGoogleAuthSuccess(data, status) {
+	if(data.googleLoginStatus == "true") {
+		trackSyncService("Google","Authorized");
+    	googleAuth = true;
+        $("#googlelogin").hide();
+        $("#googlelogout").show();
+        $("#googleLoginButton").click(function() {
+        	trackSyncService("Google","Login");
+	        window.location.replace(data.googleLoginUrl);
+        });
+        $("#googleloginmod").click(function() {
+        	trackSyncService("Google","Login");
+	        window.location.replace(data.googleLoginUrl);
+        });	        
+        $("#googleLogoutButton").click(function() {
+        	trackSyncService("Google","Logout");
+	        window.location.replace(data.googleLogoutUrl);
+        });	        
+    } else {
+    	googleAuth = false;
+        $("#googlelogin").show();
+        $("#googlelogout").hide();
+        $("#googleLoginButton").click(function() {
+        	trackSyncService("Google","Login");
+	        window.location.replace(data.googleLoginUrl);
+        });
+        $("#googleloginmod").click(function() {
+        	trackSyncService("Google","Login");
+	        window.location.replace(data.googleLoginUrl);
+        });	        
+        $("#googleLogoutButton").click(function() {
+        	trackSyncService("Google","Logout");
+	        window.location.replace(data.googleLogoutUrl);
+        });
+	}
+}
+
+/**
+ * Checks if there are any series currently being tracked and
+ * shows the help notes if there are not.
+ */
 function checkPopupFloaters() {
   var seriesMap = getSeriesList();
   if(seriesMap==null ||  Object.keys(seriesMap).length == 0) {
@@ -310,6 +365,10 @@ function checkPopupFloaters() {
 
 }
 
+/**
+ * Checks the last time synchronizations have occurred for the cloud
+ * services and updates the time in the settings menu.
+ */
 function updateSyncDisplay() {
    var today = new Date();
    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
@@ -359,6 +418,10 @@ function updateSyncDisplay() {
    }
 }
 
+/**
+ * Listens for the onclick event for an update frequency change.
+ * @this {Element} the html element that allows switch frequency
+ */
 function changeSyncFrequency() {
 	var syncKey = $(this).attr("data-sync");
 	var frequency = $(this).val();
@@ -366,6 +429,9 @@ function changeSyncFrequency() {
     setSetting(syncKey, frequency);
 }
 
+/**
+ * Triggers a dropbox logout and updates the settings page.
+ */
 function logoutDropbox() {
 	if (client.isAuthenticated()) {
 	  trackSyncService("Dropbox","Logout");
@@ -376,6 +442,10 @@ function logoutDropbox() {
 	}
 }
 
+/**
+ * Checks the sync frequency of each of the cloud services and if it is
+ * past the time it will trigger another sync.
+ */
 function checkAndSync() {
 	var googleFrequencyString = getSetting("google.frequency");
 	var dropboxFrequencyString = getSetting("dropbox.frequency");
@@ -432,6 +502,12 @@ function checkAndSync() {
 
 }
 
+/**
+ * Start the spinning process.
+ *
+ * @param {string} desc a description of activity starting the spinner,
+ *        for debug usages
+ */
 function spin(desc) {
   console.log("Spin Start: " + desc);
   spinCount++;
@@ -439,6 +515,12 @@ function spin(desc) {
   $("#spinner").spin();	
 }
 
+/**
+ * Stops the spinning process.
+ *
+ * @param {string} desc a description of activity starting the spinner,
+ *        for debug usages
+ */
 function stopspin(desc) {
   console.log("Spin Stop: " + desc);
   spinCount--;
@@ -449,6 +531,9 @@ function stopspin(desc) {
   }
 }
 
+/**
+ * Triggers a search for a new Episode of shows.
+ */
 function onSearch() {
   var showname = $("#searchtext").val();
   if(showname === null || showname === "") {
@@ -461,6 +546,10 @@ function onSearch() {
   return false;	
 }
 
+/**
+ * Search for a show against the TV DB API and the create a result list.
+ * @param {string} showname the name of the show to search for
+ */
 function searchForShow(showname) {
     var encodedName = encodeURIComponent(showname);
     var searchUrl = getSeriesUrl + encodedName;
@@ -473,6 +562,11 @@ function searchForShow(showname) {
     });
 }
 
+/**
+ * Process the result of the show search API and display a result list.
+ * @param data the response data
+ * @param status the status of the response
+ */
 function searchForShowSuccess(data, status) {
 	$(data).find("Series").each(function(i) {
 		var seriesId = $(this).find("seriesid").text();
@@ -509,9 +603,12 @@ function searchForShowSuccess(data, status) {
     stopspin("searchForShow");
 }
 
+/**
+ * Displays details for a show
+ * @this {Element} the info button clicked to show data for.
+ */
 function displayShowDetails() {
     var seriesid = $(this).attr("data-seriesid");
-    // console.log("Getting show detail: " + seriesid);
     var searchUrl = getSeriesDetailsUrl + seriesid;
 
 	spin("displayShowDetails");
@@ -522,6 +619,11 @@ function displayShowDetails() {
     });
 }
 
+/**
+ * Success Callback for the Show Search API
+ * @param data the response data
+ * @param status the status of the response
+ */
 function searchDisplayShowSuccess(data, status) {
   var seriesId = $(data).find("Data Series id").text();
   var seriesName = $(data).find("Data Series SeriesName").text();
@@ -543,15 +645,21 @@ function searchDisplayShowSuccess(data, status) {
   stopspin("displayShowDetails"); 
 }
 
+/**
+ * Add a new show into the list of tracked shows.
+ * @this {Element} the add button for the series id.
+ */
 function addNewShow() {
 	var seriesid = $(this).attr("data-seriesid");
 	addShowToSeriesList(seriesid);
     $("#addshowpage").slideUp('slow');
     $("#mainpage").slideDown('slow');
     trackPageView("/index.html");
-	
 }
 
+/**
+ * Builds the main screen from the localstorage cache.
+ */
 function buildMainScreenFromCache() {
     var start = new Date();
     console.log("Build screen start: " + start.toLocaleString());
@@ -740,6 +848,10 @@ function buildMainScreenFromCache() {
 	stopspin("buildMainScreenFromCache");
 }
 
+/**
+ * Delete the series from the tracked list referenced by this button.
+ * @this {element} the button id used (element.data-seriesid)
+ */
 function deleteSeriesButton() {
     var seriesid = $(this).attr("data-seriesid");
     deleteSeries(seriesid);
