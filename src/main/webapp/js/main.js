@@ -255,6 +255,7 @@ $(document).ready(function() {
 	$("#dropboxsync").change(changeSyncFrequency);
 	$("#tvdbsync").change(changeSyncFrequency);
 	$("#googlesync").change(changeSyncFrequency);
+	$(".resetLocalStorage").click(deleteLocalStorage);
 	
   	// Dropbox Authentications
 	client.authenticate({interactive:false}, function (error) {
@@ -378,8 +379,10 @@ function updateSyncDisplay() {
 	   if(today.toDateString() == lastDropboxSync.toDateString()) {
 	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleTimeString());
        } else {
-	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleDateString());	       
+	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleDateString());
        }
+   } else {
+	   $("#dropboxsynctime").text("Unknown");
    }
    var dropboxFrequencySetting = getSetting("dropbox.frequency");
    if(dropboxFrequencySetting !== undefined && dropboxFrequencySetting !== null) {
@@ -395,6 +398,8 @@ function updateSyncDisplay() {
        } else {
 	       $("#googlesynctime").text(lastGoogleSync.toLocaleDateString());	       
        }
+   } else {
+	   $("#googlesynctime").text("Unknown");
    }
    var googleFrequencySetting = getSetting("google.frequency");
    if(googleFrequencySetting !== undefined && googleFrequencySetting !== null) {
@@ -411,6 +416,8 @@ function updateSyncDisplay() {
        } else {
 	       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleDateString());	       
        }
+   } else {
+	   $("#thetvdbsynctime").text("Unknown");	   
    }
    var thetvdbFrequencySetting = getSetting("thetvdb.frequency");
    if(thetvdbFrequencySetting !== undefined && thetvdbFrequencySetting !== null) {
@@ -428,6 +435,17 @@ function changeSyncFrequency() {
 	
     setSetting(syncKey, frequency);
 }
+
+/**
+ * Listens for onlick events to delete a last sync time.
+ * @this {Element} the html element that triggered
+*/
+function deleteLocalStorage() {
+	var removeKey = $(this).attr("data-storagename");
+	localStorage.removeItem(removeKey);
+	updateSyncDisplay();
+}
+
 
 /**
  * Triggers a dropbox logout and updates the settings page.
