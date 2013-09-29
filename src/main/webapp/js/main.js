@@ -289,9 +289,6 @@ $(document).ready(function() {
 	// Wait 5 seconds and then check
 	setTimeout(checkAndSync,10000);
 	stopspin("Ready");
-
-
-	$("#facebookmodal").modal();
 });
 
 /**
