@@ -448,16 +448,22 @@ div.episodelistdetail {
 	font-size: 12px;
 }
 
-#simplemodal-overlay {background-color:#000;}
+#simplemodal-overlay {
+	background-color:#000;
+}
+
 div.pagemodal {
     background: white;
+	text-align: center;
 	border: solid darkgrey 1px;
-	padding: 10px;
-	border-radius:25px;
+	padding-top: 10px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	border-radius:10px;
 }
 
 div.modaltitle {
-	text-align: center;
 	font-size: 24px;
 	top: 5px;
 	left: 0px;
@@ -467,51 +473,25 @@ div.modaltitle {
 div.modalbuttons {
     text-align: center;
     margin-top: 20px;
+    color: #007AFF;
 }
 
-div.modalbuttons span.facebook {
-    cursor:default;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 5px;
-	border: solid 1px;
-	color: #FFFFFF;
-	background: rgb(91, 116, 168);
-	border-bottom-color: rgb(26, 53, 110);
-	border-left-color: rgb(41, 68, 126);
-	border-right-color: rgb(41, 68, 126);
-	border-top-color: rgb(41, 68, 126);
-	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0
+div.leftmodalbutton {
+	float: left;
+	border-top: 1px solid lightgrey;
+	border-right: 1px solid lightgrey;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	display: inline-block;
+	width: 50%;	
 }
 
-div.modalbuttons span.googlebutton {
-    cursor:default;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 5px;
-	border: solid 1px;
-	color: #FFFFFF;
-	background: rgb(190, 60, 43);
-	border-bottom-color: rgb(167, 52, 37);
-	border-left-color: rgb(167, 52, 37);
-	border-right-color: rgb(167, 52, 37);
-	border-top-color: rgb(167, 52, 37);
-	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0	
-}
-
-div.modalbuttons span.cancel {
-    cursor:default;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 5px;
-	border: solid darkgrey 1px;
-	color: #FFFFFF;
-	background: grey;
-	border-bottom-color: rgb(26, 53, 110);
-	border-left-color: rgb(41, 68, 126);
-	border-right-color: rgb(41, 68, 126);
-	border-top-color: rgb(41, 68, 126);
-	-webkit-box-shadow: rgba(0, 0, 0, 0.0976563) 0
+div.rightmodalbutton {
+	display: inline-block;
+	border-top: 1px solid lightgrey;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 50%;
 }
 
 /* Table View */

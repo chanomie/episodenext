@@ -19,6 +19,8 @@ package net.chaosserver.wiredepisodes;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,9 +28,15 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 import com.omertron.thetvdbapi.model.Episode;
 
+import net.chaosserver.wiredepisodes.web.NewEpisodeParser;
+
 public class ShowInformationTest {
+	 /*
 	 @Test
 	 public void testGetShow() {
 		 ShowInformation showInformation = new ShowInformation();
@@ -40,4 +48,19 @@ public class ShowInformationTest {
 		 assertNotNull(episode);
 		 
 	 }
+	 */
+	 
+	 @Test
+	 public void testShowToXml() throws Exception {
+		ShowInformation showInformation = new ShowInformation();
+		XMLReader myReader = XMLReaderFactory.createXMLReader();
+			 
+		String seriesId = "251085";
+		URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
+			+ "/series/" + URLEncoder.encode(seriesId) + "/all/en.xml");
+
+		InputSource inputSource = new InputSource(url.openStream());
+		myReader.parse(inputSource); 
+	 }
+	 
 }
