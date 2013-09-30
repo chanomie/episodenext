@@ -111,6 +111,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
+					<!-- comment to remove minification -->
                 	<warSourceExcludes>**/*.js</warSourceExcludes>
                     <archiveClasses>true</archiveClasses>
                     <webResources>
@@ -123,8 +124,9 @@
                         <resource>
                             <directory>${basedir}/src/main/webapp</directory>
                             <includes>
-                              <include>*.html</include>
-                              <include>**/*min.js</include>
+                                <include>*.html</include>
+								<!-- comment to remove minification -->
+                                <include>**/*min.js</include>
                             </includes>
                             <filtering>true</filtering>
                         </resource>
@@ -145,6 +147,7 @@
 	            <goals>
 	              <goal>compress</goal>
 	            </goals>
+	            <!-- comment to remove minification -->
 				<phase>prepare-package</phase>
 	          </execution>
 	        </executions>        
