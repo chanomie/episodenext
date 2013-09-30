@@ -634,7 +634,7 @@
 	<key>HPages</key>
 	<integer>1</integer>
 	<key>ImageCounter</key>
-	<integer>1</integer>
+	<integer>2</integer>
 	<key>KeepToScale</key>
 	<false/>
 	<key>Layers</key>
@@ -672,7 +672,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-08-10 05:16:11 +0000</string>
+	<string>2013-09-30 18:50:22 +0000</string>
 	<key>Modifier</key>
 	<string>Jordan Reed</string>
 	<key>NotesVisible</key>
@@ -753,7 +753,7 @@
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{304, 6}, {710, 872}}</string>
+		<string>{{-0, 63}, {1440, 815}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -767,7 +767,7 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{0, -1}, {561, 718}}</string>
+		<string>{{-365, -1}, {1305, 676}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>

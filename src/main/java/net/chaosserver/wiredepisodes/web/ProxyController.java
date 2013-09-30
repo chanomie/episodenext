@@ -182,42 +182,41 @@ public class ProxyController {
 	       writer.close();
 	   }
 
-	   @RequestMapping(value="/banners/**", method = {RequestMethod.GET,RequestMethod.HEAD})
-	   public void getAllSeriesDetails(
-			   HttpServletRequest request, HttpServletResponse response) throws IOException {
+	@RequestMapping(value="/banners/**", method = {RequestMethod.GET,RequestMethod.HEAD})
+	public void getAllSeriesDetails(
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-	       String path = (String) request.getAttribute(
-            HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-            
-           String method = request.getMethod(); 
-           path = path.replaceAll("/api", "http://thetvdb.com");
-		   URL url = new URL(path);
-		   HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		   connection.setRequestMethod(method);
-		   connection.connect();
-		   response.setContentType(connection.getContentType());
-   		   // response.addHeader("Last-Modified", connection.getHeaderField("Last-Modified"));
-		   // response.addHeader("Expires", connection.getHeaderField("Expires"));
-		   // response.addHeader("Cache-Control", connection.getHeaderField("Cache-Control"));
-		   // Just set a cache header to expire in 1 - year
-   		   response.addHeader("Cache-Control", "public, max-age=31556926");
-
-		   
-		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
-		   BufferedOutputStream writer =
-		            new BufferedOutputStream(response.getOutputStream());
-	       
-		   
-		   byte[] buffer = new byte[1024];
-		   int len;
-		   while ((len = reader.read(buffer)) != -1) {
-			   writer.write(buffer, 0, len);
-		   }
-		   
-	       writer.flush();
-	       writer.close();
-	   }
-	   
-	   
-	   
+		String ifNoneMatch = request.getHeader("If-None-Match");
+		if(ifNoneMatch == null) {
+			String path = (String) request.getAttribute(
+				HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+	
+			String method = request.getMethod(); 
+			path = path.replaceAll("/api", "http://thetvdb.com");
+			URL url = new URL(path);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();	   
+			connection.setRequestMethod(method);
+			connection.connect();
+			response.setContentType(connection.getContentType());
+			
+			// Just set a cache header to expire in 1 - year
+			response.addHeader("Cache-Control", "public, max-age=31556926");
+			response.addHeader("ETag", Integer.toString(path.hashCode()));
+			
+			BufferedInputStream reader = new BufferedInputStream(url.openStream());
+			BufferedOutputStream writer = new BufferedOutputStream(response.getOutputStream());
+			
+			byte[] buffer = new byte[1024];
+			int len;
+			while ((len = reader.read(buffer)) != -1) {
+				writer.write(buffer, 0, len);
+			}
+			   
+			writer.flush();
+			writer.close();
+		} else {
+			System.out.println("if-none-match: " + ifNoneMatch);
+			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		}
+	}
 }
