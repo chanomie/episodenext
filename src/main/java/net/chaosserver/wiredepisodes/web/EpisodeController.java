@@ -17,6 +17,7 @@
  */
 package net.chaosserver.wiredepisodes.web;
 
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import net.chaosserver.wiredepisodes.ShowInformation;
@@ -36,6 +37,8 @@ import com.omertron.thetvdbapi.model.Series;
 @Controller
 @RequestMapping(value="/showdetails")
 public class EpisodeController {
+	private static final Logger log = Logger.getLogger(EpisodeController.class.getName());
+
    @Autowired
    private ShowInformation showInformation;
 
@@ -81,7 +84,9 @@ public class EpisodeController {
 		   @RequestHeader("User-Agent") String userAgent,
 		   Model model) {
 	
-	   String resultView = "episodes/error404";
+		String resultView = "episodes/error404";
+		log.info("Request to series API has User-Agent: " + userAgent);
+
 	   
 	   try {
 		   Series series = showInformation.getSeries(seriesId);

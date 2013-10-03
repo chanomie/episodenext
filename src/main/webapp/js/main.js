@@ -1111,7 +1111,7 @@ function facebookPlayedEpisode() {
 	spin("facebookPlayedEpisode");	
     FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
 	  if (!response || response.error) {
-        alert('Error occured: ' + response.error);
+        alert('Error occured: ' + response.error.message);
         $.modal.close();
       } else {
         console.log('Post ID: ' + response.id);
@@ -1583,7 +1583,7 @@ function syncWatchedEpisodesFromGoogle() {
 		if(episodeKey !== null && !(episodeKey in googleWatchedEpisodesSync)) {
 			console.log("Added local key " + episodeKey + ": " + ((new Date() - googleSyncStart)/1000));
 			googleWatchedEpisodesSync[episodeKey] = googleUpdated;
-			localDirty = true;
+			googleLocalDirty = true;
 		}
 		googleArrayIndex++;
 		setTimeout(syncWatchedEpisodesFromGoogle,timeoutDelay);
@@ -1629,7 +1629,7 @@ function syncSeriesFromGoogle() {
 
 		if(seriesId !== null && !(seriesId in googleSeriesListSync)) {
 			googleSeriesListSync[seriesId] = googleUpdated;
-			localDirty = true;
+			googleLocalDirty = true;
 		}
 		googleArrayIndex++;
 		setTimeout(syncSeriesFromGoogle,timeoutDelay);
@@ -1687,7 +1687,7 @@ function syncSeriesToGoogle() {
           if(seriesValue == null) {
 		      seriesValue = 0;
 		      googleSeriesListSync[seriesKey] = seriesValue;
-			  localDirty = true;
+			  googleLocalDirty = true;
 		  }
 
 		  if(seriesValue >= googleLastSyncTime) {          

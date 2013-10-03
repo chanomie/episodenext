@@ -20,7 +20,9 @@
   <meta property="video:series"   content="<c:out value="${seriesUrl}"/>" />
   <meta property="og:url"         content="<c:out value="${episodeUrl}"/>" /> 
   <meta property="og:title"       content="<c:out value="${series.seriesName} ${seasonNumber}x${episodeNumber} - ${episode.episodeName}"/>" /> 
-  <meta property="og:image"       content="<c:out value="${episode.filename}"/>" /> 
+  <c:if test="${!empty episode.filename}">
+	  <meta property="og:image"       content="<c:out value="${episode.filename}"/>" /> 
+  </c:if>
   <meta property="og:description" content="<c:out value="${episode.overview}"/>" />
   <meta proptery="og:site_name"   content="TheTVDB.com" />
  </head>

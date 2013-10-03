@@ -470,7 +470,13 @@ div.modaltitle {
 	width: 100%;
 }
 
+div.modaltext {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
 div.modalbuttons {
+	border-top: 1px solid lightgrey;
     text-align: center;
     margin-top: 20px;
     color: #007AFF;
@@ -478,7 +484,6 @@ div.modalbuttons {
 
 div.leftmodalbutton {
 	float: left;
-	border-top: 1px solid lightgrey;
 	border-right: 1px solid lightgrey;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -488,10 +493,9 @@ div.leftmodalbutton {
 
 div.rightmodalbutton {
 	display: inline-block;
-	border-top: 1px solid lightgrey;
 	padding-top: 10px;
 	padding-bottom: 10px;
-	width: 50%;
+	width: 49%;
 }
 
 /* Table View */
