@@ -122,6 +122,10 @@
                             <targetPath>WEB-INF</targetPath>
                         </resource>
                         <resource>
+                            <directory>src/main/resources</directory>
+                            <targetPath>WEB-INF/classes/resources</targetPath>
+                        </resource>
+                        <resource>
                             <directory>${basedir}/src/main/webapp</directory>
                             <includes>
                                 <include>*.html</include>

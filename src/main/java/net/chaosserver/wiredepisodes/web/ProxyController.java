@@ -21,6 +21,7 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.users.UserService;
 
+import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -36,6 +37,7 @@ import java.security.Principal;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,6 +55,8 @@ import org.springframework.web.servlet.HandlerMapping;
 @Controller
 @RequestMapping(value="/api")
 public class ProxyController {
+	private static final Logger log = Logger.getLogger(ProxyController.class.getName());
+
 	   @Autowired
 	   private ShowInformation showInformation;
 
@@ -186,37 +190,69 @@ public class ProxyController {
 	public void getAllSeriesDetails(
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+		String path = (String) request.getAttribute(
+			HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		path = path.replaceAll("/api", "http://thetvdb.com");
+		String method = request.getMethod(); 
+		URL url = new URL(path);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		String contentType = connection.getContentType();
+
 		String ifNoneMatch = request.getHeader("If-None-Match");
-		if(ifNoneMatch == null) {
-			String path = (String) request.getAttribute(
-				HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-	
-			String method = request.getMethod(); 
-			path = path.replaceAll("/api", "http://thetvdb.com");
-			URL url = new URL(path);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();	   
-			connection.setRequestMethod(method);
-			connection.connect();
-			response.setContentType(connection.getContentType());
-			
+		// If there is a "If None Match" header, than it was etagged, so just
+		// tell it not modified.  If we try and pull it and the result comes
+		// as text/html, something has gone wrong.  error 500 or something,
+		// so we need to do some clever.
+		if(ifNoneMatch == null && contentType.contains("text/html")) {
+		    streamNoImage(response);						
+		} else if (ifNoneMatch == null) {
+			try {
+				connection.setRequestMethod(method);
+				connection.connect();
+				response.setContentType(contentType);
+				
+				// Just set a cache header to expire in 1 - year
+				response.addHeader("Cache-Control", "public, max-age=31556926");
+				response.addHeader("ETag", Integer.toString(path.hashCode()));
+				
+				BufferedInputStream reader = new BufferedInputStream(url.openStream());
+				BufferedOutputStream writer = new BufferedOutputStream(response.getOutputStream());
+				
+				byte[] buffer = new byte[1024];
+				int len;
+				while ((len = reader.read(buffer)) != -1) {
+					writer.write(buffer, 0, len);
+				}
+				   
+				writer.flush();
+				writer.close();
+			} catch (Exception e) {
+				streamNoImage(response);
+			}
+		} else {
 			// Just set a cache header to expire in 1 - year
 			response.addHeader("Cache-Control", "public, max-age=31556926");
 			response.addHeader("ETag", Integer.toString(path.hashCode()));
-			
-			BufferedInputStream reader = new BufferedInputStream(url.openStream());
-			BufferedOutputStream writer = new BufferedOutputStream(response.getOutputStream());
-			
-			byte[] buffer = new byte[1024];
-			int len;
-			while ((len = reader.read(buffer)) != -1) {
-				writer.write(buffer, 0, len);
-			}
-			   
-			writer.flush();
-			writer.close();
-		} else {
-			System.out.println("if-none-match: " + ifNoneMatch);
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 		}
+	}
+	
+	protected void streamNoImage(HttpServletResponse response) throws IOException {
+		response.setContentType("image/png");
+		response.addHeader("Pragma", "no-cache");
+		response.addHeader("Cache-Control", "no-cache, must-revalidate");
+
+		InputStream inputStream = ProxyController.class.getResourceAsStream("/resources/img/noimage.png");
+		BufferedInputStream reader = new BufferedInputStream(inputStream);
+		BufferedOutputStream writer = new BufferedOutputStream(response.getOutputStream());
+		
+		byte[] buffer = new byte[1024];
+		int len;
+		while ((len = reader.read(buffer)) != -1) {
+			writer.write(buffer, 0, len);
+		}
+		   
+		writer.flush();
+		writer.close();					
 	}
 }
