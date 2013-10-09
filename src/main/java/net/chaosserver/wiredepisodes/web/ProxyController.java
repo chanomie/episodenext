@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -196,19 +197,22 @@ public class ProxyController {
 		String method = request.getMethod(); 
 		URL url = new URL(path);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod(method);
+		connection.connect();
 		String contentType = connection.getContentType();
 
 		String ifNoneMatch = request.getHeader("If-None-Match");
+		
+		log.info("Request to banners API has If-None-Match: " + ifNoneMatch + " and contentType: " + contentType);
 		// If there is a "If None Match" header, than it was etagged, so just
 		// tell it not modified.  If we try and pull it and the result comes
 		// as text/html, something has gone wrong.  error 500 or something,
 		// so we need to do some clever.
 		if(ifNoneMatch == null && contentType.contains("text/html")) {
+			log.info("Streaming null image because of If-None-Match and content type");
 		    streamNoImage(response);						
 		} else if (ifNoneMatch == null) {
 			try {
-				connection.setRequestMethod(method);
-				connection.connect();
 				response.setContentType(contentType);
 				
 				// Just set a cache header to expire in 1 - year
@@ -227,6 +231,7 @@ public class ProxyController {
 				writer.flush();
 				writer.close();
 			} catch (Exception e) {
+				log.log(Level.INFO, "Streaming null image because of Exception",e);
 				streamNoImage(response);
 			}
 		} else {
@@ -255,4 +260,32 @@ public class ProxyController {
 		writer.flush();
 		writer.close();					
 	}
+	
+   @RequestMapping(value="/headertest", method = RequestMethod.GET)
+   public void headersProxy(
+		   HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+	   response.setContentType(request.getContentType());
+	   URL url = new URL("https://home.chaosserver.net:8443/headers.php");
+	   URLConnection connection = url.openConnection();
+	   connection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1");
+	   connection.connect();
+	   response.setContentType(connection.getContentType());
+	   	   
+	   BufferedInputStream reader = new BufferedInputStream(url.openStream());
+	   BufferedOutputStream writer =
+	            new BufferedOutputStream(response.getOutputStream());
+       
+	   
+	   byte[] buffer = new byte[1024];
+	   int len;
+	   while ((len = reader.read(buffer)) != -1) {
+		   writer.write(buffer, 0, len);
+	   }
+	   
+	   // writer.write(method.getResponseBodyAsString());
+       writer.flush();
+       writer.close();
+   }
+	
 }

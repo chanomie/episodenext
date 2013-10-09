@@ -689,6 +689,10 @@ function buildMainScreenFromCache() {
 	if(seriesListCacheJson !== null) {
 		var seriesListCache = JSON.parse(seriesListCacheJson);
 		for(var seriesId in seriesListCache) {
+		  if(seriesListCache[seriesId]["seriesId"] == undefined) {
+			  continue;
+		  }
+		  	
           $("#showlist").append(
             $("<div></div>").
             	attr("id",("series-"+seriesListCache[seriesId]["seriesId"])).

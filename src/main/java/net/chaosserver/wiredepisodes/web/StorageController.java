@@ -159,11 +159,14 @@ public class StorageController {
 		   if(seriesId == null) throw new IllegalArgumentException("Missing series Id");
 		   
 		   Date updatedTime = new Date();
+		   // Use the updated timestamp.
+		   /**
 		   try {
 			   updatedTime = new Date(Long.parseLong(updated));
 		   } catch (Exception e) {
 			   // do nothing
 		   }
+		   */
 
 		   Entity series = new Entity("SeriesList", seriesId, getPrincipalKey(principal));
 		   series.setProperty("seriesId", seriesId);
@@ -258,11 +261,14 @@ public class StorageController {
 		   if(seriesId == null) throw new IllegalArgumentException("Missing series Id");
 		   
 		   Date updatedTime = new Date();
+		   // Use the updated timestamp.
+		   /**
 		   try {
 			   updatedTime = new Date(Long.parseLong(updated));
 		   } catch (Exception e) {
 			   // do nothing
 		   }
+		   */
 
 		   Entity watchedEpisode = new Entity("WatchedEpisodes", seriesId, getPrincipalKey(principal));
 		   watchedEpisode.setProperty("watchedKey", seriesId);
