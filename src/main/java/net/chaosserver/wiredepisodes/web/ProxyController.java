@@ -28,6 +28,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -85,20 +87,21 @@ public class ProxyController {
 			   response.addHeader("Cache-Control", cacheControlHeader);
    		   }
 		   
-		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
-		   BufferedOutputStream writer =
-		            new BufferedOutputStream(response.getOutputStream());
+		   
+	       BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
+	       PrintWriter printWriter = response.getWriter();
+	       
+	       String nextLine = inputReader.readLine();
+	       while(nextLine != null) {
+			   printWriter.println(stripNonValidXMLCharacters(nextLine));
+		       nextLine = inputReader.readLine();
+	       }
 	       
 		   
-		   byte[] buffer = new byte[1024];
-		   int len;
-		   while ((len = reader.read(buffer)) != -1) {
-			   writer.write(buffer, 0, len);
-		   }
-		   
-		   // writer.write(method.getResponseBodyAsString());
-	       writer.flush();
-	       writer.close();
+		   printWriter.flush();
+		   printWriter.close();
+
+
 	   }
 	   
 	   @RequestMapping(value="/{seriesId}", method = { RequestMethod.GET })
@@ -127,20 +130,19 @@ public class ProxyController {
 			   response.addHeader("Cache-Control", cacheControlHeader);
    		   }
 		   
-		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
-		   BufferedOutputStream writer =
-		            new BufferedOutputStream(response.getOutputStream());
+	       BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
+	       PrintWriter printWriter = response.getWriter();
+	       
+	       String nextLine = inputReader.readLine();
+	       while(nextLine != null) {
+			   printWriter.println(stripNonValidXMLCharacters(nextLine));
+		       nextLine = inputReader.readLine();
+	       }
 	       
 		   
-		   byte[] buffer = new byte[1024];
-		   int len;
-		   while ((len = reader.read(buffer)) != -1) {
-			   writer.write(buffer, 0, len);
-		   }
-		   
-		   // writer.write(method.getResponseBodyAsString());
-	       writer.flush();
-	       writer.close();
+		   printWriter.flush();
+		   printWriter.close();
+
 		   
 	   }
 
@@ -170,21 +172,20 @@ public class ProxyController {
    		   if(cacheControlHeader != null) {
 			   response.addHeader("Cache-Control", cacheControlHeader);
    		   }
-		   
-		   BufferedInputStream reader = new BufferedInputStream(url.openStream());
-		   BufferedOutputStream writer =
-		            new BufferedOutputStream(response.getOutputStream());
+		   	       
+	       BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
+	       PrintWriter printWriter = response.getWriter();
+	       
+	       String nextLine = inputReader.readLine();
+	       while(nextLine != null) {
+			   printWriter.println(stripNonValidXMLCharacters(nextLine));
+		       nextLine = inputReader.readLine();
+	       }
 	       
 		   
-		   byte[] buffer = new byte[1024];
-		   int len;
-		   while ((len = reader.read(buffer)) != -1) {
-			   writer.write(buffer, 0, len);
-		   }
-		   
-		   // writer.write(method.getResponseBodyAsString());
-	       writer.flush();
-	       writer.close();
+		   printWriter.flush();
+		   printWriter.close();
+
 	   }
 
 	@RequestMapping(value="/banners/**", method = {RequestMethod.GET,RequestMethod.HEAD})
@@ -260,6 +261,35 @@ public class ProxyController {
 		writer.flush();
 		writer.close();					
 	}
+
+    /**
+     * This method ensures that the output String has only
+     * valid XML unicode characters as specified by the
+     * XML 1.0 standard. For reference, please see
+     * <a href="http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char">the
+     * standard</a>. This method will return an empty
+     * String if the input is null or empty.
+     *
+     * @param in The String whose non-valid characters we want to remove.
+     * @return The in String, stripped of non-valid characters.
+     */
+    public String stripNonValidXMLCharacters(String in) {
+        StringBuffer out = new StringBuffer(); // Used to hold the output.
+        char current; // Used to reference the current character.
+
+        if (in == null || ("".equals(in))) return ""; // vacancy test.
+        for (int i = 0; i < in.length(); i++) {
+            current = in.charAt(i); // NOTE: No IndexOutOfBoundsException caught here; it should not happen.
+            if ((current == 0x9) ||
+                (current == 0xA) ||
+                (current == 0xD) ||
+                ((current >= 0x20) && (current <= 0xD7FF)) ||
+                ((current >= 0xE000) && (current <= 0xFFFD)) ||
+                ((current >= 0x10000) && (current <= 0x10FFFF)))
+                out.append(current);
+        }
+        return out.toString();
+    }    
 	
    @RequestMapping(value="/headertest", method = RequestMethod.GET)
    public void headersProxy(

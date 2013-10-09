@@ -1278,6 +1278,11 @@ function genericError(jqXHR, textStatus) {
 	alert("Failure: " + textStatus);
 }
 
+function genericErrorConsole(jqXHR, textStatus) {
+    stopspin("genericError");
+	console.log("Failure: " + textStatus);
+}
+
 
 /**
  * Does a realtime add of a watched key into the cloud stores if they are
@@ -1789,9 +1794,11 @@ function getOldestUnwatchedEpisode(recacheSeriesId) {
 	var searchUrl = getSeriesAllDetailsUrl + recacheSeriesId;
 	var resultEpisode;
 	var newSeries = {};
+	console.log("getting series info for: " + searchUrl);
 	$.ajax({
 		url: searchUrl,
 		async: false,
+		error: genericErrorConsole,
 		success: function(data, status) {
 			var seriesId = $(data).find("Data Series id").text();
 			newSeries["seriesId"] = seriesId;
