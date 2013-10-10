@@ -17,23 +17,7 @@
  */
 package net.chaosserver.wiredepisodes;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.junit.Test;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-import com.omertron.thetvdbapi.model.Episode;
-
-import net.chaosserver.wiredepisodes.web.NewEpisodeParser;
 
 public class ShowInformationTest {
 	 /*

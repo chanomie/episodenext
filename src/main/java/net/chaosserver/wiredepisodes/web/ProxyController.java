@@ -17,30 +17,20 @@
  */
 package net.chaosserver.wiredepisodes.web;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.users.UserService;
-
-import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.security.Principal;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,7 +42,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
 @Controller
@@ -68,7 +57,7 @@ public class ProxyController {
 			   @RequestParam(required = true, value = "seriesname") String seriesname,
 			   HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-		   URL url = new URL("http://thetvdb.com/api/GetSeries.php?seriesname=" + URLEncoder.encode(seriesname));
+		   URL url = new URL("http://thetvdb.com/api/GetSeries.php?seriesname=" + URLEncoder.encode(seriesname,"UTF-8"));
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
@@ -111,7 +100,7 @@ public class ProxyController {
 
 		   response.setContentType(request.getContentType());
 		   URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
-				   + "/series/" + URLEncoder.encode(seriesId) + "/en.xml");
+				   + "/series/" + URLEncoder.encode(seriesId,"UTF-8") + "/en.xml");
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
@@ -154,7 +143,7 @@ public class ProxyController {
 
 		   response.setContentType(request.getContentType());
 		   URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
-				   + "/series/" + URLEncoder.encode(seriesId) + "/all/en.xml");
+				   + "/series/" + URLEncoder.encode(seriesId,"UTF-8") + "/all/en.xml");
 		   URLConnection connection = url.openConnection();
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
