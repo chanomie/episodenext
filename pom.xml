@@ -9,7 +9,7 @@
     <artifactId>thewirewatcher</artifactId>
 
     <properties>
-        <appengine.app.version>2</appengine.app.version>
+        <appengine.app.version>1</appengine.app.version>
         <appengine.target.version>1.8.3</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.2.2.RELEASE</org.springframework.version>
