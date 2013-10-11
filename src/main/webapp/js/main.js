@@ -233,9 +233,8 @@ $(document).ready(function() {
 	$("#addnewshowbutton").click(addNewShow);
 	$('#addshowform').submit(onSearch);
 	$("#recache").click(recache);
-	$("#facebookcancel").click(function() {$.modal.close()});
+	$(".cancelmodal").click(function() {$.modal.close()});
 	$("#facebookpost").click(facebookPlayedEpisode);
-	$("#googlecancel").click(function() {$.modal.close()});
 	$("#addtohome .close").click(function() {
 		$("#addtohome").slideUp('slow');
 		localStorage.setItem("hideaddto","true");
@@ -456,7 +455,7 @@ function checkAndSync() {
     if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
 	    var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
 		if(!googleAuth && lastGoogleSyncEpoch) {
-			$("#googlemodal").modal();
+			$("#googlemodal").modal({minWidth:"300",maxWidth:"300"});
 		}	    
 	    if(lastGoogleSyncEpoch == null) {
 	      lastGoogleSyncEpoch = 0;
@@ -837,6 +836,7 @@ function buildMainScreenFromCache() {
 		$(".playedButton").click(playedEpisode);
 		$(".facebookButton").click(facebookShare);
         $(".deleteButton").click(deleteSeriesButton);
+        $("#deleteconfirm").click(deleteSeriesConfirm);
         $(".infoButtonShow").click(showInfoShow);
 	}
     console.log("Build screen stop: " + ((new Date() - start)/1000));	  
@@ -845,12 +845,27 @@ function buildMainScreenFromCache() {
 }
 
 /**
- * Delete the series from the tracked list referenced by this button.
+ * Display confirmation dialog to delete the series from the tracked list
+ *   referenced by this button.
+ *
  * @this {element} the button id used (element.data-seriesid)
  */
 function deleteSeriesButton() {
     var seriesid = $(this).attr("data-seriesid");
-    deleteSeries(seriesid);
+	$("#deleteconfirm").
+	  attr("data-seriesid",seriesid);
+	  
+    $("#deletemodal").modal({minWidth:"300",maxWidth:"300"});
+}
+
+/**
+ * Delete the series from the tracked list referenced by this button.
+ * @this {element} the button id used (element.data-seriesid)
+ */
+function deleteSeriesConfirm() {
+    var seriesid = $(this).attr("data-seriesid");
+	deleteSeries(seriesid);
+    $.modal.close();
 }
 
 function showInfoShow() {
@@ -1072,7 +1087,7 @@ function facebookShare() {
 	
 	FB.getLoginStatus(function(response) {
 		if (response.status === 'connected') {
-			$("#facebookmodal").modal();
+			$("#facebookmodal").modal({minWidth:"300",maxWidth:"300"});
 		} else {
 			$("#mainpage").slideUp('slow');
 			$("#settingspage").slideDown('slow');

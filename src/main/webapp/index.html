@@ -92,14 +92,25 @@
           <div class="modaltext">Watch this episode and post to Facebook?</div>
           <div class="modalbuttons">
             <div class="leftmodalbutton" id="facebookpost"><span class="facebook">Post</span></div>
-            <div class="rightmodalbutton" id="facebookcancel"><span class="cancel">Cancel</span></div>
+            <div class="rightmodalbutton cancelmodal" id="facebookcancel"><span class="cancel">Cancel</span></div>
           </div>
         </div>
         <div id="googlemodal" class="pagemodal" style="display:none;">
           <div class="modaltitle">Log Into Google</div>
           <div>Google Session has ended.  Log back into Google?</div>
-          <div class="modalbuttons"><span id="googleloginmod" class="googlebutton">Login</span><span id="googlecancel" class="cancel">Cancel</span></div>
+          <div class="modalbuttons">
+            <div class="leftmodalbutton" id="googleloginmod"><span class="facebook">Login</span></div>
+            <div class="rightmodalbutton cancelmodal" id="googlecancel"><span class="cancel">Cancel</span></div>
+          </div>
         </div>
+        <div id="deletemodal" class="pagemodal" style="display:none;">
+          <div class="modaltitle">Delete Series</div>
+          <div>Remove the series?</div>
+          <div class="modalbuttons">
+            <div class="leftmodalbutton" id="deleteconfirm"><span class="confirm">Delete</span></div>
+            <div class="rightmodalbutton cancelmodal" id="deletecancel"><span class="cancel">Cancel</span></div>
+          </div>
+        </div>   
         <div id="addtohome" style="display:none;">
           <div id="addtohomemessage">
             <div class="close"><i class="icon-remove-sign"></i></div>
