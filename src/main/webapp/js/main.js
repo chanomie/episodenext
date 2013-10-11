@@ -254,7 +254,9 @@ $(document).ready(function() {
 	$("#dropboxsync").change(changeSyncFrequency);
 	$("#tvdbsync").change(changeSyncFrequency);
 	$("#googlesync").change(changeSyncFrequency);
-	
+
+	$(".resetLocalStorage").click(resetLocalStorage);
+
   	// Dropbox Authentications
 	client.authenticate({interactive:false}, function (error) {
 		if (error) {
@@ -1817,6 +1819,15 @@ function recacheSeries() {
 		isRecaching = false;
         console.log("Finished recache. " + ((new Date() - recacheStart)/1000));
 	}	
+}
+
+/*
+ * Deletes an element out of local storage
+ */
+function resetLocalStorage() {
+	localStorageName = $(this).attr("data-storagename");
+	localStorage.removeItem(localStorageName);
+	updateSyncDisplay();
 }
 
 function parseDate(input) {
