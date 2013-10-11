@@ -23,7 +23,7 @@ public class CorsFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		String origin = request.getHeader("Origin");
-		log.info("Got origin of: " + origin);
+        response.addHeader("X-Received-Origin", origin);
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         

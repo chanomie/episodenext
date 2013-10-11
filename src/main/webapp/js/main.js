@@ -716,9 +716,7 @@ function buildMainScreenFromCache() {
                       addClass("icon-info-sign"))
                     ))
            ); 
-        }        
-        $(".deleteButton").click(deleteSeriesButton);
-        $(".infoButtonShow").click(showInfoShow);
+        }
                 
         $("#unwatchedShowList").empty();
         $("#unairedShowList").empty();
@@ -780,18 +778,14 @@ function buildMainScreenFromCache() {
 	                      attr("data-seasonnumber",nextEpisodeCache[seriesId]["SeasonNumber"]).
 	                      attr("data-episodenumber",nextEpisodeCache[seriesId]["EpisodeNumber"]).
 	                      attr("data-episodeId",nextEpisodeCache[seriesId]["episodeId"]).
-	                      addClass("icon-facebook-sign"))
-	                    ));
-	                    
-			  /*
-			  Removed extra
-			  .
+	                      addClass("icon-facebook-sign")).
 	                    append(
 	                      $("<i></i>").
-	                      addClass("infoButton").
+	                      addClass("infoButtonShow").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
 	                      addClass("icon-info-sign"))
-			  */
+	                    ));
+	                    
 
 			  var now = new Date();
 			  if(newEpisodeAirDate < now) {
@@ -842,6 +836,8 @@ function buildMainScreenFromCache() {
 		}
 		$(".playedButton").click(playedEpisode);
 		$(".facebookButton").click(facebookShare);
+        $(".deleteButton").click(deleteSeriesButton);
+        $(".infoButtonShow").click(showInfoShow);
 	}
     console.log("Build screen stop: " + ((new Date() - start)/1000));	  
 
@@ -1271,11 +1267,12 @@ function genericError(jqXHR, textStatus) {
  * @param {number} watchedTime an epoch indicator of when the show was watched
  */
 function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
+	var now = (new Date()).getTime();
 	// If the Dropbox Table Exists add to it
 	if(watchedEpisodesTable) {
 		var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
 		if(results === null || results.length === 0) {
-			watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": watchedTime});
+			watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": now});
 		}
 	}
 	
@@ -1284,7 +1281,7 @@ function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
 		$.ajax({
 			url: googleRootUrl+"/data/watched",
 			type: "POST",
-			data: { "watchedKey": watchedEpisodeKey, "updated": watchedTime },
+			data: { "watchedKey": watchedEpisodeKey, "updated": now },
 			error: genericError
 	    });
 	}	
@@ -1299,11 +1296,13 @@ function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
  * @param {number} watchedTime an epoch indicator of when the show was watched
  */
 function addSeriesToCloud(seriesKey, watchedTime) {
+	var now = (new Date()).getTime();
+	
 	// If the Dropbox Table Exists add to it
 	if(seriesListTable) {
 		var results = seriesListTable.query({"seriesId": seriesKey});
 		if(results === null || results.length === 0) {
-			seriesListTable.insert({"seriesId": seriesKey, "updated": watchedTime});
+			seriesListTable.insert({"seriesId": seriesKey, "updated": now});
 		}
 	}
 	
@@ -1312,7 +1311,7 @@ function addSeriesToCloud(seriesKey, watchedTime) {
 		$.ajax({
 			url: googleRootUrl+"/data/series",
 			type: "POST",
-			data: { "seriesId": seriesKey, "updated": watchedTime },
+			data: { "seriesId": seriesKey, "updated": now },
 			error: genericError
 		});
 	}	
@@ -1410,7 +1409,7 @@ function syncWatchedEpisodesFromDropbox() {
 		
 		if(episodeKey !== null && !(episodeKey in watchedEpisodesSync)) {
 			console.log("Added local key " + episodeKey + ": " + ((new Date() - dropBoxSyncStart)/1000));
-			watchedEpisodesSync[episodeKey] = dropboxUpdated;
+			watchedEpisodesSync[episodeKey] = (new Date()).getTime();
 			localDirty = true;
 		}
 		syncKeyIndex++;
@@ -1435,7 +1434,7 @@ function syncSeriesFromDropbox() {
 		}
 
 		if(seriesId !== null && !(seriesId in seriesListSync)) {
-			seriesListSync[seriesId] = dropboxUpdated;
+			seriesListSync[seriesId] = (new Date()).getTime();
 			localDirty = true;
 		}
 		syncKeyIndex++;
@@ -1468,7 +1467,7 @@ function syncWatchedEpisodesToDropbox() {
 		      watchedEpisodesSync[episodeKey] = episodeValue;
 		      localDirty = true;
 	      }
-	      watchedEpisodesTable.insert({"episodeKey": episodeKey, "updated": episodeValue});
+	      watchedEpisodesTable.insert({"episodeKey": episodeKey, "updated": (new Date()).getTime()});
 	  }	  
 	  setTimeout(syncWatchedEpisodesToDropbox,slowTimeoutDelay);
   } else {
@@ -1492,7 +1491,7 @@ function syncSeriesToDropbox() {
 				seriesListSync[seriesKey] = seriesValue;
 				localDirty = true;
 			}
-	        seriesListTable.insert({"seriesId": seriesKey, "updated": seriesValue});
+	        seriesListTable.insert({"seriesId": seriesKey, "updated": (new Date()).getTime()});
 	  }
 	  setTimeout(syncSeriesToDropbox,slowTimeoutDelay);
   } else {
@@ -1568,8 +1567,8 @@ function syncWatchedEpisodesFromGoogle() {
 		
 		if(episodeKey !== null && !(episodeKey in googleWatchedEpisodesSync)) {
 			console.log("Added local key " + episodeKey + ": " + ((new Date() - googleSyncStart)/1000));
-			googleWatchedEpisodesSync[episodeKey] = googleUpdated;
-			localDirty = true;
+			googleWatchedEpisodesSync[episodeKey] = (new Date()).getTime();
+			googleLocalDirty = true;
 		}
 		googleArrayIndex++;
 		setTimeout(syncWatchedEpisodesFromGoogle,timeoutDelay);
@@ -1614,8 +1613,8 @@ function syncSeriesFromGoogle() {
 		}
 
 		if(seriesId !== null && !(seriesId in googleSeriesListSync)) {
-			googleSeriesListSync[seriesId] = googleUpdated;
-			localDirty = true;
+			googleSeriesListSync[seriesId] = (new Date()).getTime();
+			googleLocalDirty = true;
 		}
 		googleArrayIndex++;
 		setTimeout(syncSeriesFromGoogle,timeoutDelay);
@@ -1647,7 +1646,7 @@ function syncWatchedEpisodesToGoogle() {
 			  $.ajax({
 			          url: googleRootUrl+"/data/watched",
 			          type: "POST",
-			          data: { "watchedKey": episodeKey, "updated": episodeValue },
+			          data: { "watchedKey": episodeKey, "updated": (new Date()).getTime() },
 			          error: genericError,
 			          complete: function(jqXHR,textStatus) {
 			        	  setTimeout(syncWatchedEpisodesToGoogle,timeoutDelay);
@@ -1673,14 +1672,14 @@ function syncSeriesToGoogle() {
           if(seriesValue == null) {
 		      seriesValue = 0;
 		      googleSeriesListSync[seriesKey] = seriesValue;
-			  localDirty = true;
+			  googleLocalDirty = true;
 		  }
 
 		  if(seriesValue >= googleLastSyncTime) {          
 			  $.ajax({
 		          url: googleRootUrl+"/data/series",
 		          type: "POST",
-		          data: { "seriesId": seriesKey, "updated": seriesValue },
+		          data: { "seriesId": seriesKey, "updated": (new Date()).getTime() },
 		          error: genericError,
 		          complete: function(jqXHR,textStatus) {
 		        	  setTimeout(syncSeriesToGoogle,timeoutDelay);
