@@ -501,31 +501,31 @@ div.rightmodalbutton {
 div.tbHeader {
 	text-shadow:0px 1px 0px rgba(255, 255, 255, 0.75);
 	margin:15px 10px 7px 10px;
-	font-weight:bold;
-	color:rgb(77,87,104);
-
+	font-weight:light;
+	color: #A0A0A0;
+	text-transform: uppercase;
 }
 
 ul.tableView {
 	list-style-type:none;
 	font-size:16px;
-	margin:10px;
 	padding:0;
+	background-color: rgb(247, 247, 247);
+	border-top:1px solid #B2B4B8;
+	border-bottom:1px solid #B2B4B8;
 }
 
 ul.tableView li {
 	background-color:#F7F7F7;
-	padding:14px 10px;
-	border-left:1px solid #B2B4B8;
-	border-right:1px solid #B2B4B8;
-	border-bottom:1px solid #CBCBCB;
-	border-top:1px solid #FDFDFD;
-	margin:0px 10px 0px 10px;	
+	padding: 10px;
+	margin-left: 40px;
 	color:black;
+	border-bottom:1px solid #B2B4B8;
 }
 
 ul.tableView li b i {
 	font-size: 120%;
+	margin-left: -24px;
 }
 
 ul.tableView li span.subtitle {
@@ -535,24 +535,14 @@ ul.tableView li span.subtitle {
 
 
 ul.tableView li:first-of-type {
-	box-shadow:inset 0px 1px 0px rgba(0, 0, 0, 0.075);
-	border-top:1px solid #B2B4B8;
-	border-top-right-radius:10px;
-	border-top-left-radius:10px;
-	margin:15px 10px 0px 10px;
+
 }
 
 ul.tableView li:last-of-type {
-	border-bottom:1px solid #B2B4B8;
-	border-bottom-right-radius:10px;
-	border-bottom-left-radius:10px;
-	box-shadow:0px 1px 0px rgba(255, 255, 255, 0.75);
-	margin:0px 10px 7px 10px;	
+	border-bottom: none;
 }
 
 ul.tableView li:only-of-type {
-	box-shadow:inset 0px 1px 0px rgba(0, 0, 0, 0.075), 0px 1px 0px rgba(255, 255, 255, 0.75);
-	margin:15px 10px 7px 10px;	
 }
 
 select.settingsselect {
