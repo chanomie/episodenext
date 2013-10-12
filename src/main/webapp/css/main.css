@@ -523,14 +523,20 @@ ul.tableView li {
 	border-bottom:1px solid #B2B4B8;
 }
 
+ul.tableView li b {
+	font-weight: normal;
+}
+
 ul.tableView li b i {
 	font-size: 120%;
-	margin-left: -24px;
+	margin-left: -38px;
+	padding-right: 14px;
 }
 
 ul.tableView li span.subtitle {
   float: right;
-  color:#385487;	
+  color:#B2B2B2;
+  margin-right: 4px;
 }
 
 
@@ -552,7 +558,7 @@ select.settingsselect {
 	-webkit-appearance: none;
 	text-align: right;
 	direction: rtl;
-	color:#385487;
+	color:#B2B2B2;
 }
 
 i.icon-chevron-right {
