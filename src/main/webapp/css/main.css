@@ -145,7 +145,7 @@ div#addtohomemessage .appicon {
 
 div.header {
 	background-color: #F7F7F7;
-	background: -webkit-linear-gradient(270deg, rgba(247,247,247,0.91));
+	background: -webkit-linear-gradient(270deg, rgba(247,247,247,0.91), rgba(247,247,247,0.91));
     
     border-bottom: 1px solid #A7A7AA;
 	position: fixed;
@@ -430,10 +430,17 @@ div.season {
 
 div.seasonbar {
     font-size: 24px;
+    font-weight:light;
+	text-transform: uppercase;
+    color: #A0A0A0;
+    background-color: #DADDE2;
 	padding-left: 10px;
 	padding-right: 10px;
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #BEBEBE));	
-	background: -moz-linear-gradient(top,  #CCCCCC,  #BEBEBE);
+}
+
+i.seasonexpander {
+	float: right;
+	padding-top: 2px;
 }
 
 div.seasonbuttons {

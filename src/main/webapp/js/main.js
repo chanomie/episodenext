@@ -38,7 +38,7 @@ var client = new Dropbox.Client({key: DROPBOX_APP_KEY});
 
 /**
  * Defines if the Google Authenticated Session has been established.
- * @type {boolean+
+ * @type {boolean}
  * @private
  */
 var googleAuth = false;
@@ -140,6 +140,13 @@ var slowTimeoutDelay = 100;
  */
 var settings;
 
+/**
+ * Defines the amount of space that the title bar overlays.
+ * @type {number}
+ * @private
+ */
+var topDistance = 44;
+
 $(document).ready(function() {
 	/*
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -178,6 +185,7 @@ $(document).ready(function() {
 		updateSyncDisplay();  
 		$("#mainpage").slideUp('slow');
 		$("#settingspage").slideDown('slow');
+				
 		trackPageView("/settingspage");
 	});
 
@@ -208,16 +216,16 @@ $(document).ready(function() {
 	$("#allshowsseasonbar").click(function() {
 		if($(this).attr("data-status") == "hidden") {
 		   	$(this).attr("data-status","shown");
-		   	$("#allshowsexpander").removeClass("icon-expand");
-		   	$("#allshowsexpander").addClass("icon-collapse");
+		   	$("#allshowsexpander").removeClass("icon-chevron-right");
+		   	$("#allshowsexpander").addClass("icon-chevron-down");
 		   	$("#showlist").show();
 			$(document.body).animate({
-			    'scrollTop': $('#allshowsseasonbar').offset().top
+			    'scrollTop': $('#allshowsseasonbar').offset().top-topDistance
 			}, 1000);	   	
 		} else {
 		   	$(this).attr("data-status","hidden");
-		   	$("#allshowsexpander").removeClass("icon-collapse");
-		   	$("#allshowsexpander").addClass("icon-expand");
+		   	$("#allshowsexpander").removeClass("icon-chevron-down");
+		   	$("#allshowsexpander").addClass("icon-chevron-right");
 		   	$("#showlist").hide();
 		 }
 	});
@@ -225,16 +233,16 @@ $(document).ready(function() {
 	$("#unairedseasonbar").click(function() {
 		if($(this).attr("data-status") == "hidden") {
 		   	$(this).attr("data-status","shown");
-		   	$("#unairedseasonexpander").removeClass("icon-expand");
-		   	$("#unairedseasonexpander").addClass("icon-collapse");
+		   	$("#unairedseasonexpander").removeClass("icon-chevron-right");
+		   	$("#unairedseasonexpander").addClass("icon-chevron-down");
 		   	$("#unairedShowList").show();
 			$(document.body).animate({
-			    'scrollTop': $('#unairedseasonbar').offset().top
+			    'scrollTop': $('#unairedseasonbar').offset().top-topDistance
 			}, 1000);	   	
 		} else {
 			$(this).attr("data-status","hidden");
-			$("#unairedseasonexpander").removeClass("icon-collapse");
-			$("#unairedseasonexpander").addClass("icon-expand");
+			$("#unairedseasonexpander").removeClass("icon-chevron-down");
+			$("#unairedseasonexpander").addClass("icon-chevron-right");
 			$("#unairedShowList").hide();
 		}
 	});
@@ -794,14 +802,18 @@ function buildMainScreenFromCache() {
 	                      $("<i></i>").
 	                      addClass("infoButtonShow").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-	                      addClass("icon-info-sign")).
-	                    append(
+	                      addClass("icon-info-sign"))
+	                      
+						  ));
+	                    
+			  /*
+			  	                    append(
 	                      $("<i></i>").
 	                      addClass("pauseSeries").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
 	                      addClass("icon-pause"))
-	                    ));
-	                    
+	                    )
+	          */
 
 			  var now = new Date();
 			  if(newEpisodeAirDate < now) {
@@ -853,6 +865,7 @@ function buildMainScreenFromCache() {
 		$(".playedButton").click(playedEpisode);
 		$(".facebookButton").click(facebookShare);
         $(".deleteButton").click(deleteSeriesButton);
+        $(".pauseSeries").click(pauseSeriesButton)
         $("#deleteconfirm").click(deleteSeriesConfirm);
         $(".infoButtonShow").click(showInfoShow);
 	}
@@ -884,6 +897,17 @@ function deleteSeriesConfirm() {
 	deleteSeries(seriesid);
     $.modal.close();
 }
+
+/**
+ * Puts a series on pause so that episodes will be placed into the paused list
+ *
+ * @this {element} the button id used (element.data-seriesid)
+ */
+function pauseSeriesButton() {
+	var seriesid = $(this).attr("data-seriesid");
+	
+}
+
 
 function showInfoShow() {
     var seriesid = $(this).attr("data-seriesid");
