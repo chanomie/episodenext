@@ -141,6 +141,16 @@ var slowTimeoutDelay = 100;
 var settings;
 
 $(document).ready(function() {
+	/*
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  	$(".header").css("padding-top","20px");
+  	$(".header").css("background","-webkit-linear-gradient(270deg, darkgray 20px, rgba(247,247,247,0.91) 20px)");
+  	$(".page").css("margin-top","64px");
+  	$(".help").css("top","65px");
+  	$("div.help div.rightheader").css("top","68px");
+  	$("div.help div.leftheader").css("top","68px");
+  	*/
+
 	spin("Ready");
 	// Update the display first!
 	buildMainScreenFromCache();
@@ -784,7 +794,12 @@ function buildMainScreenFromCache() {
 	                      $("<i></i>").
 	                      addClass("infoButtonShow").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-	                      addClass("icon-info-sign"))
+	                      addClass("icon-info-sign")).
+	                    append(
+	                      $("<i></i>").
+	                      addClass("pauseSeries").
+	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
+	                      addClass("icon-pause"))
 	                    ));
 	                    
 
