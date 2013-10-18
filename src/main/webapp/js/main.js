@@ -1146,15 +1146,16 @@ function facebookPlayedEpisode() {
 	var episodeKey = seriesId + "-" + episodeId;
 	
 	var showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
-	spin("facebookPlayedEpisode");	
-    FB.api('/me/video.watches', 'post', { tv_episode: showUrl, ref: "1234" }, function(response) {
+	spin("facebookPlayedEpisode");
+	removeSeriesFromNextEpisodeCache(seriesId);
+	$.modal.close();
+	
+    FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
 	  if (!response || response.error) {
         alert('Error occured: ' + response.error);
-        $.modal.close();
       } else {
         console.log('Post ID: ' + response.id);
-        watchSingleEpisode(episodeKey, true);
-        $.modal.close();
+        watchSingleEpisode(episodeKey, true);        
       }
     });	
     stopspin("facebookPlayedEpisode");
@@ -1165,6 +1166,7 @@ function playedEpisode() {
 	var episodeId = $(this).attr("data-episodeId");
 	var episodeKey = seriesId + "-" + episodeId;
 
+	removeSeriesFromNextEpisodeCache(seriesId);
     watchSingleEpisode(episodeKey, true);
 }
 
@@ -1289,6 +1291,20 @@ function watchSingleEpisode(watchedEpisodeKey, requestRecache) {
 	// Realtime Add to Cloud
     addEpisodeToCloud(watchedEpisodeKey, watchedTime);
     saveWatchedEpisodes(watchedEpisodes, requestRecache);
+}
+
+/**
+ * Removes a series from the Next Episode Cache so that it can quickly vanish
+ * from display.  This series will come back as soon as it is recached.
+ *
+ * @param {string} seriesId the id of the series to remove.
+ */
+function removeSeriesFromNextEpisodeCache(seriesId) {
+	var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
+	var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
+	delete nextEpisodeCache[seriesId];
+	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
+	buildMainScreenFromCache();
 }
 
 /**
