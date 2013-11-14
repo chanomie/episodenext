@@ -468,6 +468,7 @@ div.episodelistdetail {
 
 #simplemodal-overlay {
 	background-color:#000;
+	-webkit-filter: blur(20px);
 }
 
 div.pagemodal {

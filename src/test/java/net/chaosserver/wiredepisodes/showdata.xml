@@ -1,0 +1,990 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Data><Series>
+  <id>251085</id>
+  <Actors>|Janet Varney|P.J. Byrne|David Faustino|J.K. Simmons|Daniel Dae Kim|Seychelle Gabriel|Dee Bradley Baker|Steve Blum|Adrian LaTourelle|John Michael Higgins|Lisa Edelstein|James Remar|Aaron Himelstein|Aubrey Plaza|Chris Hardwick|Kate Higgins|D.B. Sweeney|Darcy Rose Byrnes|Lance Henriksen|Eva Marie Saint|Mindy Sterling|Kiernan Shipka|Maria Bamford|Logan Wells|</Actors>
+  <Airs_DayOfWeek>Friday</Airs_DayOfWeek>
+  <Airs_Time>8:00 PM</Airs_Time>
+  <ContentRating>TV-Y7</ContentRating>
+  <FirstAired>2012-04-14</FirstAired>
+  <Genre>|Action|Adventure|Animation|Children|Comedy|Drama|Family|Fantasy|Science-Fiction|</Genre>
+  <IMDB_ID>tt1695360</IMDB_ID>
+  <Language>en</Language>
+  <Network>Nickelodeon</Network>
+  <NetworkID></NetworkID>
+  <Overview>The Legend of Korra is set in the Avatar universe as a spin-off of Avatar: The Last Airbender. The new series takes place seventy years after the end of the Avatar: The Last Airbender story arc with new characters and settings. The protagonist of the new series, Korra, the Avatar after Aang, is a hot-headed and rebellious young woman from the Southern Water Tribe who is ready to take on the world. The series follows Korra as she faces an Anti-bending Revolution while mastering the art of airbending from Aang and Katara's son, Tenzin. </Overview>
+  <Rating>9.3</Rating>
+  <RatingCount>62</RatingCount>
+  <Runtime>25</Runtime>
+  <SeriesID>79847</SeriesID>
+  <SeriesName>The Legend of Korra</SeriesName>
+  <Status>Continuing</Status>
+  <added>2012-04-18 00:00:00</added>
+  <addedBy>20141</addedBy>
+  <banner>graphical/251085-g.jpg</banner>
+  <fanart>fanart/original/251085-1.jpg</fanart>
+  <lastupdated>1384066995</lastupdated>
+  <poster>posters/251085-4.jpg</poster>
+  <zap2it_id>EP01547041</zap2it_id>
+</Series>
+<Episode>
+  <id>4639444</id>
+  <Combined_episodenumber>1</Combined_episodenumber>
+  <Combined_season>0</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Republic City Hustle: Part 1</EpisodeName>
+  <EpisodeNumber>1</EpisodeNumber>
+  <FirstAired>2013-08-09</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Mako and Bolin enter the crime-ridden underworld of Republic City where you either hustle, or get hustled.</Overview>
+  <ProductionCode></ProductionCode>
+  <Rating>8.0</Rating>
+  <RatingCount>1</RatingCount>
+  <SeasonNumber>0</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <airsafter_season></airsafter_season>
+  <airsbefore_episode></airsbefore_episode>
+  <airsbefore_season></airsbefore_season>
+  <filename>episodes/251085/4639444.jpg</filename>
+  <lastupdated>1377321392</lastupdated>
+  <seasonid>490506</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-08-23 22:16:32</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4639445</id>
+  <Combined_episodenumber>2</Combined_episodenumber>
+  <Combined_season>0</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Republic City Hustle: Part 2</EpisodeName>
+  <EpisodeNumber>2</EpisodeNumber>
+  <FirstAired>2013-08-16</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>While collecting that for the big match, Bolin reminds Toza of the past while creating a future for a new friend.</Overview>
+  <ProductionCode></ProductionCode>
+  <Rating>8.0</Rating>
+  <RatingCount>1</RatingCount>
+  <SeasonNumber>0</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <airsafter_season></airsafter_season>
+  <airsbefore_episode></airsbefore_episode>
+  <airsbefore_season></airsbefore_season>
+  <filename>episodes/251085/4639445.jpg</filename>
+  <lastupdated>1377321419</lastupdated>
+  <seasonid>490506</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-08-23 22:16:59</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4639446</id>
+  <Combined_episodenumber>3</Combined_episodenumber>
+  <Combined_season>0</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Republic City Hustle: Part 3</EpisodeName>
+  <EpisodeNumber>3</EpisodeNumber>
+  <FirstAired>2013-08-23</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Mako and Bolin make a bet that could change the game forever.</Overview>
+  <ProductionCode></ProductionCode>
+  <Rating>8.0</Rating>
+  <RatingCount>1</RatingCount>
+  <SeasonNumber>0</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <airsafter_season></airsafter_season>
+  <airsbefore_episode></airsbefore_episode>
+  <airsbefore_season></airsbefore_season>
+  <filename>episodes/251085/4639446.jpg</filename>
+  <lastupdated>1377321470</lastupdated>
+  <seasonid>490506</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-08-23 22:17:50</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4658840</id>
+  <Combined_episodenumber>4</Combined_episodenumber>
+  <Combined_season>0</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag></EpImgFlag>
+  <EpisodeName>The Re-Telling of Korras Journey</EpisodeName>
+  <EpisodeNumber>4</EpisodeNumber>
+  <FirstAired></FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Review of season 1.
+Designed to catch people up for the beginning of season 2</Overview>
+  <ProductionCode></ProductionCode>
+  <Rating></Rating>
+  <RatingCount>0</RatingCount>
+  <SeasonNumber>0</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <airsafter_season>1</airsafter_season>
+  <airsbefore_episode>1</airsbefore_episode>
+  <airsbefore_season>2</airsbefore_season>
+  <filename></filename>
+  <lastupdated>1379183629</lastupdated>
+  <seasonid>490506</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height></thumb_height>
+  <thumb_width></thumb_width>
+</Episode>
+<Episode>
+  <id>4310447</id>
+  <Combined_episodenumber>1</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Welcome to Republic City</EpisodeName>
+  <EpisodeNumber>1</EpisodeNumber>
+  <FirstAired>2012-04-14</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2150017</IMDB_ID>
+  <Language>en</Language>
+  <Overview>After Aang, Zuko, Katara, Sokka, Toph and Suki had defeated Firelord Ozai and stopped the tyranny of the Fire Nation, Aang and Zuko took steps to usher in a new age of equality amongst the nations. In the center of the Fire Nation Colonies, they built Republic City, a place where people of all nations can live without fear of war.
+
+Now 70 years have passed since then, and Aang's successor, Korra, is training to be the new Avatar. After passing her firebending test, she meets with Tenzin, Aang's son and the only Air Bending Master, who is supposed to be her Air Bending Teacher. However, due to tense circumstances in Republic City, he tells her that her training must wait, so that he can tend to his duties in the City. Not wanting to wait, Korra sneaks out of the South Pole and heads to Republic City where she finds herself in over her head.</Overview>
+  <ProductionCode>101</ProductionCode>
+  <Rating>7.9</Rating>
+  <RatingCount>27</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>1</absolute_number>
+  <filename>episodes/251085/4310447.jpg</filename>
+  <lastupdated>1373824518</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4310448</id>
+  <Combined_episodenumber>2</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>A Leaf in the Wind</EpisodeName>
+  <EpisodeNumber>2</EpisodeNumber>
+  <FirstAired>2012-04-14</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2315621</IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra begins her training with Tenzin. While training, she runs into great difficulties and becomes frustrated with her inability to learn Air Bending quickly. She also becomes more interested in ProBending, a sport where teams consisting of a Fire Bender, Water Bender and Earth Bender attempt to knock each other out of a ring, and sneaks out to see a match, against Tenzin's wishes.
+
+While there, Korra meets the Fire Ferrets, which consists of Mako, Bolin and Hasuke. When Hasuke fails to turn up for the final match that the Fire Ferrets need to win to enter the Tournament, Korra joins the team in his place.</Overview>
+  <ProductionCode>102</ProductionCode>
+  <Rating>7.9</Rating>
+  <RatingCount>15</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>2</absolute_number>
+  <filename>episodes/251085/4310448.jpg</filename>
+  <lastupdated>1373824522</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4310452</id>
+  <Combined_episodenumber>3</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Revelation</EpisodeName>
+  <EpisodeNumber>3</EpisodeNumber>
+  <FirstAired>2012-04-21</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2388409</IMDB_ID>
+  <Language>en</Language>
+  <Overview>The Fire Ferrets are strapped for cash, as they need to provide funds to enter the upcoming ProBending Tournament. Bolin attempts to help Mako by sourcing some work and ends up in the employ of the Triple Threat Triads. When Mako learns of this, he and Korra attempt to get Bolin out before he gets involved in a gang war. While doing this, they find that Bolin is captured by the Equalists, where he is used in a demonstration to show a terrifying ability that Amon possesses.</Overview>
+  <ProductionCode>103</ProductionCode>
+  <Rating>7.4</Rating>
+  <RatingCount>29</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>3</absolute_number>
+  <filename>episodes/251085/4310452.jpg</filename>
+  <lastupdated>1373824525</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4311547</id>
+  <Combined_episodenumber>4</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Voice in the Night</EpisodeName>
+  <EpisodeNumber>4</EpisodeNumber>
+  <FirstAired>2012-04-28</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353307</IMDB_ID>
+  <Language>en</Language>
+  <Overview>The threat of Amon and The Equalists has become apparent to the Republic City Council. Councilman Tarrlok puts forward the motion to create a special task force to combat this new threat, and wishes to recruit Korra to help lead it. Initially, Korra declines, but is eventually persuaded into joining, much to Tenzin's dismay. With the young Avatar joining the task force, Tarrlok will create an even larger divide between benders and non-benders.
+
+After a raid on a Equalist training facility, Korra publicly challenges Amon to a duel, in an attempt to bring him out and bring him to justice.</Overview>
+  <ProductionCode>104</ProductionCode>
+  <Rating>7.6</Rating>
+  <RatingCount>24</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>4</absolute_number>
+  <filename>episodes/251085/4311547.jpg</filename>
+  <lastupdated>1373824528</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315551</id>
+  <Combined_episodenumber>5</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Spirit of Competition</EpisodeName>
+  <EpisodeNumber>5</EpisodeNumber>
+  <FirstAired>2012-05-05</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353317</IMDB_ID>
+  <Language>en</Language>
+  <Overview>As the ProBending Tournament begins, emotions fly between the members of the Fire Ferrets. While Korra and Mako have feelings for each other, they have issues displaying it due to Asami being involved. Bolin attempts to make a move on Korra, but this causes conflicts between Mako and the young Avatar, for Mako is defensive of his younger brother. Tension ensues, causing the team to have difficulty playing in the ring. Will they manage to pull through the tournament? Or will emotions tear apart their chances of greatness?</Overview>
+  <ProductionCode>105</ProductionCode>
+  <Rating>7.7</Rating>
+  <RatingCount>21</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>5</absolute_number>
+  <filename>episodes/251085/4315551.jpg</filename>
+  <lastupdated>1373824531</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315552</id>
+  <Combined_episodenumber>6</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>And the Winner is...</EpisodeName>
+  <EpisodeNumber>6</EpisodeNumber>
+  <FirstAired>2012-05-12</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353315</IMDB_ID>
+  <Language>en</Language>
+  <Overview>The Fire Ferrets are preparing for the big championship ProBending match, when Amon declares a threat to the city that, if the match was to continue, dire consequences would ensue. Korra, Mako and Bolin convince the council to allow the match to happen, with the help of an unsuspecting individual. What will Amon do to the city when the match happens?</Overview>
+  <ProductionCode>106</ProductionCode>
+  <Rating>8.2</Rating>
+  <RatingCount>24</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>6</absolute_number>
+  <filename>episodes/251085/4315552.jpg</filename>
+  <lastupdated>1382605521</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315553</id>
+  <Combined_episodenumber>7</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Aftermath</EpisodeName>
+  <EpisodeNumber>7</EpisodeNumber>
+  <FirstAired>2012-05-19</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353309</IMDB_ID>
+  <Language>en</Language>
+  <Overview>When the ProBending Arena is shut down after The Equalists attack, Mako and Bolin have to find a new place to live. Korra offers for them to stay on Air Bending Island, but Asami had already offered for them to stay at her father's mansion, and they accepted. While staying there, Korra learns something dire about the people that her teammates live with, and endeavours to keep them safe.</Overview>
+  <ProductionCode>107</ProductionCode>
+  <Rating>7.6</Rating>
+  <RatingCount>22</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>7</absolute_number>
+  <filename>episodes/251085/4315553.jpg</filename>
+  <lastupdated>1373824539</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315554</id>
+  <Combined_episodenumber>8</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>When Extremes Meet</EpisodeName>
+  <EpisodeNumber>8</EpisodeNumber>
+  <FirstAired>2012-06-02</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353311</IMDB_ID>
+  <Language>en</Language>
+  <Overview>As Asami, Bolin and Mako move into Air Temple Island, the police force inducts Chief Saikhan in to lead them. During the induction, Saikhan announces his direct reporting to Tarrlok when dealing with the Equalist threat. In doing so, it creates mass tension between Korra and Tarrlok, as the young Avatar feels that the councilman will only cause a greater divide between benders and non-benders with the support of the new police chief.
+
+The Avatar and her friends decide to band together to create a vigilante team as a means to help stop the Equalists. While they do this, Tarrlok resorts to extreme measures to control non-benders, in which Korra opposes profusely. How will the young Avatar help combat the tyranny of Councilman Tarrlok?</Overview>
+  <ProductionCode>108</ProductionCode>
+  <Rating>7.8</Rating>
+  <RatingCount>20</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>8</absolute_number>
+  <filename>episodes/251085/4315554.jpg</filename>
+  <lastupdated>1373824542</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315555</id>
+  <Combined_episodenumber>9</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Out of the Past</EpisodeName>
+  <EpisodeNumber>9</EpisodeNumber>
+  <FirstAired>2012-06-09</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353313</IMDB_ID>
+  <Language>en</Language>
+  <Overview>After Tarrlok has taken Korra hostage, he fabricates a story, telling everyone that the Equalists took her. When Tenzin and former Police Chief Lin Beifong hear this, they set out to find her, with Lin recruiting the help of Asami, Bolin and Mako.
+
+While being captured, Korra takes the time to understand the visions that she's been seeing. What is the message that Aang is trying to pass onto her? And will Tenzin and the others find out what really happened to Korra and be able to find her?</Overview>
+  <ProductionCode>109</ProductionCode>
+  <Rating>7.7</Rating>
+  <RatingCount>20</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>9</absolute_number>
+  <filename>episodes/251085/4315555.jpg</filename>
+  <lastupdated>1373824545</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315556</id>
+  <Combined_episodenumber>10</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Turning the Tides</EpisodeName>
+  <EpisodeNumber>10</EpisodeNumber>
+  <FirstAired>2012-06-16</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2353305</IMDB_ID>
+  <Language>en</Language>
+  <Overview>After Korra is rescued after being taken hostage by Tarrlok, and escaping from Amon and The Equalists, she takes time to recover and tell her friends about the dire news of Tarrlok's heritage. Stunned by this, Tenzin decides to raise it with the other council members and discuss a plan to rectify the issues that Tarrlok created.
+
+But unknown to anyone, The Equalists begin to strike against Republic city in an attempt to take it over, until they begin a full-blown attack on the city, bombarding it with bombs and taking out the strengths of the city, one by one. What will Korra and her friends do to combat the oncoming attack of The Equalists?</Overview>
+  <ProductionCode>110</ProductionCode>
+  <Rating>7.7</Rating>
+  <RatingCount>18</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>10</absolute_number>
+  <filename>episodes/251085/4315556.jpg</filename>
+  <lastupdated>1373824548</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315557</id>
+  <Combined_episodenumber>11</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Skeletons in the Closet</EpisodeName>
+  <EpisodeNumber>11</EpisodeNumber>
+  <FirstAired>2012-06-23</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2198968</IMDB_ID>
+  <Language>en</Language>
+  <Overview>After Amon and The Equalists have overtaken Republic City, the future seems a lot bleaker for Korra and her friends, having to hide in the underground without being able to do anything but wait for the United Forces to come take back the city.
+
+As the United Forces roll into Republic City by sea, General Iroh is bewildered by the lack of resistance as they come into the harbor. His bewilderment is replaced by shock as he discovers a new weapon that The Equalists have developed, which decimates his fleet.
+
+The General is lucky to have Korra save him, and after recovering, they plot together to hatch a plan to stop Amon in his tracks. As they set out to put this plan into action, the young Avatar learns a unexpected secret about the leader of The Equalists from an old acquaintance.</Overview>
+  <ProductionCode>111</ProductionCode>
+  <Rating>7.9</Rating>
+  <RatingCount>21</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>11</absolute_number>
+  <filename>episodes/251085/4315557.jpg</filename>
+  <lastupdated>1373824553</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4315558</id>
+  <Combined_episodenumber>12</Combined_episodenumber>
+  <Combined_season>1</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>|Joaquim dos Santos|Ki Hyun Ryu|</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Endgame</EpisodeName>
+  <EpisodeNumber>12</EpisodeNumber>
+  <FirstAired>2012-06-23</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2198738</IMDB_ID>
+  <Language>en</Language>
+  <Overview>After learning who Amon really is, Korra and Mako set out to expose him to the other members of The Equalists, in hopes of shattering Amon's image and bringing his efforts to a halt. In doing so, they learn that Amon had managed to capture Tenzin and his children, and is going to use them in a demonstration of what the world will be like once Amon's plans are complete.
+
+Korra and Mako manage to prevent Amon from taking the Air Bending family's powers away and lure Amon away to try to take him down without his disciples helping him. But the young Avatar soon realizes that Amon's secret power is too great, and he takes her bending away. Without her bending abilities, how will Korra stop this tyrant from enacting his evil plans?</Overview>
+  <ProductionCode>112</ProductionCode>
+  <Rating>7.8</Rating>
+  <RatingCount>11</RatingCount>
+  <SeasonNumber>1</SeasonNumber>
+  <Writer>|Michael Dante DiMartino|Bryan Konietzko|</Writer>
+  <absolute_number>12</absolute_number>
+  <filename>episodes/251085/4315558.jpg</filename>
+  <lastupdated>1373824556</lastupdated>
+  <seasonid>490505</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4618883</id>
+  <Combined_episodenumber>1</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Colin Heck</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Rebel Spirit</EpisodeName>
+  <EpisodeNumber>1</EpisodeNumber>
+  <FirstAired>2013-09-13</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2268096</IMDB_ID>
+  <Language>en</Language>
+  <Overview>Team Avatar and Tenzin's family travel to the Southern Water Tribe to attend the Glacier Spirits Festival. While there, Korra's uncle, Unalaq, attempts to persuade Korra to let him advise her about the spirits, but both Korra's father and Tenzin assert that she needs to focus on her airbending. However, during the festival, Korra discovers that it was her father and Tenzin rather than Aang who kept her locked away, and after a Dark Spirit attacks, Korra breaks off her studies under Tenzin and takes up Unalaq as her instructor.</Overview>
+  <ProductionCode>113</ProductionCode>
+  <Rating>8.6</Rating>
+  <RatingCount>7</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Tim Hedrick</Writer>
+  <absolute_number>13</absolute_number>
+  <filename>episodes/251085/4618883.jpg</filename>
+  <lastupdated>1379750872</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-09-13 22:51:22</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4641101</id>
+  <Combined_episodenumber>2</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Ian Graham</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Southern Lights</EpisodeName>
+  <EpisodeNumber>2</EpisodeNumber>
+  <FirstAired>2013-09-13</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2268100</IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra begins her spiritual training under Unalaq. The first step of this training is to travel to the deeper parts of the South Pole to open the mystical portal between the spirit world and the physical world in order to release the long-seen southern lights into the sky. Mako, Bolin, Tonraq, Desna, and Eska come along as well.</Overview>
+  <ProductionCode>114</ProductionCode>
+  <Rating>8.0</Rating>
+  <RatingCount>1</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Joshua Hamilton</Writer>
+  <absolute_number>14</absolute_number>
+  <filename>episodes/251085/4641101.jpg</filename>
+  <lastupdated>1379751113</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-09-13 23:57:23</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4641102</id>
+  <Combined_episodenumber>3</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Colin Heck</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Civil Wars (1)</EpisodeName>
+  <EpisodeNumber>3</EpisodeNumber>
+  <FirstAired>2013-09-20</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID>tt2268104</IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra tries to remain neutral as tensions flare between the Northern and Southern Water Tribes. Meanwhile, at the Southern Air Temple, Tenzin, Bumi, and Kya all search for Ikki who has mysteriously disappeared.</Overview>
+  <ProductionCode>115</ProductionCode>
+  <Rating>8.0</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Michael Dante DiMartino</Writer>
+  <absolute_number>15</absolute_number>
+  <filename>episodes/251085/4641102.jpg</filename>
+  <lastupdated>1383813667</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-09-21 10:35:03</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4641103</id>
+  <Combined_episodenumber>4</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Ian Graham</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Civil Wars (2)</EpisodeName>
+  <EpisodeNumber>4</EpisodeNumber>
+  <FirstAired>2013-09-27</FirstAired>
+  <GuestStars>Stephanie Sheh, Nolan North, Keone Young, Tom Kane</GuestStars>
+  <IMDB_ID>tt2268114</IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra must fight for her parents' freedom when they are wrongfully accused and arrested for plotting to assassinate Unalaq. </Overview>
+  <ProductionCode>116</ProductionCode>
+  <Rating>8.4</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Michael Dante DiMartino</Writer>
+  <absolute_number>16</absolute_number>
+  <filename>episodes/251085/4641103.jpg</filename>
+  <lastupdated>1383813679</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-09-28 09:39:32</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4644870</id>
+  <Combined_episodenumber>5</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Colin Heck</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Peacekeepers</EpisodeName>
+  <EpisodeNumber>5</EpisodeNumber>
+  <FirstAired>2013-10-04</FirstAired>
+  <GuestStars>Rick Zieff, Spencer Garrett, Mark Allan Stewart</GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>When the president of the United Republic refuses to help Korra, she decides to take matters into her own hands.</Overview>
+  <ProductionCode>117</ProductionCode>
+  <Rating>8.6</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Tim Hedrick</Writer>
+  <absolute_number>17</absolute_number>
+  <filename>episodes/251085/4644870.jpg</filename>
+  <lastupdated>1381340221</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-10-04 23:18:31</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657085</id>
+  <Combined_episodenumber>6</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Ian Graham</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Sting</EpisodeName>
+  <EpisodeNumber>6</EpisodeNumber>
+  <FirstAired>2013-10-11</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>When Triad activity threatens to put Future Industries out of business, Mako performs an investigation and uncovers a conspiracy.</Overview>
+  <ProductionCode>118</ProductionCode>
+  <Rating>8.5</Rating>
+  <RatingCount>4</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Joshua Hamilton</Writer>
+  <absolute_number>18</absolute_number>
+  <filename>episodes/251085/4657085.jpg</filename>
+  <lastupdated>1383366866</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-10-12 10:11:20</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657086</id>
+  <Combined_episodenumber>7</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Colin Heck</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Beginnings (1)</EpisodeName>
+  <EpisodeNumber>7</EpisodeNumber>
+  <FirstAired>2013-10-18</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra learns about the origins of the first Avatar.</Overview>
+  <ProductionCode>119</ProductionCode>
+  <Rating>9.3</Rating>
+  <RatingCount>6</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Michael Dante DiMartino</Writer>
+  <absolute_number>19</absolute_number>
+  <filename>episodes/251085/4657086.jpg</filename>
+  <lastupdated>1383813690</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-10-19 01:03:23</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657087</id>
+  <Combined_episodenumber>8</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Ian Graham</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>Beginnings (2)</EpisodeName>
+  <EpisodeNumber>8</EpisodeNumber>
+  <FirstAired>2013-10-18</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra realizes what she must do to restore balance to the physical and spirit worlds.</Overview>
+  <ProductionCode>120</ProductionCode>
+  <Rating>9.8</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Tim Hedrick</Writer>
+  <absolute_number>20</absolute_number>
+  <filename>episodes/251085/4657087.jpg</filename>
+  <lastupdated>1383813710</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-10-19 01:03:45</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657088</id>
+  <Combined_episodenumber>9</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director>Colin Heck</Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>The Guide</EpisodeName>
+  <EpisodeNumber>9</EpisodeNumber>
+  <FirstAired>2013-11-01</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>Korra seeks Tenzin's help to enter the spirit world for the first time.</Overview>
+  <ProductionCode>121</ProductionCode>
+  <Rating>8.8</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer>Joshua Hamilton</Writer>
+  <absolute_number>21</absolute_number>
+  <filename>episodes/251085/4657088.jpg</filename>
+  <lastupdated>1383426388</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-11-02 14:06:28</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657089</id>
+  <Combined_episodenumber>10</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag>2</EpImgFlag>
+  <EpisodeName>A New Spiritual Age</EpisodeName>
+  <EpisodeNumber>10</EpisodeNumber>
+  <FirstAired>2013-11-08</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview>After successfully arriving in the Spirit World with Jinora, Korra's journey takes a perilous turn after Unalaq's intervention.</Overview>
+  <ProductionCode>122</ProductionCode>
+  <Rating>8.6</Rating>
+  <RatingCount>5</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number>22</absolute_number>
+  <filename>episodes/251085/4657089.jpg</filename>
+  <lastupdated>1384005075</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added>2013-11-07 16:03:24</thumb_added>
+  <thumb_height>225</thumb_height>
+  <thumb_width>400</thumb_width>
+</Episode>
+<Episode>
+  <id>4657090</id>
+  <Combined_episodenumber>11</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag></EpImgFlag>
+  <EpisodeName>Night of a Thousand Stars</EpisodeName>
+  <EpisodeNumber>11</EpisodeNumber>
+  <FirstAired>2013-11-15</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview></Overview>
+  <ProductionCode>123</ProductionCode>
+  <Rating></Rating>
+  <RatingCount>0</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number>23</absolute_number>
+  <filename></filename>
+  <lastupdated>1381340283</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height></thumb_height>
+  <thumb_width></thumb_width>
+</Episode>
+<Episode>
+  <id>4657091</id>
+  <Combined_episodenumber>12</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag></EpImgFlag>
+  <EpisodeName>Harmonic Convergence</EpisodeName>
+  <EpisodeNumber>12</EpisodeNumber>
+  <FirstAired>2013-11-15</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview></Overview>
+  <ProductionCode>124</ProductionCode>
+  <Rating></Rating>
+  <RatingCount>0</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number>24</absolute_number>
+  <filename></filename>
+  <lastupdated>1383229991</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height></thumb_height>
+  <thumb_width></thumb_width>
+</Episode>
+<Episode>
+  <id>4657092</id>
+  <Combined_episodenumber>13</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag></EpImgFlag>
+  <EpisodeName>Darkness Falls</EpisodeName>
+  <EpisodeNumber>13</EpisodeNumber>
+  <FirstAired>2013-11-22</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview></Overview>
+  <ProductionCode>125</ProductionCode>
+  <Rating></Rating>
+  <RatingCount>0</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <filename></filename>
+  <lastupdated>1383303656</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height></thumb_height>
+  <thumb_width></thumb_width>
+</Episode>
+<Episode>
+  <id>4657093</id>
+  <Combined_episodenumber>14</Combined_episodenumber>
+  <Combined_season>2</Combined_season>
+  <DVD_chapter></DVD_chapter>
+  <DVD_discid></DVD_discid>
+  <DVD_episodenumber></DVD_episodenumber>
+  <DVD_season></DVD_season>
+  <Director></Director>
+  <EpImgFlag></EpImgFlag>
+  <EpisodeName>Light In The Dark</EpisodeName>
+  <EpisodeNumber>14</EpisodeNumber>
+  <FirstAired>2013-11-22</FirstAired>
+  <GuestStars></GuestStars>
+  <IMDB_ID></IMDB_ID>
+  <Language>en</Language>
+  <Overview></Overview>
+  <ProductionCode>126</ProductionCode>
+  <Rating></Rating>
+  <RatingCount>0</RatingCount>
+  <SeasonNumber>2</SeasonNumber>
+  <Writer></Writer>
+  <absolute_number></absolute_number>
+  <filename></filename>
+  <lastupdated>1383303669</lastupdated>
+  <seasonid>500836</seasonid>
+  <seriesid>251085</seriesid>
+  <thumb_added></thumb_added>
+  <thumb_height></thumb_height>
+  <thumb_width></thumb_width>
+</Episode>
+</Data>

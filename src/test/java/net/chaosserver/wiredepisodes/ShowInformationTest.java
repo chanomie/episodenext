@@ -17,6 +17,9 @@
  */
 package net.chaosserver.wiredepisodes;
 
+import java.net.URL;
+import java.net.URLEncoder;
+
 import org.junit.Test;
 
 public class ShowInformationTest {
@@ -36,17 +39,31 @@ public class ShowInformationTest {
 	 
 	 @Test
 	 public void testShowToXml() throws Exception {
-	 	/*
 		ShowInformation showInformation = new ShowInformation();
-		XMLReader myReader = XMLReaderFactory.createXMLReader();
 			 
 		String seriesId = "251085";
 		URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
 			+ "/series/" + URLEncoder.encode(seriesId) + "/all/en.xml");
 
-		InputSource inputSource = new InputSource(url.openStream());
-		myReader.parse(inputSource); 
-		*/
+		/*
+		// 1. Instantiate a TransformerFactory.
+		javax.xml.transform.TransformerFactory tFactory = 
+		javax.xml.transform.TransformerFactory.newInstance();
+
+		// 2. Use the TransformerFactory to process the stylesheet Source and
+		//    generate a Transformer.
+		javax.xml.transform.Transformer transformer = tFactory.newTransformer
+                (new javax.xml.transform.stream.StreamSource("foo.xsl"));
+
+		// 3. Use the Transformer to transform an XML Source and send the
+		//    output to a Result object.
+		transformer.transform
+		(new javax.xml.transform.stream.StreamSource("foo.xml"), 
+		new javax.xml.transform.stream.StreamResult( new
+		java.io.FileOutputStream("foo.out")));
+		 */
+		// InputSource inputSource = new InputSource(url.openStream());
+		// myReader.parse(inputSource); 
 	 }
 	 
 }

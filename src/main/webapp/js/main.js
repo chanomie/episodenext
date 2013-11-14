@@ -1152,7 +1152,7 @@ function facebookPlayedEpisode() {
 	
     FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
 	  if (!response || response.error) {
-        alert('Error occured: ' + response.error);
+        alert('Error occured: ' + JSON.stringify(response.error));
       } else {
         console.log('Post ID: ' + response.id);
         watchSingleEpisode(episodeKey, true);        
