@@ -93,6 +93,22 @@ public class ProxyController {
 
 	   }
 	   
+	   /**
+	    * Proxing the Request to the TV DB API to get information about the series.
+	    * The frontend webapp only reads the following fields:
+	    * <ul>
+	    *   <li>Data Series id</li>
+	    *   <li>Data Series SeriesName</li>
+	    *   <li>Data Series FirstAired</li>
+	    *   <li>Data Series Overview</li>
+	    *   <li>Data Series banner</li>
+	    * </ul>
+	    * 
+	    * @param seriesId unique identifer of the series
+	    * @param request the http request
+	    * @param response the http reponse.
+	    * @throws IOException If there is an issue reaching TheTvDB
+	    */
 	   @RequestMapping(value="/{seriesId}", method = { RequestMethod.GET })
 	   public void getSeriesDetails(
 			   @PathVariable String seriesId,
@@ -135,6 +151,28 @@ public class ProxyController {
 		   
 	   }
 
+	   /**
+	    * Proxing the Request to the TV DB API to get all information about the series.
+	    * The frontend webapp only reads the following fields:
+	    * <ul>
+	    *   <li>Data Series id</li>
+	    *   <li>Data Series SeriesName</li>
+	    *   <li>Data Series FirstAired</li>
+	    *   <li>Data Series Overview</li>
+	    *   <li>Data Series banner</li>
+	    *   <li>Data Episode EpisodeName</li>
+	    *   <li>Data Episode SeasonNumber</li>
+	    *   <li>Data Episode seasonid</li>
+	    *   <li>Data Episode EpisodeNumber</li>
+	    *   <li>Data Episode FirstAired</li>
+	    *   <li>Data Episode id</li>
+	    * </ul>
+	    * 
+	    * @param seriesId unique identifer of the series
+	    * @param request the http request
+	    * @param response the http reponse.
+	    * @throws IOException If there is an issue reaching TheTvDB
+	    */
 	   
 	   @RequestMapping(value="/all/{seriesId}", method = RequestMethod.GET)
 	   public void getAllSeriesDetails(
