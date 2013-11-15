@@ -341,6 +341,7 @@ div.overview {
 
 img.bannerimage {
 	max-width: 100%;
+	min-height: 59px;
 }
 
 div.showtitle {

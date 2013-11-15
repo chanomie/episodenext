@@ -911,7 +911,7 @@ function pauseSeriesButton() {
 
 function showInfoShow() {
     var seriesid = $(this).attr("data-seriesid");
-    var seriesUrl = getSeriesAllDetailsUrl + seriesid;
+    var seriesUrl = getSeriesAllDetailsUrl + seriesid + "?includeall=true";
 
 	spin("showInfoShow");
     $.ajax({
@@ -1805,7 +1805,7 @@ function recacheSeries() {
 	if(seriesListIndex  < seriesListRecache.length) {
 		var seriesListItem = seriesListRecache[seriesListIndex++];
 
-    	var searchUrl = getSeriesAllDetailsUrl + seriesListItem;
+    	var searchUrl = getSeriesAllDetailsUrl + seriesListItem + "?includeall=false"; 
         $.ajax({
           url: searchUrl,
           async: false,

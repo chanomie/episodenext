@@ -18,15 +18,11 @@
 package net.chaosserver.wiredepisodes;
 
 import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import net.chaosserver.wiredepisodes.web.ProxyController;
 
 import org.junit.Test;
 
@@ -61,7 +57,7 @@ public class ShowInformationTest {
 	
 	@Test
 	public void testSeriesAllParser() throws Exception {
-		Set watchedSet = new HashSet<String>();
+		Set<String> watchedSet = new HashSet<String>();
 		watchedSet.add("251085-4639444");
 		watchedSet.add("251085-4639445");
 		watchedSet.add("251085-4639446");

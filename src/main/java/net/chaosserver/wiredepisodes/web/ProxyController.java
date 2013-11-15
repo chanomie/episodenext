@@ -28,13 +28,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.Principal;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
+import net.chaosserver.wiredepisodes.SeriesAllXmlHandler;
 import net.chaosserver.wiredepisodes.ShowInformation;
+import net.chaosserver.wiredepisodes.StorageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.HandlerMapping;
+import org.xml.sax.SAXException;
 
 @Controller
 @RequestMapping(value="/api")
@@ -51,7 +59,7 @@ public class ProxyController {
 
 	   @Autowired
 	   private ShowInformation showInformation;
-
+	   
 	   @RequestMapping(value="/getseries")
 	   public void searchForSeries(
 			   @RequestParam(required = true, value = "seriesname") String seriesname,
@@ -172,12 +180,17 @@ public class ProxyController {
 	    * @param request the http request
 	    * @param response the http reponse.
 	    * @throws IOException If there is an issue reaching TheTvDB
+	    * @throws SAXException 
+        * @throws ParserConfigurationException 
 	    */
 	   
 	   @RequestMapping(value="/all/{seriesId}", method = RequestMethod.GET)
 	   public void getAllSeriesDetails(
 			   @PathVariable String seriesId,
-			   HttpServletRequest request, HttpServletResponse response) throws IOException {
+			   @RequestParam(required = false, value = "includeall", defaultValue="true") String includeall,
+			   HttpServletRequest request, 
+			   HttpServletResponse response,
+			   Principal principal) throws IOException, SAXException, ParserConfigurationException {
 
 		   response.setContentType(request.getContentType());
 		   URL url = new URL("http://thetvdb.com/api/" + showInformation.getApiKey()
@@ -186,30 +199,19 @@ public class ProxyController {
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
 		   
-		   // Handle Cache Headers
-		   String lastModifiedHeader = connection.getHeaderField("Last-Modified");
-		   String expiresHeader = connection.getHeaderField("Expires");
-		   String cacheControlHeader = connection.getHeaderField("Cache-Control");
-		   if(lastModifiedHeader != null) {
-	   		   response.addHeader("Last-Modified", lastModifiedHeader);
-   		   }
-   		   if(expiresHeader != null) {
-			   response.addHeader("Expires", expiresHeader);
-   		   }
-   		   if(cacheControlHeader != null) {
-			   response.addHeader("Cache-Control", cacheControlHeader);
-   		   }
-		   	       
-	       BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
-	       PrintWriter printWriter = response.getWriter();
-	       
-	       String nextLine = inputReader.readLine();
-	       while(nextLine != null) {
-			   printWriter.println(stripNonValidXMLCharacters(nextLine));
-		       nextLine = inputReader.readLine();
-	       }
-	       
+		   Set<String> watchedEpisodeSet;
+		   if(!Boolean.parseBoolean(includeall) && principal != null) {
+			   watchedEpisodeSet =
+					   StorageHelper.getWatchedEpisodesKeys(StorageHelper.getPrincipalKey(principal), null);
+		   } else {
+			   watchedEpisodeSet = null;
+		   }
 		   
+	       // BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
+		   SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+	       PrintWriter printWriter = response.getWriter();
+	       SeriesAllXmlHandler seriesAllXmlHandler = new SeriesAllXmlHandler(printWriter,watchedEpisodeSet);
+	       saxParser.parse(url.openStream(),seriesAllXmlHandler);
 		   printWriter.flush();
 		   printWriter.close();
 

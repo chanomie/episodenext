@@ -6,11 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.chaosserver.wiredepisodes.StorageHelper;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -129,7 +130,7 @@ public class StorageController {
 		   
 		   
 		   Query q = new Query("SeriesList");
-		   q.setAncestor(getPrincipalKey(principal));
+		   q.setAncestor(StorageHelper.getPrincipalKey(principal));
 		   
 		   if(updatedDate != null) {
 			   Filter lastUpdatedFilter = new Query.FilterPredicate("updated", FilterOperator.GREATER_THAN_OR_EQUAL, updatedDate);
@@ -139,7 +140,7 @@ public class StorageController {
 	       List<Map<String,String>> seriesList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);
 	       for (Entity result : pq.asIterable()) {
-	    	   seriesList.add(convertEntityToStringMap(result));
+	    	   seriesList.add(StorageHelper.convertEntityToStringMap(result));
    	        }
 	       
 		   return seriesList;
@@ -167,12 +168,12 @@ public class StorageController {
 		   }
 		   */
 
-		   Entity series = new Entity("SeriesList", seriesId, getPrincipalKey(principal));
+		   Entity series = new Entity("SeriesList", seriesId, StorageHelper.getPrincipalKey(principal));
 		   series.setProperty("seriesId", seriesId);
 		   series.setProperty("updated", updatedTime);
 		   datastore.put(series);
 			   
-		   return convertEntityToStringMap(series);
+		   return StorageHelper.convertEntityToStringMap(series);
 	   }
 
 	   @RequestMapping(value="/v1/data/series/{seriesId}", method = { RequestMethod.DELETE })
@@ -186,14 +187,14 @@ public class StorageController {
 		   if(principal == null) throw new SecurityException("Requires user principal");
 		   
 		   Query q = new Query("SeriesList");
-		   Key seriesListKey = KeyFactory.createKey(getPrincipalKey(principal), "SeriesList", seriesId);
+		   Key seriesListKey = KeyFactory.createKey(StorageHelper.getPrincipalKey(principal), "SeriesList", seriesId);
 		   q.setFilter(FilterOperator.EQUAL.of(Entity.KEY_RESERVED_PROPERTY, seriesListKey));
-		   q.setAncestor(getPrincipalKey(principal));
+		   q.setAncestor(StorageHelper.getPrincipalKey(principal));
 		       
 	       List<Map<String,String>> seriesList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);
 	       for (Entity result : pq.asIterable()) {
-	    	   seriesList.add(convertEntityToStringMap(result));
+	    	   seriesList.add(StorageHelper.convertEntityToStringMap(result));
 	    	   datastore.delete(result.getKey());
    	        }
 		       
@@ -229,7 +230,7 @@ public class StorageController {
 		   }
 
 		   Query q = new Query("WatchedEpisodes");
-		   q.setAncestor(getPrincipalKey(principal));
+		   q.setAncestor(StorageHelper.getPrincipalKey(principal));
 		   if(updatedDate != null) {
 			   Filter lastUpdatedFilter = new Query.FilterPredicate("updated", FilterOperator.GREATER_THAN_OR_EQUAL, updatedDate);
 			   q.setFilter(lastUpdatedFilter);
@@ -238,7 +239,7 @@ public class StorageController {
 	       List<Map<String,String>> watchedEpisodeList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);
 	       for (Entity result : pq.asIterable()) {
-	    	   watchedEpisodeList.add(convertEntityToStringMap(result));
+	    	   watchedEpisodeList.add(StorageHelper.convertEntityToStringMap(result));
    	        }
 	       
 		   return watchedEpisodeList;
@@ -269,12 +270,12 @@ public class StorageController {
 		   }
 		   */
 
-		   Entity watchedEpisode = new Entity("WatchedEpisodes", seriesId, getPrincipalKey(principal));
+		   Entity watchedEpisode = new Entity("WatchedEpisodes", seriesId, StorageHelper.getPrincipalKey(principal));
 		   watchedEpisode.setProperty("watchedKey", seriesId);
 		   watchedEpisode.setProperty("updated", updatedTime);
 		   datastore.put(watchedEpisode);
 			   
-		   return convertEntityToStringMap(watchedEpisode);
+		   return StorageHelper.convertEntityToStringMap(watchedEpisode);
 	   }
 
 	   @RequestMapping(value="/v1/data/watched/{watchedKey}", method = { RequestMethod.DELETE })
@@ -288,62 +289,17 @@ public class StorageController {
 		   if(principal == null) throw new SecurityException("Requires user principal");
 		   
 		   Query q = new Query("WatchedEpisodes");
-		   Key watchedEpisodeKey = KeyFactory.createKey(getPrincipalKey(principal), "WatchedEpisodes", watchedKey);
+		   Key watchedEpisodeKey = KeyFactory.createKey(StorageHelper.getPrincipalKey(principal), "WatchedEpisodes", watchedKey);
 		   q.setFilter(FilterOperator.EQUAL.of(Entity.KEY_RESERVED_PROPERTY, watchedEpisodeKey));
-		   q.setAncestor(getPrincipalKey(principal));
+		   q.setAncestor(StorageHelper.getPrincipalKey(principal));
 		       
 	       List<Map<String,String>> watchedKeyList = new ArrayList<Map<String,String>>(); 
 	       PreparedQuery pq = datastore.prepare(q);
 	       for (Entity result : pq.asIterable()) {
-	    	   watchedKeyList.add(convertEntityToStringMap(result));
+	    	   watchedKeyList.add(StorageHelper.convertEntityToStringMap(result));
 	    	   datastore.delete(result.getKey());
    	        }
 		       
 		   return watchedKeyList;
-	   }
-
-	   /**
-	    * Converts a Google Datastore Entity into a Map<String,String> for
-	    * easily converting back to JSON on return.
-	    * 
-	    * @param entity entity to convert
-	    * @return the entity converted into string-based key/value pairs.
-	    */
-	   protected Map<String,String> convertEntityToStringMap(Entity entity) {
-    	   Map<String,String> propertyStringMap = new HashMap<String,String>();
-    	   for(Entry<String, Object> propertyMap : entity.getProperties().entrySet()) {
-    		   String key = propertyMap.getKey();
-    		   String value = propertyMap.getValue().toString();
-    		   if(propertyMap.getValue() instanceof Date) {
-    			   value = String.valueOf(((Date)propertyMap.getValue()).getTime()); 
-    		   }
-    		   propertyStringMap.put(key, value);
-    	   }
-    	   return propertyStringMap;
-	   }
-	   
-	   /**
-	    * Gets the Key for the Principal object from the Person Datastore.
-	    * If the principal doesn't existing in the Person datastore it is created
-	    * as part of this request.
-	    */
-	   protected Key getPrincipalKey(Principal principal) {
-		   log.fine("Looking up key for principal: " + principal.getName());
-		   Query q = new Query("Person");
-		   Key principalKey = KeyFactory.createKey("Person", principal.getName());
-		   q.setFilter(FilterOperator.EQUAL.of(Entity.KEY_RESERVED_PROPERTY, principalKey));
-		   q.setKeysOnly();
-		   PreparedQuery pq = datastore.prepare(q);
-		   Entity resultEntity = pq.asSingleEntity();
-		   
-		   if(resultEntity == null) {
-			   log.info("Principal not found, creating: " + principal.getName());
-			   resultEntity = new Entity("Person", principal.getName());
-			   datastore.put(resultEntity);   
-			   log.info("Entity created: " + resultEntity.getKey());
-		   } else {
-			   log.info("Entity found: " + resultEntity.getKey());
-		   }
-		   return resultEntity.getKey();
 	   }
 }

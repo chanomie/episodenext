@@ -8,7 +8,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Used to parse the series list returned from The TV DB and filter out the 
+ * extraneous information.  This will filter to only include the XML Nodes that
+ * are used by the front-end appliation.  Additionally you can include a Set
+ * of keys marking watched Episodes and all those episodes will be removed
+ * from the return set.
+ * 
+ * @author jreed
+ */
 public class SeriesAllXmlHandler extends DefaultHandler {
+	/** Contains the list of Nodes to be included in the result. */
 	protected static Set<String> nodeSet = new HashSet<String>();
 	
 	static {
@@ -29,6 +39,9 @@ public class SeriesAllXmlHandler extends DefaultHandler {
 		nodeSet.add("id");
 	}
 
+	/**
+	 * Enumeration of the different parser states.
+	 */
 	protected enum ParseState {
 		NONE,
 	    DATA,
@@ -38,20 +51,41 @@ public class SeriesAllXmlHandler extends DefaultHandler {
 	    EPISODE_ID
 	}
 	
+	/** Holds the last valid Tag Name to identify if the character stream should be saved. */
 	protected String lastValidTagName;
+	
+	/** The output writer where the output goes. */
 	protected PrintWriter outputWriter;
-	protected Set excludeEpisodes;
+	
+	/** The list of episodes to Exclude. */
+	protected Set<String> excludeEpisodes;
+	
+	/** Buffer for the Episode XML that may or may not be written out. */
 	protected StringBuffer episodeXml = new StringBuffer();
+	
+	/** The current seriesId being parsed. */
 	protected String seriesId;
+	
+	/** The current episodeId being parsed. */
 	protected String episodeId;
+	
+	/** The current parser state. */
 	protected ParseState parseState = ParseState.NONE;
 	
-	
+	/**
+	 * Creates the Handler
+	 * @param outputWriter writer where the output will go
+	 */
 	public SeriesAllXmlHandler(PrintWriter outputWriter) {
 		this.outputWriter = outputWriter;
 	}
 	
-	public SeriesAllXmlHandler(PrintWriter outputWriter, Set excludeEpisodes) {
+	/**
+	 * Creates the Handler.
+	 * @param outputWriter writer where the output will go
+	 * @param excludeEpisodes set of excluded Episode key
+	 */
+	public SeriesAllXmlHandler(PrintWriter outputWriter, Set<String> excludeEpisodes) {
 		this(outputWriter);
 		this.excludeEpisodes = excludeEpisodes;
 	}
@@ -119,6 +153,13 @@ public class SeriesAllXmlHandler extends DefaultHandler {
 					episodeXml.append("</"+qName+">");
 					parseState = ParseState.EPISODE;
 				}
+			} else {
+				if(parseState == ParseState.EPISODE || parseState == ParseState.EPISODE_ID) {
+					episodeXml.append("</"+qName+">");
+				} else {
+					outputWriter.write("</"+qName+">");
+				}
+				
 			}
 		}
 		lastValidTagName = null;
