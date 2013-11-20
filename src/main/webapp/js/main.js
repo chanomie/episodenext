@@ -1325,7 +1325,7 @@ function saveWatchedEpisodes(watchedEpisodes, requestRecache) {
 
 function genericError(jqXHR, textStatus) {
     stopspin("genericError");
-	alert("Failure: " + textStatus);
+	alert("Failure: " + JSON.stringify(jqXHR.response));
 }
 
 

@@ -199,13 +199,22 @@ public class ProxyController {
 		   connection.connect();
 		   response.setContentType(connection.getContentType());
 		   
-		   Set<String> watchedEpisodeSet;
+		   Set<String> watchedEpisodeSet = null;
+		   
+		   // Commenting this out as it blows away my app engine usage
+		   /**
 		   if(!Boolean.parseBoolean(includeall) && principal != null) {
-			   watchedEpisodeSet =
-					   StorageHelper.getWatchedEpisodesKeys(StorageHelper.getPrincipalKey(principal), null);
+			   try {
+				   watchedEpisodeSet =
+						   StorageHelper.getWatchedEpisodesKeys(StorageHelper.getPrincipalKey(principal), null);
+			   } catch (com.google.apphosting.api.ApiProxy.OverQuotaException e) {
+				   // If it's over quota for the data store, just pull back the whole lovely list.
+				   watchedEpisodeSet = null;
+			   }
 		   } else {
 			   watchedEpisodeSet = null;
 		   }
+		   */
 		   
 	       // BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
 		   SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
