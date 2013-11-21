@@ -12,10 +12,12 @@ import com.google.appengine.api.datastore.Key;
 
 public class WatchedEpisodeCache {
 	Cache watchedKeysCache;
+	Cache seriesImageCache;
 	
 	public WatchedEpisodeCache() throws CacheException {
 		CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 		watchedKeysCache = cacheFactory.createCache(Collections.emptyMap());
+		seriesImageCache = cacheFactory.createCache(Collections.emptyMap());
 	}
 
 	public Set<String> getWatchedEpisodesKeys(Key principalKey) {
@@ -26,5 +28,23 @@ public class WatchedEpisodeCache {
 			Set<String> watchedEpisodeSet) {
 		
 		watchedKeysCache.put(principalKey, watchedEpisodeSet);
+	}
+
+	public byte[] getEpisodeImage(String path) {
+		return (byte[]) seriesImageCache.get(path);
+	}
+	
+	public void putEpisodeImage(String path, byte[] image) {
+		// If it must be recached
+		// compress & resize it
+		/*
+		OutputSettings settings = new OutputSettings(ImagesService.OutputEncoding.JPEG);
+		settings.setQuality(90);
+		Transform transform = ImagesServiceFactory.makeResize(newWidth, newHeight) 
+		Image newImage = imagesService.applyTransform(transform, oldImage, settings);
+		byte[] blobData = newImage.getImageData();
+		*/
+		
+		seriesImageCache.put(path, image);
 	}
 }
