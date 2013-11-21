@@ -42,6 +42,7 @@ import javax.xml.parsers.SAXParserFactory;
 import net.chaosserver.wiredepisodes.SeriesAllXmlHandler;
 import net.chaosserver.wiredepisodes.ShowInformation;
 import net.chaosserver.wiredepisodes.StorageHelper;
+import net.chaosserver.wiredepisodes.WatchedEpisodeCache;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.HandlerMapping;
 import org.xml.sax.SAXException;
 
+import com.google.appengine.api.datastore.Key;
+
 @Controller
 @RequestMapping(value="/api")
 public class ProxyController {
@@ -59,6 +62,10 @@ public class ProxyController {
 
 	   @Autowired
 	   private ShowInformation showInformation;
+
+	   @Autowired
+	   private WatchedEpisodeCache watchedEpisodeCache;
+
 	   
 	   @RequestMapping(value="/getseries")
 	   public void searchForSeries(
@@ -90,7 +97,7 @@ public class ProxyController {
 	       
 	       String nextLine = inputReader.readLine();
 	       while(nextLine != null) {
-			   printWriter.println(stripNonValidXMLCharacters(nextLine));
+			   printWriter.println(SeriesAllXmlHandler.stripNonValidXMLCharacters(nextLine));
 		       nextLine = inputReader.readLine();
 	       }
 	       
@@ -148,7 +155,7 @@ public class ProxyController {
 	       
 	       String nextLine = inputReader.readLine();
 	       while(nextLine != null) {
-			   printWriter.println(stripNonValidXMLCharacters(nextLine));
+			   printWriter.println(SeriesAllXmlHandler.stripNonValidXMLCharacters(nextLine));
 		       nextLine = inputReader.readLine();
 	       }
 	       
@@ -200,21 +207,25 @@ public class ProxyController {
 		   response.setContentType(connection.getContentType());
 		   
 		   Set<String> watchedEpisodeSet = null;
-		   
-		   // Commenting this out as it blows away my app engine usage
-		   /**
 		   if(!Boolean.parseBoolean(includeall) && principal != null) {
-			   try {
-				   watchedEpisodeSet =
-						   StorageHelper.getWatchedEpisodesKeys(StorageHelper.getPrincipalKey(principal), null);
-			   } catch (com.google.apphosting.api.ApiProxy.OverQuotaException e) {
-				   // If it's over quota for the data store, just pull back the whole lovely list.
-				   watchedEpisodeSet = null;
+			   log.info("Pulling back the list of watched episodes from JCache");
+			   Key principalKey = StorageHelper.getPrincipalKey(principal);
+			   
+			   watchedEpisodeSet = watchedEpisodeCache.getWatchedEpisodesKeys(principalKey);
+			   
+			   if(watchedEpisodeSet == null) {
+				   log.info("Cache was empty.  Pulling back from Datastore.");
+				   try {
+					   watchedEpisodeSet =
+							   StorageHelper.getWatchedEpisodesKeys(StorageHelper.getPrincipalKey(principal), null);
+					   
+					   watchedEpisodeCache.putWatchedEpisodesKeys(principalKey, watchedEpisodeSet);
+				   } catch (com.google.apphosting.api.ApiProxy.OverQuotaException e) {
+					   // If it's over quota for the data store, just pull back the whole lovely list.
+					   watchedEpisodeSet = null;
+				   }
 			   }
-		   } else {
-			   watchedEpisodeSet = null;
 		   }
-		   */
 		   
 	       // BufferedReader inputReader = new BufferedReader(new InputStreamReader(url.openStream()));
 		   SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -299,61 +310,4 @@ public class ProxyController {
 		writer.flush();
 		writer.close();					
 	}
-
-    /**
-     * This method ensures that the output String has only
-     * valid XML unicode characters as specified by the
-     * XML 1.0 standard. For reference, please see
-     * <a href="http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char">the
-     * standard</a>. This method will return an empty
-     * String if the input is null or empty.
-     *
-     * @param in The String whose non-valid characters we want to remove.
-     * @return The in String, stripped of non-valid characters.
-     */
-    public String stripNonValidXMLCharacters(String in) {
-        StringBuffer out = new StringBuffer(); // Used to hold the output.
-        char current; // Used to reference the current character.
-
-        if (in == null || ("".equals(in))) return ""; // vacancy test.
-        for (int i = 0; i < in.length(); i++) {
-            current = in.charAt(i); // NOTE: No IndexOutOfBoundsException caught here; it should not happen.
-            if ((current == 0x9) ||
-                (current == 0xA) ||
-                (current == 0xD) ||
-                ((current >= 0x20) && (current <= 0xD7FF)) ||
-                ((current >= 0xE000) && (current <= 0xFFFD)) ||
-                ((current >= 0x10000) && (current <= 0x10FFFF)))
-                out.append(current);
-        }
-        return out.toString();
-    }    
-	
-   @RequestMapping(value="/headertest", method = RequestMethod.GET)
-   public void headersProxy(
-		   HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-	   response.setContentType(request.getContentType());
-	   URL url = new URL("https://home.chaosserver.net:8443/headers.php");
-	   URLConnection connection = url.openConnection();
-	   connection.setRequestProperty("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1");
-	   connection.connect();
-	   response.setContentType(connection.getContentType());
-	   	   
-	   BufferedInputStream reader = new BufferedInputStream(url.openStream());
-	   BufferedOutputStream writer =
-	            new BufferedOutputStream(response.getOutputStream());
-       
-	   
-	   byte[] buffer = new byte[1024];
-	   int len;
-	   while ((len = reader.read(buffer)) != -1) {
-		   writer.write(buffer, 0, len);
-	   }
-	   
-	   // writer.write(method.getResponseBodyAsString());
-       writer.flush();
-       writer.close();
-   }
-	
 }

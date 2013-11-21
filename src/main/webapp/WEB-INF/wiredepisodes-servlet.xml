@@ -26,6 +26,7 @@
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 	<bean id="showInformation" class="net.chaosserver.wiredepisodes.ShowInformation" scope="singleton"/>
+	<bean id="watchedEpisodeCache" class="net.chaosserver.wiredepisodes.WatchedEpisodeCache" scope="singleton"/>	
 	
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />

@@ -11,8 +11,11 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.chaosserver.wiredepisodes.ShowInformation;
 import net.chaosserver.wiredepisodes.StorageHelper;
+import net.chaosserver.wiredepisodes.WatchedEpisodeCache;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +50,9 @@ import com.google.appengine.api.users.UserServiceFactory;
 public class StorageController {
        private static final Logger log = Logger.getLogger(StorageController.class.getName());
 	   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	   
+	   @Autowired
+	   private WatchedEpisodeCache watchedEpisodeCache;
 	   
 	   /** 
 	    * Create a warmpup API inside of the Spring Framework.
