@@ -365,6 +365,10 @@ div.show {
 	width: 100%;
 }
 
+div.played {
+	opacity: 0.2;
+}
+
 div.listbannerimage {
 	overflow: hidden;
 }

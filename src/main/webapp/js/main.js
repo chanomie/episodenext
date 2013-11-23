@@ -1148,6 +1148,7 @@ function facebookPlayedEpisode() {
 	var showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
 	spin("facebookPlayedEpisode");
 	removeSeriesFromNextEpisodeCache(seriesId);
+	
 	$.modal.close();
 	
     FB.api('/me/video.watches', 'post', { tv_episode: showUrl }, function(response) {
@@ -1304,7 +1305,13 @@ function removeSeriesFromNextEpisodeCache(seriesId) {
 	var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
 	delete nextEpisodeCache[seriesId];
 	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
-	buildMainScreenFromCache();
+	
+	// Mark the episode as played:
+	if($("div#series-"+seriesId)) {
+		$("div#series-"+seriesId).addClass("played");
+	}
+	
+	// buildMainScreenFromCache();
 }
 
 /**
