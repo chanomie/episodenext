@@ -339,10 +339,10 @@ div.overview {
 	padding-left: 10px;
 }
 
-img.bannerimage {
-	max-width: 100%;
+img.showbanner {
 	min-height: 59px;
 }
+
 
 div.showtitle {
 	text-align: center;
