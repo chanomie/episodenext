@@ -148,16 +148,6 @@ var settings;
 var topDistance = 44;
 
 $(document).ready(function() {
-	/*
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  	$(".header").css("padding-top","20px");
-  	$(".header").css("background","-webkit-linear-gradient(270deg, darkgray 20px, rgba(247,247,247,0.91) 20px)");
-  	$(".page").css("margin-top","64px");
-  	$(".help").css("top","65px");
-  	$("div.help div.rightheader").css("top","68px");
-  	$("div.help div.leftheader").css("top","68px");
-  	*/
-
 	spin("Ready");
 	// Update the display first!
 	buildMainScreenFromCache();
@@ -389,8 +379,14 @@ function checkPopupFloaters() {
  * services and updates the time in the settings menu.
  */
 function updateSyncDisplay() {
-   var today = new Date();
-   var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
+   var today = new Date(),
+       lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync"),
+       dropboxFrequencySetting = getSetting("dropbox.frequency"),
+       lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync"),
+       googleFrequencySetting = getSetting("google.frequency"),
+       lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync"),
+       thetvdbFrequencySetting = getSetting("thetvdb.frequency");
+       
    if(lastDropboxSyncEpoch != null) {
 	   lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
 	   
@@ -400,12 +396,12 @@ function updateSyncDisplay() {
 	       $("#dropboxsynctime").text(lastDropboxSync.toLocaleDateString());	       
        }
    }
-   var dropboxFrequencySetting = getSetting("dropbox.frequency");
+   
    if(dropboxFrequencySetting !== undefined && dropboxFrequencySetting !== null) {
 	   $("#dropboxsync").val(dropboxFrequencySetting);
    }
    
-   var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
+   
    if(lastGoogleSyncEpoch != null) {
 	   lastGoogleSync = new Date(parseInt(lastGoogleSyncEpoch));
 	   
@@ -415,13 +411,11 @@ function updateSyncDisplay() {
 	       $("#googlesynctime").text(lastGoogleSync.toLocaleDateString());	       
        }
    }
-   var googleFrequencySetting = getSetting("google.frequency");
+
    if(googleFrequencySetting !== undefined && googleFrequencySetting !== null) {
 	   $("#googlesync").val(googleFrequencySetting);
    }
    
-
-   var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
    if(lastTheTvDbSyncEpoch != null) {
 	   lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
 	   
@@ -431,7 +425,7 @@ function updateSyncDisplay() {
 	       $("#thetvdbsynctime").text(lastTheTvDbSync.toLocaleDateString());	       
        }
    }
-   var thetvdbFrequencySetting = getSetting("thetvdb.frequency");
+
    if(thetvdbFrequencySetting !== undefined && thetvdbFrequencySetting !== null) {
 	   $("#tvdbsync").val(thetvdbFrequencySetting);
    }
@@ -442,8 +436,8 @@ function updateSyncDisplay() {
  * @this {Element} the html element that allows switch frequency
  */
 function changeSyncFrequency() {
-	var syncKey = $(this).attr("data-sync");
-	var frequency = $(this).val();
+	var syncKey = $(this).attr("data-sync"),
+	    frequency = $(this).val();
 	
     setSetting(syncKey, frequency);
 }
@@ -466,23 +460,29 @@ function logoutDropbox() {
  * past the time it will trigger another sync.
  */
 function checkAndSync() {
-	var googleFrequencyString = getSetting("google.frequency");
-	var dropboxFrequencyString = getSetting("dropbox.frequency");
-	var thetvdbFrequencyString = getSetting("thetvdb.frequency");
-	var now = new Date();
-	
+	var googleFrequencyString = getSetting("google.frequency")
+	    dropboxFrequencyString = getSetting("dropbox.frequency"),
+	    thetvdbFrequencyString = getSetting("thetvdb.frequency"),
+	    now = new Date(),
+	    lastGoogleSyncEpoch,
+	    googleFrequency,
+	    difference,
+	    lastDropboxSyncEpoch,
+	    dropboxFrequency,
+	    lastTheTvDbSyncEpoch,
+	    thetvdbFrequency;
 
     if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
-	    var lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
+	    lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
 		if(!googleAuth && lastGoogleSyncEpoch) {
 			$("#googlemodal").modal({minWidth:"300",maxWidth:"300"});
 		}	    
 	    if(lastGoogleSyncEpoch == null) {
 	      lastGoogleSyncEpoch = 0;
 	    }
-        var googleFrequency = parseInt(googleFrequencyString);
+        googleFrequency = parseInt(googleFrequencyString);
 	    lastGoogleSync = new Date(parseInt(lastGoogleSyncEpoch));
-		var difference = now - lastGoogleSync;             
+		difference = now - lastGoogleSync;             
 		difference = difference / 60 / 1000;         
          if(difference > googleFrequency) {
 	         syncGoogle();
@@ -490,13 +490,13 @@ function checkAndSync() {
     }
 		
     if(dropboxFrequencyString !== undefined && dropboxFrequencyString !== null && dropboxFrequencyString !== "0") {
-	    var lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
+	    lastDropboxSyncEpoch = localStorage.getItem("lastDropboxSync");
 	    if(lastDropboxSyncEpoch == null) {
 	      lastDropboxSyncEpoch = 0;
 	    }
-        var dropboxFrequency = parseInt(dropboxFrequencyString);
+        dropboxFrequency = parseInt(dropboxFrequencyString);
 	    lastDropboxSync = new Date(parseInt(lastDropboxSyncEpoch));
-		var difference = now - lastDropboxSync;             
+		difference = now - lastDropboxSync;             
 		difference = difference / 60 / 1000;         
          if(difference > dropboxFrequency) {
 	         syncDropbox();
@@ -505,13 +505,13 @@ function checkAndSync() {
     }
 
     if(thetvdbFrequencyString !== undefined && thetvdbFrequencyString !== null && thetvdbFrequencyString !== "0") {
-	    var lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
+	    lastTheTvDbSyncEpoch = localStorage.getItem("lastTvDbSync");
 	    if(lastTheTvDbSyncEpoch == null) {
 	      lastTheTvDbSyncEpoch = 0
 	    }
-        var thetvdbFrequency = parseInt(thetvdbFrequencyString);
+        thetvdbFrequency = parseInt(thetvdbFrequencyString);
 	    lastTheTvDbSync = new Date(parseInt(lastTheTvDbSyncEpoch));
-		var difference = now - lastTheTvDbSync;             
+		difference = now - lastTheTvDbSync;             
 		difference = difference / 60 / 1000;
          
          if(difference > thetvdbFrequency) {
@@ -570,8 +570,8 @@ function onSearch() {
  * @param {string} showname the name of the show to search for
  */
 function searchForShow(showname) {
-    var encodedName = encodeURIComponent(showname);
-    var searchUrl = getSeriesUrl + encodedName;
+    var encodedName = encodeURIComponent(showname),
+        searchUrl = getSeriesUrl + encodedName;
     
     spin("searchForShow");
     $.ajax({
@@ -588,14 +588,16 @@ function searchForShow(showname) {
  */
 function searchForShowSuccess(data, status) {
 	$(data).find("Series").each(function(i) {
-		var seriesId = $(this).find("seriesid").text();
-		var seriesName = $(this).find("SeriesName").text();
-		var firstAired = $(this).find("FirstAired").text();
+		var seriesId = $(this).find("seriesid").text(),
+		    seriesName = $(this).find("SeriesName").text(),
+		    firstAired = $(this).find("FirstAired").text(),
+		    newSeries;
+		    
 		if(firstAired === null || firstAired === "") {
 			firstAired = "unknown";
 		}
 		
-		var newSeries = $("<div></div>").
+		newSeries = $("<div></div>").
 			attr({ "data-seriesid" : seriesId }).
 			addClass("seriesrow").
 			append($("<div></div>").
@@ -627,8 +629,8 @@ function searchForShowSuccess(data, status) {
  * @this {Element} the info button clicked to show data for.
  */
 function displayShowDetails() {
-    var seriesid = $(this).attr("data-seriesid");
-    var searchUrl = getSeriesDetailsUrl + seriesid;
+    var seriesid = $(this).attr("data-seriesid"),
+        searchUrl = getSeriesDetailsUrl + seriesid;
 
 	spin("displayShowDetails");
     $.ajax({
@@ -644,12 +646,11 @@ function displayShowDetails() {
  * @param status the status of the response
  */
 function searchDisplayShowSuccess(data, status) {
-  var seriesId = $(data).find("Data Series id").text();
-  var seriesName = $(data).find("Data Series SeriesName").text();
-  var firstAiredDate = $(data).find("Data Series FirstAired").text(); 
-  var overview = $(data).find("Data Series Overview").text(); 
-  var bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
-  // console.log("Updating image show detail: " + seriesName);
+  var seriesId = $(data).find("Data Series id").text(),
+      seriesName = $(data).find("Data Series SeriesName").text(),
+      firstAiredDate = $(data).find("Data Series FirstAired").text(),
+      overview = $(data).find("Data Series Overview").text(),
+      bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
 
   $("#addbannerimage").attr("src",bannersrc);
   $("#addshowtitle").html(seriesName);
@@ -680,16 +681,27 @@ function addNewShow() {
  * Builds the main screen from the localstorage cache.
  */
 function buildMainScreenFromCache() {
-    var start = new Date();
+    var start = new Date(),
+        seriesListCacheJson = localStorage.getItem("seriesListCache"),
+        nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache"),
+        now = new Date(),
+        seriesListCache,
+        seriesId,
+        nextEpisodeCache,
+        newEpisodeAirDateString,
+        thisEpisodeAirDateString,
+        newEpisodeAirDate,
+        newEpisodeElement,
+        appended;
+        
     console.log("Build screen start: " + start.toLocaleString());
 
     spin("buildMainScreenFromCache");
 	$("#showlist").empty();
 	
-	var seriesListCacheJson = localStorage.getItem("seriesListCache");
 	if(seriesListCacheJson !== null) {
-		var seriesListCache = JSON.parse(seriesListCacheJson);
-		for(var seriesId in seriesListCache) {
+		seriesListCache = JSON.parse(seriesListCacheJson);
+		for(seriesId in seriesListCache) {
           $("#showlist").append(
             $("<div></div>").
             	attr("id",("series-"+seriesListCache[seriesId]["seriesId"])).
@@ -740,13 +752,12 @@ function buildMainScreenFromCache() {
         $("#unwatchedShowList").empty();
         $("#unairedShowList").empty();
 
-		var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
 		if(nextEpisodeCacheJson !== null) {
-			var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
-			for(var seriesId in nextEpisodeCache) {
-			  var newEpisodeAirDateString = nextEpisodeCache[seriesId]["FirstAired"];
-			  var newEpisodeAirDate = parseDate(newEpisodeAirDateString);
-			  var newEpisodeElement =
+			nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
+			for(seriesId in nextEpisodeCache) {
+			  newEpisodeAirDateString = nextEpisodeCache[seriesId]["FirstAired"];
+			  newEpisodeAirDate = parseDate(newEpisodeAirDateString);
+			  newEpisodeElement =
 	            $("<div></div>").
 	            	attr("id",("series-"+nextEpisodeCache[seriesId]["seriesId"])).
 	            	attr("data-seriesid",nextEpisodeCache[seriesId]["seriesId"]).
@@ -815,17 +826,16 @@ function buildMainScreenFromCache() {
 	                    )
 	          */
 
-			  var now = new Date();
 			  if(newEpisodeAirDate < now) {
 				  // Episode has already aired, so add to this existing
 				  if($("#unwatchedShowList").children().length == 0) {
 				      // First show - just add
 			          $("#unwatchedShowList").append(newEpisodeElement);	  
 				  } else {
-				    var appended = false;
+				    appended = false;
 					$('#unwatchedShowList').children().each(function () {
 					    if(!appended) {
-							var thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
+							thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
 							
 							if(newEpisodeAirDateString < thisEpisodeAirDateString) {
 								$(this).before(newEpisodeElement);
@@ -844,10 +854,10 @@ function buildMainScreenFromCache() {
 				      // First show - just add
 			          $("#unairedShowList").append(newEpisodeElement);	  
 				  } else {
-				    var appended = false;
+				    appended = false;
 					$('#unairedShowList').children().each(function () {
 					    if(!appended) {
-							var thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
+							thisEpisodeAirDateString = $(this).find("span.episodeFirstAired").text();
 							
 							if(newEpisodeAirDateString < thisEpisodeAirDateString) {
 								$(this).before(newEpisodeElement);
@@ -910,8 +920,8 @@ function pauseSeriesButton() {
 
 
 function showInfoShow() {
-    var seriesid = $(this).attr("data-seriesid");
-    var seriesUrl = getSeriesAllDetailsUrl + seriesid + "?includeall=true";
+    var seriesid = $(this).attr("data-seriesid"),
+        seriesUrl = getSeriesAllDetailsUrl + seriesid + "?includeall=true";
 
 	spin("showInfoShow");
     $.ajax({
@@ -922,11 +932,23 @@ function showInfoShow() {
 }
 
 function seriesDisplayShowSuccess(data, status) {
-  var seriesId = $(data).find("Data Series id").text();
-  var seriesName = $(data).find("Data Series SeriesName").text();
-  var firstAiredDate = $(data).find("Data Series FirstAired").text(); 
-  var overview = $(data).find("Data Series Overview").text(); 
-  var bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
+  var seriesId = $(data).find("Data Series id").text(),
+      seriesName = $(data).find("Data Series SeriesName").text(),
+      firstAiredDate = $(data).find("Data Series FirstAired").text(),
+      overview = $(data).find("Data Series Overview").text(),
+      bannersrc = bannerUrl + $(data).find("Data Series banner").text(),
+      toggleIcon = "icon-eye-close",
+      episodeName,
+      seasonNumber,
+      seasonid,
+      episodeNumber,
+      firstAired,
+      watchedEpisodeKey,
+      episodeKeyString,
+      episodeKey,
+      appendElement,
+      watchedEpisodes; 
+      
   $("#seasonlist").empty();
   $("#viewbannerimage").attr("src",bannersrc);
   $("#viewshowtitle").html(seriesName);
@@ -938,16 +960,16 @@ function seriesDisplayShowSuccess(data, status) {
   trackPageView("/showdetailspage");
   
   $(data).find("Data Episode").each(function(i) {
-    var episodeName = $(this).find("EpisodeName").text();
-    var seasonNumber = $(this).find("SeasonNumber").text(); 
-    var seasonid = $(this).find("seasonid").text();
-    var episodeNumber = $(this).find("EpisodeNumber").text();
-    var firstAired = $(this).find("FirstAired").text();
-    var watchedEpisodeKey = seriesId + "-" + $(this).find("id").text();
-    var episodeKeyString = seasonNumber + "x" + episodeNumber;
-    var episodeKey = parseInt(seasonNumber) * 100 + parseInt(episodeNumber);
+    episodeName = $(this).find("EpisodeName").text();
+    seasonNumber = $(this).find("SeasonNumber").text(); 
+    seasonid = $(this).find("seasonid").text();
+    episodeNumber = $(this).find("EpisodeNumber").text();
+    firstAired = $(this).find("FirstAired").text();
+    watchedEpisodeKey = seriesId + "-" + $(this).find("id").text();
+    episodeKeyString = seasonNumber + "x" + episodeNumber;
+    episodeKey = parseInt(seasonNumber) * 100 + parseInt(episodeNumber);
     
-    var appendElement;
+    appendElement;
     // Check if Season Exists and if not add the season bar
     if($("#"+seasonid).length > 0) {
 	    appendElement = $("#"+seasonid);
@@ -980,8 +1002,7 @@ function seriesDisplayShowSuccess(data, status) {
     // watchedEpisodeKey
     // seriesid-episodeid
     // episodeKey in watchedEpisodes
-    var toggleIcon = "icon-eye-close";
-    var watchedEpisodes = getWatchedEpisodes();
+    watchedEpisodes = getWatchedEpisodes();
     // console.log("Checking for: " + watchedEpisodeKey);
     if(watchedEpisodeKey in watchedEpisodes) {
 	    toggleIcon = "icon-eye-close";
@@ -1028,17 +1049,18 @@ function seriesDisplayShowSuccess(data, status) {
 }
 
 function watchSeason() {
-	var seasonid = $(this).attr("data-seasonid");
-	var dirty = false;
-	// console.log("Watching Season: " + seasonid);
-
-	var watchedEpisodes = getWatchedEpisodes();
+	var seasonid = $(this).attr("data-seasonid"),
+	    watchedEpisodes = getWatchedEpisodes(),
+	    dirty = false,
+	    watchedEpisodeKey,
+	    watchedTime;
+	    
 	$( "div.episodelist[data-seasonid=" + seasonid + "]" ).each(function(i) {
-		var watchedEpisodeKey = $(this).attr("data-watchedkey");
+		watchedEpisodeKey = $(this).attr("data-watchedkey");
 		// console.log("Watched: " + watchedEpisodeKey);
 		if(!(watchedEpisodeKey in watchedEpisodes)) {
 		  dirty = true;
-		  var watchedTime = (new Date()).getTime();
+		  watchedTime = (new Date()).getTime();
 		  watchedEpisodes[watchedEpisodeKey] = watchedTime;
 
 		  // Realtime Add to Cloud
@@ -1063,13 +1085,13 @@ function watchSeason() {
  * @this {element} The dom element that holds the season
  */
 function unwatchSeason() {
-	var seasonid = $(this).attr("data-seasonid");
-	var dirty = false;
-	// console.log("Watching Season: " + seasonid);
-
-	var watchedEpisodes = getWatchedEpisodes();
+	var seasonid = $(this).attr("data-seasonid"),
+	    dirty = false,
+	    watchedEpisodes = getWatchedEpisodes(),
+	    watchedEpisodeKey;
+	    
 	$( "div.episodelist[data-seasonid=" + seasonid + "]" ).each(function(i) {
-		var watchedEpisodeKey = $(this).attr("data-watchedkey");
+		watchedEpisodeKey = $(this).attr("data-watchedkey");
 		// console.log("Unwatched key: " + watchedEpisodeKey);
 		if(watchedEpisodeKey in watchedEpisodes) {
 		  dirty=true;
@@ -1090,7 +1112,9 @@ function unwatchSeason() {
 }
 
 function toggleWatchShow() {
-	var watchedkey = $(this).attr("data-watchedkey");
+	var watchedkey = $(this).attr("data-watchedkey"),
+	    watchedEpisodes;
+	    
 	if($(this).hasClass("icon-play-sign")) {
 		$(this).removeClass("icon-play-sign");
 		$(this).addClass("icon-eye-close");
@@ -1098,7 +1122,7 @@ function toggleWatchShow() {
 		// Tracking inside this method
 		watchSingleEpisode(watchedkey, true);
 	} else {
-		var watchedEpisodes = getWatchedEpisodes();
+		watchedEpisodes = getWatchedEpisodes();
 		$(this).removeClass("icon-eye-close");
 		$(this).addClass("icon-play-sign");
 		delete watchedEpisodes[watchedkey];
@@ -1113,11 +1137,11 @@ function toggleWatchShow() {
 }
 
 function facebookShare() {
-	var seriesId = $(this).attr("data-seriesid");
-	var episodeId = $(this).attr("data-episodeId");
-	var seasonnumber = $(this).attr("data-seasonnumber");
-	var episodenumber = $(this).attr("data-episodenumber");
-	var seasonId = $(this).attr("data-seasonid");
+	var seriesId = $(this).attr("data-seriesid"),
+	    episodeId = $(this).attr("data-episodeId"),
+	    seasonnumber = $(this).attr("data-seasonnumber"),
+	    episodenumber = $(this).attr("data-episodenumber"),
+	    seasonId = $(this).attr("data-seasonid");
 	
 	$("#facebookpost").
 	  attr("data-seriesid",seriesId).
@@ -1138,14 +1162,13 @@ function facebookShare() {
 }
 
 function facebookPlayedEpisode() {
-	var seriesId = $(this).attr("data-seriesid");
-	var episodeId = $(this).attr("data-episodeId");
-	var seasonnumber = $(this).attr("data-seasonnumber");
-	var episodenumber = $(this).attr("data-episodenumber");
-	var seasonId = $(this).attr("data-seasonid");
-	var episodeKey = seriesId + "-" + episodeId;
-	
-	var showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
+	var episodeId = $(this).attr("data-episodeId"),
+	    seasonnumber = $(this).attr("data-seasonnumber"),
+	    episodenumber = $(this).attr("data-episodenumber"),
+	    seasonId = $(this).attr("data-seasonid"),
+	    episodeKey = seriesId + "-" + episodeId,
+	    showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
+	    
 	spin("facebookPlayedEpisode");
 	removeSeriesFromNextEpisodeCache(seriesId);
 	
@@ -1163,9 +1186,9 @@ function facebookPlayedEpisode() {
 }
 
 function playedEpisode() {
-	var seriesId = $(this).attr("data-seriesid");
-	var episodeId = $(this).attr("data-episodeId");
-	var episodeKey = seriesId + "-" + episodeId;
+	var seriesId = $(this).attr("data-seriesid"),
+	    episodeId = $(this).attr("data-episodeId"),
+	    episodeKey = seriesId + "-" + episodeId;
 
 	removeSeriesFromNextEpisodeCache(seriesId);
     watchSingleEpisode(episodeKey, true);
@@ -1177,8 +1200,9 @@ function playedEpisode() {
  * @param {string} seriesId the key for the series that is going to be tracked
  */
 function addShowToSeriesList(seriesId) {
-	var seriesList = getSeriesList();
-	var addTime = (new Date()).getTime();
+	var seriesList = getSeriesList(),
+	    addTime = (new Date()).getTime();
+	    
 	seriesList[seriesId] = addTime;
 	trackShowAction("Series", "Add", seriesId);
 	addSeriesToCloud(seriesId, addTime);
@@ -1202,14 +1226,17 @@ function deleteSeries(seriesId) {
 }
 
 function getSeriesList() {
-    var result = {};
-	var seriesList = localStorage.getItem("seriesList");
+    var result = {},
+        seriesList = localStorage.getItem("seriesList"),
+        objectType,
+        i;
+        
 	if(seriesList !== null) {
 		tempResult = JSON.parse(seriesList);
-		var objectType = Object.prototype.toString.call( tempResult );
+		objectType = Object.prototype.toString.call( tempResult );
 		if(objectType  === '[object Array]') {
 		  // console.log("Upgrading Series list to map");
-		  for(var i=0; i<tempResult.length; i++) {
+		  for(i=0; i<tempResult.length; i++) {
 			  result[tempResult[i]] = (new Date()).getTime();
 		  }
 		  saveSeriesList(result);
@@ -1222,11 +1249,13 @@ function getSeriesList() {
 }
 
 function getWatchedEpisodes() {
-    var result = {};
-	var watchedEpisodes = localStorage.getItem("watchedEpisodes");
+    var result = {},
+        watchedEpisodes = localStorage.getItem("watchedEpisodes"),
+        objectType;
+        
 	if(watchedEpisodes !== null) {
 		result = JSON.parse(watchedEpisodes);
-		var objectType = Object.prototype.toString.call( result );
+		objectType = Object.prototype.toString.call( result );
 		// console.log("Watched Episodes type: " + objectType);
 	}
 	
@@ -1234,23 +1263,26 @@ function getWatchedEpisodes() {
 }
 
 function saveSeriesList(seriesList) {
-    var seriesListJson = JSON.stringify(seriesList);
-    var objectType = Object.prototype.toString.call( seriesList );
+    var seriesListJson = JSON.stringify(seriesList),
+        objectType = Object.prototype.toString.call( seriesList ),
+        result = {};
+        
 	if(objectType  === '[object Array]') {
 	  // console.log("Upgrading Series list to map");
-	  var result = {};
 	  for(var i=0; i<tempResult.length; i++) {
 		  result[tempResult[i]] = (new Date()).getTime();
 	  }
-	  var seriesListJson = JSON.stringify(result);
+	  seriesListJson = JSON.stringify(result);
 	}
 	localStorage.setItem("seriesList", seriesListJson);
 	recache();
 }
 
 function getSetting(settingKey) {
+	var settingsJson = {};
+	
     if(settings === undefined || settings === null) {
-	  var settingsJson = localStorage.getItem("settings");
+	  settingsJson = localStorage.getItem("settings");
 	  if(settingsJson !== null) {      
 		settings = JSON.parse(settingsJson);
 	  } else {
@@ -1262,8 +1294,10 @@ function getSetting(settingKey) {
 }
 
 function setSetting(settingKey, settingValue) {
+	var settingsJson = {};
+
     if(settings === undefined || settings === null) {
-	  var settingsJson = localStorage.getItem("settings");
+	  settingsJson = localStorage.getItem("settings");
 	  if(settingsJson !== null) {      
 		settings = JSON.parse(settingsJson);
 	  } else {
@@ -1284,8 +1318,9 @@ function setSetting(settingKey, settingValue) {
  *        automatically recache the system after adding the episode
  */
 function watchSingleEpisode(watchedEpisodeKey, requestRecache) {
-    var watchedEpisodes = getWatchedEpisodes();
-	var watchedTime = (new Date()).getTime();
+    var watchedEpisodes = getWatchedEpisodes(),
+        watchedTime = (new Date()).getTime();
+        
 	watchedEpisodes[watchedEpisodeKey] = watchedTime;
 	trackShowAction("Episode", "Add", watchedEpisodeKey);
 
@@ -1301,8 +1336,9 @@ function watchSingleEpisode(watchedEpisodeKey, requestRecache) {
  * @param {string} seriesId the id of the series to remove.
  */
 function removeSeriesFromNextEpisodeCache(seriesId) {
-	var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
-	var nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
+	var nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache"),
+	    nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
+	    
 	delete nextEpisodeCache[seriesId];
 	localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
 	
@@ -1346,10 +1382,11 @@ function genericError(jqXHR, textStatus) {
  * @param {number} watchedTime an epoch indicator of when the show was watched
  */
 function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
-	var now = (new Date()).getTime();
+	var now = (new Date()).getTime(),
+	    results;
 	// If the Dropbox Table Exists add to it
 	if(watchedEpisodesTable) {
-		var results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
+		results = watchedEpisodesTable.query({"watchedEpisodeKey": watchedEpisodeKey});
 		if(results === null || results.length === 0) {
 			watchedEpisodesTable.insert({"episodeKey": watchedEpisodeKey, "updated": now});
 		}
@@ -1375,11 +1412,12 @@ function addEpisodeToCloud(watchedEpisodeKey, watchedTime) {
  * @param {number} watchedTime an epoch indicator of when the show was watched
  */
 function addSeriesToCloud(seriesKey, watchedTime) {
-	var now = (new Date()).getTime();
+	var now = (new Date()).getTime(),
+	    results;
 	
 	// If the Dropbox Table Exists add to it
 	if(seriesListTable) {
-		var results = seriesListTable.query({"seriesId": seriesKey});
+		results = seriesListTable.query({"seriesId": seriesKey});
 		if(results === null || results.length === 0) {
 			seriesListTable.insert({"seriesId": seriesKey, "updated": now});
 		}
@@ -1405,10 +1443,13 @@ function addSeriesToCloud(seriesKey, watchedTime) {
  *        "{seriesId}-{episodeId}"
  */
 function deleteEpisodeFromCloud(watchedEpisodeKey) {
+	var results,
+	    i;
+	
 	// Delete realtime from Dropbox
 	if(watchedEpisodesTable) {
-		var results = watchedEpisodesTable.query({"episodeKey": watchedEpisodeKey}); 
-		for(var i=0; i< results.length; i++) {
+		results = watchedEpisodesTable.query({"episodeKey": watchedEpisodeKey}); 
+		for(i=0; i< results.length; i++) {
 			results[i].deleteRecord();
 		}			  
 	}
@@ -1430,9 +1471,12 @@ function deleteEpisodeFromCloud(watchedEpisodeKey) {
  * @param {string} seriesId the key of the series to remove
  */
 function deleteSeriesFromCloud(seriesId) {
+	var results,
+	    i;
+	
 	if(seriesListTable) {
-		var results = seriesListTable.query({"seriesId": seriesId}); 
-		for(var i=0; i< results.length; i++) {
+		results = seriesListTable.query({"seriesId": seriesId}); 
+		for(i=0; i< results.length; i++) {
 			results[i].deleteRecord();
 		}
 	}
