@@ -57,18 +57,36 @@ import org.xml.sax.SAXException;
 
 import com.google.appengine.api.datastore.Key;
 
+/**
+ * Used to proxy all of the requests to TheTVDB API. It adds an additional layer
+ * of complexity by using web caching and filtering out extraneous results.
+ * 
+ * @author jreed
+ */
+
 @Controller
 @RequestMapping(value = "/api")
 public class ProxyController {
 	private static final Logger log = Logger.getLogger(ProxyController.class
 			.getName());
 
+	/** References a singleton show information object. */
 	@Autowired
 	private ShowInformation showInformation;
 
+	/** References a singleton caching utility object. */
 	@Autowired
 	private WatchedEpisodeCache watchedEpisodeCache;
 
+	/**
+	 * Get series executes a get series search again.
+	 * 
+	 * @param seriesname name of the series to search for
+	 * @param request the request
+	 * @param response the response
+	 * @throws IOException
+	 *             something went wrong connectin
+	 */
 	@RequestMapping(value = "/getseries")
 	public void searchForSeries(
 			@RequestParam(required = true, value = "seriesname") String seriesname,
@@ -122,14 +140,10 @@ public class ProxyController {
 	 * <li>Data Series banner</li>
 	 * </ul>
 	 * 
-	 * @param seriesId
-	 *            unique identifer of the series
-	 * @param request
-	 *            the http request
-	 * @param response
-	 *            the http reponse.
-	 * @throws IOException
-	 *             If there is an issue reaching TheTvDB
+	 * @param seriesId unique identifer of the series
+	 * @param request the http request
+	 * @param response the http reponse.
+	 * @throws IOException If there is an issue reaching TheTvDB
 	 */
 	@RequestMapping(value = "/{seriesId}", method = { RequestMethod.GET })
 	public void getSeriesDetails(@PathVariable String seriesId,
@@ -202,7 +216,6 @@ public class ProxyController {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-
 	@RequestMapping(value = "/all/{seriesId}", method = RequestMethod.GET)
 	public void getAllSeriesDetails(
 			@PathVariable String seriesId,
@@ -211,14 +224,14 @@ public class ProxyController {
 			Principal principal) throws IOException, SAXException,
 			ParserConfigurationException {
 
-		response.setContentType(request.getContentType());
-		URL url = new URL("http://thetvdb.com/api/"
-				+ showInformation.getApiKey() + "/series/"
-				+ URLEncoder.encode(seriesId, "UTF-8") + "/all/en.xml");
-		URLConnection connection = url.openConnection();
-		connection.connect();
-		response.setContentType(connection.getContentType());
+		// Construct the path to the TV DB API
+		String path = "http://thetvdb.com/api/" + showInformation.getApiKey()
+				+ "/series/" + URLEncoder.encode(seriesId, "UTF-8")
+				+ "/all/en.xml";
 
+		// First get the list of watched episodes for this person.
+		// This can either be pulled from the Cache or from the Google Data Store.
+		// - Todo that allows it to be set in the session for a dropbox user
 		Set<String> watchedEpisodeSet = null;
 		if (!Boolean.parseBoolean(includeall) && principal != null) {
 			log.info("Pulling back the list of watched episodes from JCache");
@@ -243,21 +256,53 @@ public class ProxyController {
 			}
 		}
 
-		// BufferedReader inputReader = new BufferedReader(new
-		// InputStreamReader(url.openStream()));
+		// Check if the API XML is already in MemCache
+		byte seriesXmlResult[] = watchedEpisodeCache.getApiResponse(path);
+		if (seriesXmlResult == null) {
+			// The Cache was empty so get and store the XML.
+			log.info("Missed cache - loading API and caching");
+			URL url = new URL(path);
+
+			URLConnection connection = url.openConnection();
+			connection.connect();
+
+			BufferedInputStream reader = new BufferedInputStream(
+					url.openStream());
+			ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+			BufferedOutputStream cacheWriter = new BufferedOutputStream(
+					byteArrayStream);
+
+			byte[] buffer = new byte[1024];
+			int len;
+			while ((len = reader.read(buffer)) != -1) {
+				cacheWriter.write(buffer, 0, len);
+			}
+
+			log.info("Missed cache - Writing API to Cache");
+			cacheWriter.flush();
+			cacheWriter.close();
+			seriesXmlResult = byteArrayStream.toByteArray();
+			log.info("Missed cache - Writing XML to Cache with bytes: "
+					+ seriesXmlResult.length);
+			watchedEpisodeCache.putApiResponse(path, seriesXmlResult);
+		}
+
+		response.setContentType("text/xml");
+		InputStream byteInputStream = new BufferedInputStream(
+				new ByteArrayInputStream(seriesXmlResult));
+
 		SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
 		PrintWriter printWriter = response.getWriter();
 		SeriesAllXmlHandler seriesAllXmlHandler = new SeriesAllXmlHandler(
 				printWriter, watchedEpisodeSet);
-		saxParser.parse(url.openStream(), seriesAllXmlHandler);
+		saxParser.parse(byteInputStream, seriesAllXmlHandler);
 		printWriter.flush();
 		printWriter.close();
-
 	}
 
 	@RequestMapping(value = "/banners/**", method = { RequestMethod.GET,
 			RequestMethod.HEAD })
-	public void getAllSeriesDetails(HttpServletRequest request,
+	public void getSeriesBannerImage(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
 		String path = (String) request
@@ -342,9 +387,10 @@ public class ProxyController {
 						cacheWriter.flush();
 						cacheWriter.close();
 						byte[] imageBytes = byteArrayStream.toByteArray();
-						log.info("Missed cache - Writing Image to Cache with bytes: " + imageBytes.length);
+						log.info("Missed cache - Writing Image to Cache with bytes: "
+								+ imageBytes.length);
 						watchedEpisodeCache.putEpisodeImage(path, imageBytes);
-						
+
 					} catch (Exception e) {
 						log.log(Level.INFO,
 								"Streaming null image because of Exception", e);

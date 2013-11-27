@@ -40,6 +40,9 @@ public class WatchedEpisodeCache {
 	/** Cache of all the series banner images. */
 	Cache seriesImageCache;
 	
+	/** Cache of all the XML API calls to TheTVDB. */
+	Cache apiCache;
+	
 	/**
 	 * Constructor initializes all of the internal objects.
 	 * 
@@ -49,6 +52,7 @@ public class WatchedEpisodeCache {
 		CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 		watchedKeysCache = cacheFactory.createCache(Collections.emptyMap());
 		seriesImageCache = cacheFactory.createCache(Collections.emptyMap());
+		apiCache = cacheFactory.createCache(Collections.emptyMap());
 		imagesService = ImagesServiceFactory.getImagesService();
 	}
 
@@ -60,6 +64,14 @@ public class WatchedEpisodeCache {
 			Set<String> watchedEpisodeSet) {
 		
 		watchedKeysCache.put(principalKey, watchedEpisodeSet);
+	}
+	
+	public byte[] getApiResponse(String path) {
+		return (byte[]) apiCache.get(path);
+	}
+	
+	public void putApiResponse(String path, byte[] response) {
+		watchedKeysCache.put(path, response);
 	}
 
 	public byte[] getEpisodeImage(String path) {
