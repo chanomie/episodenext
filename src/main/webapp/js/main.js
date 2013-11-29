@@ -460,7 +460,7 @@ function logoutDropbox() {
  * past the time it will trigger another sync.
  */
 function checkAndSync() {
-	var googleFrequencyString = getSetting("google.frequency")
+	var googleFrequencyString = getSetting("google.frequency"),
 	    dropboxFrequencyString = getSetting("dropbox.frequency"),
 	    thetvdbFrequencyString = getSetting("thetvdb.frequency"),
 	    now = new Date(),
@@ -1165,6 +1165,7 @@ function facebookPlayedEpisode() {
 	var episodeId = $(this).attr("data-episodeId"),
 	    seasonnumber = $(this).attr("data-seasonnumber"),
 	    episodenumber = $(this).attr("data-episodenumber"),
+	    seriesId = $(this).attr("data-seriesid"),
 	    seasonId = $(this).attr("data-seasonid"),
 	    episodeKey = seriesId + "-" + episodeId,
 	    showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
