@@ -1491,14 +1491,14 @@ function deleteSeriesFromCloud(seriesId) {
 }
 
 /** Dropbox Sync State Stuff **/
-var isDropboxSyncing = false;
-var syncKeyArray;
-var dropboxTableResult;
-var syncKeyIndex;
-var watchedEpisodesSync;
-var seriesListSync;
-var localDirty;
-var dropBoxSyncStart = new Date();
+var isDropboxSyncing = false,
+    syncKeyArray,
+    dropboxTableResult,
+    syncKeyIndex,
+    watchedEpisodesSync,
+    seriesListSync,
+    localDirty,
+    dropBoxSyncStart = new Date();
 
 function syncDropbox() {
     if(!isDropboxSyncing && client.isAuthenticated()) {
@@ -1521,8 +1521,8 @@ function syncDropbox() {
 
 function syncWatchedEpisodesFromDropbox() {
 	if(syncKeyIndex < dropboxTableResult.length) {
-		var episodeKey = dropboxTableResult[syncKeyIndex].get("episodeKey");
-		var dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
+		var episodeKey = dropboxTableResult[syncKeyIndex].get("episodeKey"),
+		    dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
 		if(dropboxUpdated == null) {
 			console.log("No updated time in dropbox, updated for " + episodeKey + ": " + ((new Date() - dropBoxSyncStart)/1000));
 			dropboxUpdated = 0;
@@ -1549,8 +1549,9 @@ function syncWatchedEpisodesFromDropbox() {
 
 function syncSeriesFromDropbox() {
 	if(syncKeyIndex < dropboxTableResult.length) {
-		var seriesId = dropboxTableResult[syncKeyIndex].get("seriesId");
-		var dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
+		var seriesId = dropboxTableResult[syncKeyIndex].get("seriesId"),
+		    dropboxUpdated = dropboxTableResult[syncKeyIndex].get("updated");
+		    
 		if(dropboxUpdated == null) {
 			dropboxUpdated = 0;
 			dropboxTableResult[syncKeyIndex].set("updated",dropboxUpdated);
@@ -1581,10 +1582,12 @@ function syncSeriesFromDropbox() {
 
 function syncWatchedEpisodesToDropbox() {  
   if(syncKeyIndex < syncKeyArray.length) {
-	  var episodeKey = syncKeyArray[syncKeyIndex++];
-	  var results = watchedEpisodesTable.query({"episodeKey": episodeKey});
+	  var episodeKey = syncKeyArray[syncKeyIndex++],
+	      results = watchedEpisodesTable.query({"episodeKey": episodeKey}),
+	      episodeValue;
+	      
 	  if(results === null || results.length === 0) {
-	      var episodeValue = watchedEpisodesSync[episodeKey];
+	      episodeValue = watchedEpisodesSync[episodeKey];
 	      if(episodeValue == null) {
 		      episodeValue = 0;
 		      watchedEpisodesSync[episodeKey] = episodeValue;
@@ -1605,10 +1608,12 @@ function syncWatchedEpisodesToDropbox() {
 
 function syncSeriesToDropbox() {
   if(syncKeyIndex < syncKeyArray.length) {
-	  var seriesKey = syncKeyArray[syncKeyIndex++];
-  	  var results = seriesListTable.query({"seriesId": seriesKey}); 
+	  var seriesKey = syncKeyArray[syncKeyIndex++],
+	      results = seriesListTable.query({"seriesId": seriesKey}),
+	      seriesValue;
+	      
 	  if(results === null || results.length === 0) {
-	        var seriesValue = seriesListSync[seriesKey];
+	        seriesValue = seriesListSync[seriesKey];
 			if(seriesValue == null) {
 				seriesValue = 0;
 				seriesListSync[seriesKey] = seriesValue;
@@ -1636,15 +1641,15 @@ function syncDropboxComplete() {
 
 
 /** Google Sync State Stuff **/
-var isGoogleSyncing = false;
-var googleSyncKeyArray;
-var googleArrayResult;
-var googleArrayIndex;
-var googleWatchedEpisodesSync;
-var googleSeriesListSync;
-var googleLocalDirty;
-var googleSyncStart = new Date();
-var googleLastSyncTime = 0;
+var isGoogleSyncing = false,
+    googleSyncKeyArray,
+    googleArrayResult,
+    googleArrayIndex,
+    googleWatchedEpisodesSync,
+    googleSeriesListSync,
+    googleLocalDirty,
+    googleSyncStart = new Date(),
+    googleLastSyncTime = 0;
 
 function syncGoogle() {
     if(!isGoogleSyncing && googleAuth) {
@@ -1681,8 +1686,8 @@ function syncGoogle() {
 
 function syncWatchedEpisodesFromGoogle() {
 	if(googleArrayIndex < googleArrayResult.length) {
-		var episodeKey = googleArrayResult[googleArrayIndex].watchedKey;
-		var googleUpdated = googleArrayResult[googleArrayIndex].updated;
+		var episodeKey = googleArrayResult[googleArrayIndex].watchedKey,
+		    googleUpdated = googleArrayResult[googleArrayIndex].updated;
 		if(googleUpdated == null) {
 			googleUpdated = 0;
 			googleArrayResult[googleArrayIndex].updated = googleUpdated;
@@ -1728,8 +1733,8 @@ function syncWatchedEpisodesFromGoogle() {
 
 function syncSeriesFromGoogle() {
 	if(googleArrayIndex < googleArrayResult.length) {
-		var seriesId = googleArrayResult[googleArrayIndex].seriesId;
-		var googleUpdated = googleArrayResult[googleArrayIndex].updated;
+		var seriesId = googleArrayResult[googleArrayIndex].seriesId,
+		    googleUpdated = googleArrayResult[googleArrayIndex].updated;
 		if(googleUpdated == null) {
 			googleUpdated = 0;
 			googleArrayResult[googleArrayIndex].updated = googleUpdated;
@@ -1761,8 +1766,8 @@ function syncSeriesFromGoogle() {
 
 function syncWatchedEpisodesToGoogle() {  
 	  if(googleArrayIndex < googleArrayResult.length) {
-		  var episodeKey = googleArrayResult[googleArrayIndex++];
-		  var episodeValue = googleWatchedEpisodesSync[episodeKey];
+		  var episodeKey = googleArrayResult[googleArrayIndex++],
+		      episodeValue = googleWatchedEpisodesSync[episodeKey];
 		  googleArrayIndex++;
 		  
 		  if(episodeValue >= googleLastSyncTime) {
@@ -1790,8 +1795,8 @@ function syncWatchedEpisodesToGoogle() {
 
 function syncSeriesToGoogle() {
 	  if(googleArrayIndex < googleArrayResult.length) {
-		  var seriesKey = googleArrayResult[googleArrayIndex++];
-		  var seriesValue = googleSeriesListSync[seriesKey];
+		  var seriesKey = googleArrayResult[googleArrayIndex++],
+		      seriesValue = googleSeriesListSync[seriesKey];
           if(seriesValue == null) {
 		      seriesValue = 0;
 		      googleSeriesListSync[seriesKey] = seriesValue;
@@ -1831,12 +1836,13 @@ function syncGoogleComplete() {
 
 
 // Start the Recache
-var isRecaching = false;
-var seriesListRecache;
-var seriesListIndex;
-var nextEpisodeCache = {};
-var seriesListCache = {};
-var recacheStart = new Date();
+var isRecaching = false,
+    seriesListRecache,
+    seriesListIndex,
+    nextEpisodeCache = {},
+    seriesListCache = {},
+    recacheStart = new Date();
+    
 function recache() {
     if(!isRecaching) {
 	    spin("recache");
@@ -1853,16 +1859,22 @@ function recache() {
 }
 
 function recacheSeries() {
+	var lastTheTvDbSync,
+	    seriesListItem,
+	    searchUrl;
+	
 	if(seriesListIndex  < seriesListRecache.length) {
-		var seriesListItem = seriesListRecache[seriesListIndex++];
-
-    	var searchUrl = getSeriesAllDetailsUrl + seriesListItem + "?includeall=false"; 
+		seriesListItem = seriesListRecache[seriesListIndex++];
+		searchUrl = getSeriesAllDetailsUrl + seriesListItem + "?includeall=false";
+		
         $.ajax({
           url: searchUrl,
           async: false,
           success: function(data, status) {
-		      var newSeries = {};
-		      var seriesId = $(data).find("Data Series id").text();
+		      var newSeries = {},
+		          seriesId = $(data).find("Data Series id").text(),
+		          oldestUnwatchedEpisode = undefined;
+		          
 			  newSeries["seriesId"] = seriesId;
 			  newSeries["seriesName"] = $(data).find("Data Series SeriesName").text();
 			  newSeries["firstAiredDate"] = $(data).find("Data Series FirstAired").text(); 
@@ -1873,16 +1885,19 @@ function recacheSeries() {
 			  
 			  newSeries["bannersrc"] = bannerUrl + $(data).find("Data Series banner").text();
 			  seriesListCache[seriesId] = newSeries;
-			  var oldestUnwatchedEpisode = undefined;
 		      
 		      $(data).find("Data Episode").each(function(i) {
-		          var episodeId = $(this).find("id").text();
-		          var episodeKey = seriesId + "-" + episodeId;
+		          var episodeId = $(this).find("id").text(),
+		              episodeKey = seriesId + "-" + episodeId,
+		              firstAired,
+		              firstAiredDate,
+		              firstAiredEpoch;
+		              
 		          if(!(episodeKey in getWatchedEpisodes())) {
-					  var firstAired = $(this).find("FirstAired").text();
+					  firstAired = $(this).find("FirstAired").text();
 					  if(firstAired !== undefined && firstAired !== "") {
-					      var firstAiredDate = new Date(firstAired);
-						  var firstAiredEpoch = firstAiredDate.getTime();
+					      firstAiredDate = new Date(firstAired);
+						  firstAiredEpoch = firstAiredDate.getTime();
 						  if(oldestUnwatchedEpisode === undefined 
 	    					      || oldestUnwatchedEpisode["FirstAiredEpoch"] > firstAiredEpoch) {
 							      
@@ -1917,7 +1932,7 @@ function recacheSeries() {
 		localStorage.setItem("seriesListCache",JSON.stringify(seriesListCache));
 		buildMainScreenFromCache();
 	
-		var lastTheTvDbSync = new Date();
+		lastTheTvDbSync = new Date();
 		localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
 		updateSyncDisplay();
 		stopspin("recache");		
