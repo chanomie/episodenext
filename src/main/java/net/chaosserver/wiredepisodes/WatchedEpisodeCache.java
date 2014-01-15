@@ -56,10 +56,12 @@ public class WatchedEpisodeCache {
 		imagesService = ImagesServiceFactory.getImagesService();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set<String> getWatchedEpisodesKeys(Key principalKey) {
 		return (Set<String>) watchedKeysCache.get(principalKey);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void putWatchedEpisodesKeys(Key principalKey,
 			Set<String> watchedEpisodeSet) {
 		
@@ -70,6 +72,7 @@ public class WatchedEpisodeCache {
 		return (byte[]) apiCache.get(path);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void putApiResponse(String path, byte[] response) {
 		watchedKeysCache.put(path, response);
 	}
@@ -78,6 +81,7 @@ public class WatchedEpisodeCache {
 		return (byte[]) seriesImageCache.get(path);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void putEpisodeImage(String path, byte[] image) {
 		int quality = 90;
 		int imageLength = image.length;

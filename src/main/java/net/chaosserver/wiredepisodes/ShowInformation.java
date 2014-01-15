@@ -33,13 +33,11 @@ public class ShowInformation {
 		if(apiKey == null) {
 			apiKey = System.getenv("thetvdbapikey");
 		}
-		System.out.println("Creating with key: " + apiKey);
 		tvDB = new TheTVDBApi(apiKey);
 	}
 	
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
-		System.out.println("Creating with key: " + apiKey);
 		tvDB = new TheTVDBApi(apiKey);
 	}
 	
@@ -60,7 +58,6 @@ public class ShowInformation {
 	}
 	
 	public Episode getEpisode(String id, int seasonNumber, int episodeNumber) {
-		System.out.println("Gettin episode id:" + id + ", seasonNumber:" + seasonNumber + ", episodeNumber = " + episodeNumber);
 		return this.getEpisode(id, seasonNumber, episodeNumber, "en");
 	}
 
