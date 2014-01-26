@@ -64,7 +64,7 @@ public class EpisodeController {
 					   
 			     resultView = "series/view";
 			   } else {
-				   resultView = "redirect:" + showInformation.getSeriesUrl(series);;
+				   resultView = "redirect:" + showInformation.getSeriesUrl(series);
 			   }
 		   }
 	   } catch (NumberFormatException e) {

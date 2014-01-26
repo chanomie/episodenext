@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.chaosserver.wiredepisodes.ShowInformation;
 import net.chaosserver.wiredepisodes.StorageHelper;
 import net.chaosserver.wiredepisodes.WatchedEpisodeCache;
 
@@ -87,7 +86,6 @@ public class StorageController {
 	   @RequestMapping(value="/v1/google/status")
 		public @ResponseBody Map<String,String> getGoogleStatus(
 				HttpServletRequest request, 
-				HttpServletResponse response,
 				Principal principal,
 				@RequestParam(value="returnPath", required=false) String returnPath
 			) {

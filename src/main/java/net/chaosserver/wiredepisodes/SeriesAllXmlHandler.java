@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -173,15 +174,15 @@ public class SeriesAllXmlHandler extends DefaultHandler {
 					|| parseState == ParseState.DATA
 					|| parseState == ParseState.SERIES) {
 
-				outputWriter.write(value);
+				outputWriter.write(StringEscapeUtils.escapeXml(value));
 			} else if (parseState == ParseState.SERIES_ID) {
 				seriesId = value;
-				outputWriter.write(value);
+				outputWriter.write(StringEscapeUtils.escapeXml(value));
 			} else if (parseState == ParseState.EPISODE) {
-				episodeXml.append(value);
+				episodeXml.append(StringEscapeUtils.escapeXml(value));
 			} else if (parseState == ParseState.EPISODE_ID) {
 				episodeId = value;
-				episodeXml.append(value);
+				episodeXml.append(StringEscapeUtils.escapeXml(value));
 			}
 		}
 	}
