@@ -74,7 +74,7 @@ var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
  * @define {string}
  * @private
  */
-var getSeriesUrl = "https://thewirewatcher.appspot.com/api/getseries?seriesname=";
+var getSeriesUrl = "https://thewirewatcher.appspot.com/api/search?searchterm=";
 
 /**
  * The base URL for the get seires API.  This proxies the request to 
@@ -206,16 +206,16 @@ $(document).ready(function() {
 	$("#allshowsseasonbar").click(function() {
 		if($(this).attr("data-status") == "hidden") {
 		   	$(this).attr("data-status","shown");
-		   	$("#allshowsexpander").removeClass("icon-chevron-right");
-		   	$("#allshowsexpander").addClass("icon-chevron-down");
+		   	$("#allshowsexpander").removeClass("fa fa-chevron-circle-right");
+		   	$("#allshowsexpander").addClass("fa fa-chevron-down");
 		   	$("#showlist").show();
 			$(document.body).animate({
 			    'scrollTop': $('#allshowsseasonbar').offset().top-topDistance
 			}, 1000);	   	
 		} else {
 		   	$(this).attr("data-status","hidden");
-		   	$("#allshowsexpander").removeClass("icon-chevron-down");
-		   	$("#allshowsexpander").addClass("icon-chevron-right");
+		   	$("#allshowsexpander").removeClass("fa fa-chevron-down");
+		   	$("#allshowsexpander").addClass("fa fa-chevron-circle-right");
 		   	$("#showlist").hide();
 		 }
 	});
@@ -223,22 +223,23 @@ $(document).ready(function() {
 	$("#unairedseasonbar").click(function() {
 		if($(this).attr("data-status") == "hidden") {
 		   	$(this).attr("data-status","shown");
-		   	$("#unairedseasonexpander").removeClass("icon-chevron-right");
-		   	$("#unairedseasonexpander").addClass("icon-chevron-down");
+		   	$("#unairedseasonexpander").removeClass("fa fa-chevron-circle-right");
+		   	$("#unairedseasonexpander").addClass("fa fa-chevron-down");
 		   	$("#unairedShowList").show();
 			$(document.body).animate({
 			    'scrollTop': $('#unairedseasonbar').offset().top-topDistance
 			}, 1000);	   	
 		} else {
 			$(this).attr("data-status","hidden");
-			$("#unairedseasonexpander").removeClass("icon-chevron-down");
-			$("#unairedseasonexpander").addClass("icon-chevron-right");
+			$("#unairedseasonexpander").removeClass("fa fa-chevron-down");
+			$("#unairedseasonexpander").addClass("fa fa-chevron-circle-right");
 			$("#unairedShowList").hide();
 		}
 	});
 
     
 	$("#addnewshowbutton").click(addNewShow);
+	$("#addnewshowbuttonfacebook").click(facebookAddNewShow);
 	$('#addshowform').submit(onSearch);
 	$("#recache").click(recache);
 	$(".cancelmodal").click(function() {$.modal.close()});
@@ -612,7 +613,7 @@ function searchForShowSuccess(data, status) {
 				addClass("rightarrow").
 				append(
 				  $("<i></i>").
-				  addClass("icon-chevron-right")
+				  addClass("fa fa-chevron-circle-right")
 				)
 			);
 			
@@ -667,14 +668,32 @@ function searchDisplayShowSuccess(data, status) {
 
 /**
  * Add a new show into the list of tracked shows.
- * @this {Element} the add button for the series id.
  */
 function addNewShow() {
-	var seriesid = $(this).attr("data-seriesid");
+	var seriesid = $("#addnewshowbutton").attr("data-seriesid");
 	addShowToSeriesList(seriesid);
     $("#addshowpage").slideUp('slow');
     $("#mainpage").slideDown('slow');
     trackPageView("/index.html");
+}
+
+/**
+ * Add a new show into the list of tracked shows and
+ * adds the show into Facebook.
+ */
+function facebookAddNewShow() {
+	var seriesid = $("#addnewshowbutton").attr("data-seriesid"),
+	    showUrl = facebookOgUrl + seriesId;
+
+	addNewShow();
+    FB.api('/me/video.watches', 'post', { tv_show: showUrl }, function(response) {
+	  if (!response || response.error) {
+        alert('Error occured: ' + JSON.stringify(response.error));
+      } else {
+        console.log('Post ID: ' + response.id);
+      }
+    });		
+	
 }
 
 /**
@@ -739,12 +758,12 @@ function buildMainScreenFromCache() {
                       $("<i></i>").
                       addClass("deleteButton").
                       attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-                      addClass("icon-trash")).
+                      addClass("fa fa-trash-o")).
                     append(
                       $("<i></i>").
                       addClass("infoButtonShow").
                       attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-                      addClass("icon-info-sign"))
+                      addClass("fa fa-info-circle"))
                     ))
            ); 
         }
@@ -800,7 +819,7 @@ function buildMainScreenFromCache() {
 	                      addClass("playedButton").
 	                      attr("data-seriesid",nextEpisodeCache[seriesId]["seriesId"]).
 	                      attr("data-episodeId",nextEpisodeCache[seriesId]["episodeId"]).
-	                      addClass("icon-play-sign")).
+	                      addClass("fa fa-play-circle")).
 	                    append(
 	                      $("<i></i>").
 	                      addClass("facebookButton").
@@ -808,12 +827,12 @@ function buildMainScreenFromCache() {
 	                      attr("data-seasonnumber",nextEpisodeCache[seriesId]["SeasonNumber"]).
 	                      attr("data-episodenumber",nextEpisodeCache[seriesId]["EpisodeNumber"]).
 	                      attr("data-episodeId",nextEpisodeCache[seriesId]["episodeId"]).
-	                      addClass("icon-facebook-sign")).
+	                      addClass("fa fa-facebook-square")).
 	                    append(
 	                      $("<i></i>").
 	                      addClass("infoButtonShow").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-	                      addClass("icon-info-sign"))
+	                      addClass("fa fa-info-circle"))
 	                      
 						  ));
 	                    
@@ -822,7 +841,7 @@ function buildMainScreenFromCache() {
 	                      $("<i></i>").
 	                      addClass("pauseSeries").
 	                      attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-	                      addClass("icon-pause"))
+	                      addClass("fa fa-pause"))
 	                    )
 	          */
 
@@ -937,7 +956,7 @@ function seriesDisplayShowSuccess(data, status) {
       firstAiredDate = $(data).find("Data Series FirstAired").text(),
       overview = $(data).find("Data Series Overview").text(),
       bannersrc = bannerUrl + $(data).find("Data Series banner").text(),
-      toggleIcon = "icon-eye-close",
+      toggleIcon = "fa fa-eye-slash",
       episodeName,
       seasonNumber,
       seasonid,
@@ -986,12 +1005,12 @@ function seriesDisplayShowSuccess(data, status) {
             append(
               $("<i></i>").
               addClass("watchseason").
-              addClass("icon-play-sign").
+              addClass("fa fa-play-circle").
               attr("data-seasonid",seasonid)
             ).append(
               $("<i></i>").
               addClass("unwatchseason").
-              addClass("icon-eye-close").
+              addClass("fa fa-eye-slash").
               attr("data-seasonid",seasonid)
             )
         ));
@@ -1005,9 +1024,9 @@ function seriesDisplayShowSuccess(data, status) {
     watchedEpisodes = getWatchedEpisodes();
     // console.log("Checking for: " + watchedEpisodeKey);
     if(watchedEpisodeKey in watchedEpisodes) {
-	    toggleIcon = "icon-eye-close";
+	    toggleIcon = "fa fa-eye-slash";
     } else {
-	    toggleIcon = "icon-play-sign";
+	    toggleIcon = "fa fa-play-circle";
     }
     
     appendElement.append(
@@ -1027,7 +1046,7 @@ function seriesDisplayShowSuccess(data, status) {
           attr("data-watchedkey",watchedEpisodeKey)
         ).append(
           $("<i></i>").
-          addClass("icon-info-sign")
+          addClass("fa fa-info-circle")
         )
       ).append(
         $("<div></div>").
@@ -1067,8 +1086,8 @@ function watchSeason() {
 		  addEpisodeToCloud(watchedEpisodeKey, watchedTime);
 		  
 		  $(this).find("i.toggleWatched").each(function(i) {
-		    $(this).removeClass("icon-play-sign");
-		    $(this).addClass("icon-eye-close");
+		    $(this).removeClass("fa fa-play-circle");
+		    $(this).addClass("fa fa-eye-slash");
 		  });
 		}
 	});
@@ -1101,8 +1120,8 @@ function unwatchSeason() {
 		  
 		  $(this).find("i.toggleWatched").each(function(i) {
             // console.log("Toggle Eye key: " + watchedEpisodeKey);
-		    $(this).removeClass("icon-eye-close");
-		    $(this).addClass("icon-play-sign");
+		    $(this).removeClass("fa fa-eye-slash");
+		    $(this).addClass("fa fa-play-circle");
 		  });
 		}
 	});
@@ -1115,16 +1134,16 @@ function toggleWatchShow() {
 	var watchedkey = $(this).attr("data-watchedkey"),
 	    watchedEpisodes;
 	    
-	if($(this).hasClass("icon-play-sign")) {
-		$(this).removeClass("icon-play-sign");
-		$(this).addClass("icon-eye-close");
+	if($(this).hasClass("fa fa-play-circle")) {
+		$(this).removeClass("fa fa-play-circle");
+		$(this).addClass("fa fa-eye-slash");
 
 		// Tracking inside this method
 		watchSingleEpisode(watchedkey, true);
 	} else {
 		watchedEpisodes = getWatchedEpisodes();
-		$(this).removeClass("icon-eye-close");
-		$(this).addClass("icon-play-sign");
+		$(this).removeClass("fa fa-eye-slash");
+		$(this).addClass("fa fa-play-circle");
 		delete watchedEpisodes[watchedkey];
 		trackShowAction("Episode", "Delete", watchedkey);
 		

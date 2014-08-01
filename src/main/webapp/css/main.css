@@ -182,6 +182,7 @@ div.rightheaderbutton {
     margin-top: 10px;
     margin-right: 5px;
     text-align: center;
+    cursor: pointer;
 }
 
 div.rightheaderbuttonblue {
@@ -196,6 +197,7 @@ div.rightheaderbuttonblue {
     margin-top: 10px;
     margin-right: 5px;
     text-align: center;
+    cursor: pointer;
 }
 
 div.leftheaderbutton {
@@ -210,6 +212,7 @@ div.leftheaderbutton {
     margin-top: 10px;
     margin-left: 5px;
     text-align: center;
+    cursor: pointer;
 }
 
 div.bold {

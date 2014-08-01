@@ -56,7 +56,7 @@
         <meta name="apple-mobile-web-app-title" content="Episode.Next">
         
         <link href='https://fonts.googleapis.com/css?family=The+Girl+Next+Door|Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
-        <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="api/v1/warmup">
@@ -109,21 +109,21 @@
         </div>   
         <div id="addtohome" style="display:none;">
           <div id="addtohomemessage">
-            <div class="close"><i class="icon-remove-sign"></i></div>
+            <div class="close"><i class="fa fa-times-circle"></i></div>
             <div class="appicon"><img src="img/iosicon.png" width="55"/></div>
           Install this web app on your phone: tap on the arrow and then <em>'Add to Home Screen'</em><br/>
-          <i class="icon-long-arrow-down"></i>
+          <i class="fa fa-long-arrow-down"></i>
           </div>
         </div>
         
         <div id="mainpage" class="page">
             <div class="help" style="display:none;">
               <div class="leftheader">
-                <div style="float:left;"><i class="icon-long-arrow-up"></i></div>
-                <div class="helptext">You can use the <i class="icon-cog"></i> button to link Dropbox, Facebook and setup sync schedules.</div>
+                <div style="float:left;"><i class="fa fa-long-arrow-up"></i></div>
+                <div class="helptext">You can use the <i class="fa fa-cog"></i> button to link Dropbox, Facebook and setup sync schedules.</div>
               </div>
               <div class="rightheader">
-                <div style="float:right;"><i class="icon-long-arrow-up"></i></div>
+                <div style="float:right;"><i class="fa fa-long-arrow-up"></i></div>
                  <div class="helptext">You can use the Add button to search for a new series to add.</div>
               </div>
               <div class="centerhelp">
@@ -135,8 +135,8 @@
             </div>
         
 			<div class="header">
-	          <div class="leftheaderbutton" id="settingsbutton"><i class="icon-cog"></i></div>
-	          <div class="rightheaderbutton" id="addshowbutton">Add</div>
+	          <div class="leftheaderbutton" id="settingsbutton"><i class="fa fa-cog"></i></div>
+	          <div class="rightheaderbutton" id="addshowbutton"><i class="fa fa-plus"></i></div>
 	          <div class="title">Episode.Next</div>
 			</div>
             <div id="unwatchedShowList" class="showlist"></div>
@@ -152,13 +152,14 @@
             </div>
 	          
 	        <div id="unairedseasonbar" data-status="hidden" class="seasonbar">
-	          <i id="unairedseasonexpander" class="icon-chevron-right seasonexpander"></i> Unaired Episodes</div>
+	          <i id="unairedseasonexpander" class="fa fa-chevron-right seasonexpander"></i> Unaired Episodes</div>
 	        <div id="unairedShowList" class="showlist" style="display:none;"></div>
 	
 	        <div id="allshowsseasonbar" data-status="hidden" class="seasonbar">
-	          <i id="allshowsexpander" class="icon-chevron-right seasonexpander"></i> All Shows</div>
+	          <i id="allshowsexpander" class="fa fa-chevron-right seasonexpander"></i> All Shows</div>
 	        <div id="showlist" class="showlist" style="display:none;"></div>
         </div>
+        
         <div id="searchpage" class="page" style="display:none">
 			<div class="header">
 	          <div class="leftheaderbutton" id="cancelsearch">Back</div>
@@ -166,7 +167,7 @@
 			</div>
 			<div class="content">
 			  <form id="addshowform" action="#">
-			    <i class="icon-search"></i>
+			    <i class="fa fa-search"></i>
 			    <input type="text" id="searchtext" name="searchtext" placeholder="Episode Name" />
 			  </form>
 			  <div id="searchResultList">
@@ -177,7 +178,7 @@
         <div id="addshowpage" class="page" style="display: none;">
 			<div class="header">
 				<div class="leftheaderbutton" id="canceladdshowpage">Back</div>
-				<div class="rightheaderbutton" id="addnewshowbutton">Add</div>
+				<div class="rightheaderbutton"><i id="addnewshowbuttonfacebook" class="fa fa-facebook-square"></i> <i id="addnewshowbutton" class="fa fa-plus"></i></div>
 				<div class="title">Add Show</div>
 			</div>
 			<div class="bannerdiv"><img id="addbannerimage" class="bannerimage" src="img/1x1.png" /></div>
@@ -207,10 +208,10 @@
 			<div class="content">
 			    <div class="tbHeader">Google</div>
 			    <ul id="googlelogin" class="tableView">
-			      <li id="googleLoginButton"><b><i class="icon-google-plus"></i> Google</b><span class="subtitle">Link</span></li>
+			      <li id="googleLoginButton"><b><i class="fa fa-google-plus"></i> Google</b><span class="subtitle">Link</span></li>
 			    </ul>
 			    <ul id="googlelogout" class="tableView" style="display:none">
-			      <li id="googleLogoutButton"><b><i class="icon-google-plus"></i> Google</b><span class="subtitle">Unlink</span></li>
+			      <li id="googleLogoutButton"><b><i class="fa fa-google-plus"></i> Google</b><span class="subtitle">Unlink</span></li>
 			      <li id="googleSyncButton"><b>Sync</b><span id="googlesynctime" class="subtitle">Unknown</span></li>
 			      <li><b>Frequency</b><span class="subtitle">
 					<select id="googlesync" data-sync="google.frequency" name="Google Sync" class="settingsselect">
@@ -244,16 +245,16 @@
 						<option value="1440">Once a Day</option>
 					</select>			      
 			      </span></li>
-				  <li id="showaboutthetvdb"><b>About</b><span class="subtitle"><i class="icon-chevron-right"></i></span></li>
+				  <li id="showaboutthetvdb"><b>About</b><span class="subtitle"><i class="fa fa-chevron-right"></i></span></li>
 				</ul>
 
 			    <div class="tbHeader">Dropbox</div>
 			    <ul id="dropboxlogin" class="tableView">
-			      <li id="dropboxLoginButton"><b><i class="icon-dropbox"></i> Dropbox</b><span class="subtitle">Link</span></li>
+			      <li id="dropboxLoginButton"><b><i class="fa fa-dropbox"></i> Dropbox</b><span class="subtitle">Link</span></li>
 			    </ul>
 
 			    <ul id="dropboxlogout" class="tableView" style="display:none">
-			      <li id="dropboxLogoutButton"><b><i class="icon-dropbox"></i> Dropbox</b><span class="subtitle">Unlink</span></li>
+			      <li id="dropboxLogoutButton"><b><i class="fa fa-dropbox"></i> Dropbox</b><span class="subtitle">Unlink</span></li>
 			      <li id="dropboxSyncButton"><b>Sync</b><span id="dropboxsynctime" class="subtitle">Unknown</span></li>
 			      <li><b>Frequency</b><span class="subtitle">
 					<select id="dropboxsync" data-sync="dropbox.frequency" name="Dropbox Sync" class="settingsselect">
@@ -271,7 +272,7 @@
 				<ul class="tableView">
 				  <li id="showaboutepisodenext"><b>Author</b><span class="subtitle">Jordan Reed</span></li>
 				  <li><b>Version</b><span class="subtitle">${timestamp}</span></li>
-				  <li id="showgooglecode"><a href="http://code.google.com/p/thewirewatcher/" target="_blank"><b>Code</b><span class="subtitle"><i class="icon-chevron-right"></i></span></a></li>
+				  <li id="showgooglecode"><a href="http://code.google.com/p/thewirewatcher/" target="_blank"><b>Code</b><span class="subtitle"><i class="fa fa-chevron-right"></i></span></a></li>
 				</ul>
 
 
