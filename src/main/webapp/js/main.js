@@ -70,6 +70,13 @@ var TheTbDbUrlBase = "http://thetvdb.com";
 var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 
 /**
+ * The base URL for loading movie posters from the Movie DB API.
+ * @define {string}
+ * @private
+ */
+var posterUrl = "https://image.tmdb.org/t/p/w780";
+
+/**
  * The base URL for loading series search information.
  * @define {string}
  * @private
@@ -77,13 +84,32 @@ var bannerUrl = "https://thewirewatcher.appspot.com/api/banners/";
 var getSeriesUrl = "https://thewirewatcher.appspot.com/api/search?searchterm=";
 
 /**
- * The base URL for the get seires API.  This proxies the request to 
+ * The base URL for the get series API.  This proxies the request to 
  * The TV DB APIs
  *
  * @define {string}
  * @private
  */
-var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/"
+var getSeriesDetailsUrl = "https://thewirewatcher.appspot.com/api/series/";
+
+/**
+ * The base URL for the get movies API.  This proxies the request to 
+ * The Movie DB APIs
+ *
+ * @define {string}
+ * @private
+ */
+
+var getMovieDetailsUrl = "https://thewirewatcher.appspot.com/api/movies/";
+
+/**
+ * The base URL for the get movie API.  This proxies the request to 
+ * The TV DB APIs
+ *
+ * @define {string}
+ * @private
+ */
+var getMovieDetailsUrl = "https://thewirewatcher.appspot.com/api/movies/";
 
 /**
  * The base URL for the get series episodes API.  This proxies the request to 
@@ -108,7 +134,14 @@ var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1"
  * @define {string}
  * @private
  */
-var facebookOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+var facebookSeriesOgUrl = "https://thewirewatcher.appspot.com/showdetails/";
+
+/**
+ * The base URL for the Open Graph object of the movies
+ * @define {string}
+ * @private
+ */
+var facebookMovieOgUrl = "https://thewirewatcher.appspot.com/moviedetails/";
 
 /**
  * Counter for spin requests.  Each request to start the spinner increments
@@ -599,7 +632,8 @@ function searchForShowSuccess(data, status) {
 		}
 		
 		newSeries = $("<div></div>").
-			attr({ "data-seriesid" : seriesId }).
+			attr("data-type","series").
+			attr("data-seriesid",seriesId).
 			addClass("seriesrow").
 			append($("<div></div>").
 				addClass("showname").
@@ -613,15 +647,53 @@ function searchForShowSuccess(data, status) {
 				addClass("rightarrow").
 				append(
 				  $("<i></i>").
-				  addClass("fa fa-chevron-circle-right")
+				  addClass("fa fa-chevron-right")
 				)
 			);
 			
 			
          $("#searchResultList").append(newSeries);	
 	});
+	$(data).find("Movies").each(function(i) {
+		var seriesId = $(this).find("id").text(),
+		    seriesName = $(this).find("title").text(),
+		    firstAired = $(this).find("release_date").text(),
+		    newSeries;
+		    
+		if(firstAired === null || firstAired === "") {
+			firstAired = "unknown";
+		}
+		
+		newSeries = $("<div></div>").
+			attr("data-type","movie").
+			attr("data-seriesid",seriesId).
+			addClass("movierow").
+			append($("<div></div>").
+				addClass("showname").
+				html(seriesName + " ").
+				append($("<i></i>")
+				  .addClass("fa fa-film"))
+			).
+			append($("<div></div>").
+				addClass("originaldate").
+				html(firstAired)
+			).
+			append($("<div></div>").
+				addClass("rightarrow").
+				append(
+				  $("<i></i>").
+				  addClass("fa fa-chevron-right")
+				)
+			);
+			
+			
+         $("#searchResultList").append(newSeries);	
+	});	
+	
+	
 	
 	$(".seriesrow").click(displayShowDetails);
+	$(".movierow").click(displayMovieDetails);
     stopspin("searchForShow");
 }
 
@@ -642,6 +714,23 @@ function displayShowDetails() {
 }
 
 /**
+ * Displays details for a show
+ * @this {Element} the info button clicked to show data for.
+ */
+function displayMovieDetails() {
+    var seriesid = $(this).attr("data-seriesid"),
+        searchUrl = getMovieDetailsUrl + seriesid;
+
+	spin("displayMovieDetails");
+    $.ajax({
+      url: searchUrl,
+      success: searchDisplayMovieSuccess,
+      error: genericError
+    });
+}
+
+
+/**
  * Success Callback for the Show Search API
  * @param data the response data
  * @param status the status of the response
@@ -653,17 +742,54 @@ function searchDisplayShowSuccess(data, status) {
       overview = $(data).find("Data Series Overview").text(),
       bannersrc = bannerUrl + $(data).find("Data Series banner").text();  
 
+  $(".bannerdiv").show();
+  $("#addnewshowbutton").show();
+  $(".posterdiv").hide();
   $("#addbannerimage").attr("src",bannersrc);
   $("#addshowtitle").html(seriesName);
   $("#addfirstaired").html(firstAiredDate);
   $("#addoverview").html(overview);
   $("#addnewshowbutton").attr("data-seriesid", seriesId);
+  $("#addnewshowbutton").attr("data-type", "series");
+  $("#addnewshowbuttonfacebook").attr("data-seriesid", seriesId);
+  $("#addnewshowbuttonfacebook").attr("data-type", "series");
   
   $("#searchpage").slideUp('slow');
   $("#addshowpage").slideDown('slow');
   trackPageView("/addshowpage");
 
   stopspin("displayShowDetails"); 
+}
+
+/**
+ * Success Callback for the Show Movie API
+ * @param data the response data
+ * @param status the status of the response
+ */
+function searchDisplayMovieSuccess(data, status) {
+  var seriesId = $(data).find("Data Movie id").text(),
+      seriesName = $(data).find("Data Movie title").text(),
+      firstAiredDate = $(data).find("Data Movie releaseDate").text(),
+      overview = $(data).find("Data Movie overview").text(),
+      bannersrc = posterUrl + $(data).find("Data Movie posterPath").text();  
+
+  $(".bannerdiv").hide();
+  $("#addnewshowbutton").hide();
+  $(".posterdiv").show();
+  $("#addposterimage").attr("src",bannersrc);
+  $("#addshowtitle").html(seriesName);
+  $("#addfirstaired").html(firstAiredDate);
+  $("#addoverview").html(overview);
+  $("#addnewshowbutton").attr("data-seriesid", seriesId);
+  $("#addnewshowbutton").attr("data-type", "movie");
+  $("#addnewshowbuttonfacebook").attr("data-seriesid", seriesId);
+  $("#addnewshowbuttonfacebook").attr("data-type", "movie");
+  
+  $("#searchpage").slideUp('slow');
+  $("#addshowpage").slideDown('slow');
+  trackPageView("/addmoviepage");
+
+  stopspin("displayMovieDetails");
 }
 
 /**
@@ -682,17 +808,33 @@ function addNewShow() {
  * adds the show into Facebook.
  */
 function facebookAddNewShow() {
-	var seriesid = $("#addnewshowbutton").attr("data-seriesid"),
-	    showUrl = facebookOgUrl + seriesId;
+	var seriesid = $("#addnewshowbuttonfacebook").attr("data-seriesid"),
+	    dataType = $("#addnewshowbuttonfacebook").attr("data-type"),
+	    showUrl = facebookSeriesOgUrl + seriesid;
 
-	addNewShow();
-    FB.api('/me/video.watches', 'post', { tv_show: showUrl }, function(response) {
-	  if (!response || response.error) {
-        alert('Error occured: ' + JSON.stringify(response.error));
-      } else {
-        console.log('Post ID: ' + response.id);
-      }
-    });		
+	if(dataType == "movie") {
+	  showUrl = facebookMovieOgUrl + seriesid;
+      FB.api('/me/video.watches', 'post', { movie: showUrl }, function(response) {
+  	    if (!response || response.error) {
+          alert('Error occured: ' + JSON.stringify(response.error));
+        } else {
+          console.log('Post ID: ' + response.id);
+        }
+      });
+      $("#addshowpage").slideUp('slow');
+      $("#mainpage").slideDown('slow');
+	} else {
+	  addNewShow();
+      FB.api('/me/video.watches', 'post', { tv_show: showUrl }, function(response) {
+  	    if (!response || response.error) {
+          alert('Error occured: ' + JSON.stringify(response.error));
+        } else {
+          console.log('Post ID: ' + response.id);
+        }
+      });	
+	}
+		
+
 	
 }
 
@@ -1185,9 +1327,8 @@ function facebookPlayedEpisode() {
 	    seasonnumber = $(this).attr("data-seasonnumber"),
 	    episodenumber = $(this).attr("data-episodenumber"),
 	    seriesId = $(this).attr("data-seriesid"),
-	    seasonId = $(this).attr("data-seasonid"),
 	    episodeKey = seriesId + "-" + episodeId,
-	    showUrl = facebookOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
+	    showUrl = facebookSeriesOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
 	    
 	spin("facebookPlayedEpisode");
 	removeSeriesFromNextEpisodeCache(seriesId);

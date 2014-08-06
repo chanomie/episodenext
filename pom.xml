@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.7</appengine.target.version>
+        <appengine.target.version>1.9.8</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.2.2.RELEASE</org.springframework.version>
         <jackson.version>1.9.10</jackson.version>
@@ -68,11 +68,6 @@
 			<artifactId>cachemanifest-maven-plugin</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
-        </dependency>
  
         <!-- Test Dependencies -->
         <dependency>

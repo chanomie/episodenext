@@ -21,6 +21,9 @@
     <version>${appengine.app.version}</version>
     <threadsafe>true</threadsafe>
     <sessions-enabled>false</sessions-enabled>
+    <!--  static-files>
+      <include path="/**" expiration="60s" />
+    </static-files -->
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

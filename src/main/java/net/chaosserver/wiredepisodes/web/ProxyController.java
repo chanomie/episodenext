@@ -119,6 +119,7 @@ public class ProxyController {
      * @param request the request
      * @param response the response
      * @throws IOException something went wrong connectin
+     * @deprecated use the searchForShow method instead.
      */
     @RequestMapping(value = "/getseries")
     public void searchForSeries(
@@ -163,11 +164,24 @@ public class ProxyController {
         printWriter.close();
     }
 
+    /**
+     * Executes a search for the show against The TV DB API and The Movie DB
+     * API.
+     * 
+     * @param searchterm the term to search for.
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws SAXException
+     * @throws XPathExpressionException
+     */
     @RequestMapping(value = "/search")
     public void searchForShow(
             @RequestParam(required = true, value = "searchterm") String searchterm,
             HttpServletRequest request, HttpServletResponse response)
             throws IOException, SAXException, XPathExpressionException {
+
+        response.setContentType("text/xml; charset=iso-8859-1");
 
         StringBuffer outputXml = new StringBuffer();
         outputXml.append("<Data>\n");
@@ -182,8 +196,6 @@ public class ProxyController {
 
         double seriesNodeCount = (double) xpath.evaluate(
                 "count(//Data/Series)", doc, XPathConstants.NUMBER);
-
-        log.fine("seriesNodeCount: " + seriesNodeCount);
 
         for (int i = 1; i <= seriesNodeCount; i++) {
             outputXml.append("  <Series>\n");
@@ -236,7 +248,7 @@ public class ProxyController {
                 outputXml.append("    <title>");
                 outputXml.append(title);
                 outputXml.append("</title>\n");
-                outputXml.append("    <Firsrelease_datetAired>");
+                outputXml.append("    <release_date>");
                 outputXml.append(release_date);
                 outputXml.append("</release_date>\n");
                 outputXml.append("  </Movies>\n");
@@ -279,7 +291,7 @@ public class ProxyController {
      * @param response the http reponse.
      * @throws IOException If there is an issue reaching TheTvDB
      */
-    @RequestMapping(value = "/{seriesId}", method = { RequestMethod.GET })
+    @RequestMapping(value = "/series/{seriesId}", method = { RequestMethod.GET })
     public void getSeriesDetails(@PathVariable String seriesId,
             HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -433,6 +445,84 @@ public class ProxyController {
         printWriter.close();
     }
 
+    /**
+     * Proxing the Request to The Movie DB API to get information about the
+     * series. The frontend webapp only reads the following fields:
+     * <ul>
+     * <li>Data Series id</li>
+     * <li>Data Series SeriesName</li>
+     * <li>Data Series FirstAired</li>
+     * <li>Data Series Overview</li>
+     * <li>Data Series banner</li>
+     * </ul>
+     * 
+     * @param seriesId unique identifer of the series
+     * @param request the http request
+     * @param response the http reponse.
+     * @throws IOException If there is an issue reaching TheTvDB
+     */
+    @RequestMapping(value = "/movies/{movieId}", method = { RequestMethod.GET })
+    public void getMovieDetails(@PathVariable String movieId,
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        response.setContentType("text/xml; charset=iso-8859-1");
+        StringBuffer outputXml = new StringBuffer();
+
+        // Search The Movie DB
+        URL theMovieDbUrl = new URL("https://api.themoviedb.org/3/movie/"
+                + URLEncoder.encode(movieId, "UTF-8") + "?api_key="
+                + showInformation.getMovieDbApiKey());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory factory = mapper.getJsonFactory();
+        JsonParser jp = factory.createJsonParser(new BufferedInputStream(
+                theMovieDbUrl.openStream()));
+        JsonNode actualObj = mapper.readTree(jp);
+
+        outputXml.append("<Data>\n");
+        outputXml.append("  <Movie>\n");
+
+        // Output the final XML
+        outputXml.append("    <id>");
+        outputXml.append(actualObj.path("id").getIntValue());
+        outputXml.append("</id>\n");
+        outputXml.append("    <title>");
+        outputXml.append(actualObj.path("original_title").getTextValue());
+        outputXml.append("</title>\n");
+        outputXml.append("    <releaseDate>");
+        outputXml.append(actualObj.path("release_date").getTextValue());
+        outputXml.append("</releaseDate>\n");
+        outputXml.append("    <overview>");
+        outputXml.append(actualObj.path("overview").getTextValue());
+        outputXml.append("</overview>\n");
+        outputXml.append("    <posterPath>");
+        outputXml.append(actualObj.path("poster_path").getTextValue());
+        outputXml.append("</posterPath>\n");
+        outputXml.append("  </Movie>\n");
+        outputXml.append("</Data>");
+
+        byte[] bytes = outputXml.toString().getBytes("UTF-8");
+        BufferedReader inputReader = new BufferedReader(
+                new InputStreamReader(new ByteArrayInputStream(bytes)));
+        PrintWriter printWriter = response.getWriter();
+
+        String nextLine = inputReader.readLine();
+        while (nextLine != null) {
+            printWriter.println(SeriesAllXmlHandler
+                    .stripNonValidXMLCharacters(nextLine));
+            nextLine = inputReader.readLine();
+        }
+
+        dBuilderLocal.get().reset();
+        printWriter.flush();
+        printWriter.close();
+
+    }
+
+    /**
+     * Returns the banner from Teh TV DB.
+     */
     @RequestMapping(value = "/banners/**", method = { RequestMethod.GET,
             RequestMethod.HEAD })
     public void getSeriesBannerImage(HttpServletRequest request,
