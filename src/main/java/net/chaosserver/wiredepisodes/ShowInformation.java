@@ -36,7 +36,7 @@ public class ShowInformation {
         }
         movieDbApiKey = System.getProperty("themoviedb.apikey");
         if (movieDbApiKey == null) {
-            movieDbApiKey = System.getenv("themoviedb.apikey");
+            movieDbApiKey = System.getenv("themoviedbkey");
         }
         tvDB = new TheTVDBApi(apiKey);
     }

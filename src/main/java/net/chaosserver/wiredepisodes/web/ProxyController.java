@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -55,6 +53,7 @@ import net.chaosserver.wiredepisodes.ShowInformation;
 import net.chaosserver.wiredepisodes.StorageHelper;
 import net.chaosserver.wiredepisodes.WatchedEpisodeCache;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
@@ -203,10 +202,10 @@ public class ProxyController {
                 outputXml.append(id);
                 outputXml.append("</id>\n");
                 outputXml.append("    <title>");
-                outputXml.append(title);
+                outputXml.append(StringEscapeUtils.escapeXml(title));
                 outputXml.append("</title>\n");
                 outputXml.append("    <release_date>");
-                outputXml.append(release_date);
+                outputXml.append(StringEscapeUtils.escapeXml(release_date));
                 outputXml.append("</release_date>\n");
                 outputXml.append("  </Movies>\n");
             }
@@ -248,13 +247,13 @@ public class ProxyController {
 
                 outputXml.append("  <Series>\n");
                 outputXml.append("    <seriesid>");
-                outputXml.append(seriesid);
+                outputXml.append(StringEscapeUtils.escapeXml(seriesid));
                 outputXml.append("</seriesid>\n");
                 outputXml.append("    <SeriesName>");
-                outputXml.append(seriesName);
+                outputXml.append(StringEscapeUtils.escapeXml(seriesName));
                 outputXml.append("</SeriesName>\n");
                 outputXml.append("    <FirstAired>");
-                outputXml.append(firstAired);
+                outputXml.append(StringEscapeUtils.escapeXml(firstAired));
                 outputXml.append("</FirstAired>\n");
                 outputXml.append("  </Series>\n");
             } catch (XPathExpressionException e) {
@@ -479,16 +478,16 @@ public class ProxyController {
         outputXml.append(actualObj.path("id").getIntValue());
         outputXml.append("</id>\n");
         outputXml.append("    <title>");
-        outputXml.append(actualObj.path("original_title").getTextValue());
+        outputXml.append(StringEscapeUtils.escapeXml(actualObj.path("original_title").getTextValue()));
         outputXml.append("</title>\n");
         outputXml.append("    <releaseDate>");
-        outputXml.append(actualObj.path("release_date").getTextValue());
+        outputXml.append(StringEscapeUtils.escapeXml(actualObj.path("release_date").getTextValue()));
         outputXml.append("</releaseDate>\n");
         outputXml.append("    <overview>");
-        outputXml.append(actualObj.path("overview").getTextValue());
+        outputXml.append(StringEscapeUtils.escapeXml(actualObj.path("overview").getTextValue()));
         outputXml.append("</overview>\n");
         outputXml.append("    <posterPath>");
-        outputXml.append(actualObj.path("poster_path").getTextValue());
+        outputXml.append(StringEscapeUtils.escapeXml(actualObj.path("poster_path").getTextValue()));
         outputXml.append("</posterPath>\n");
         outputXml.append("  </Movie>\n");
         outputXml.append("</Data>");
