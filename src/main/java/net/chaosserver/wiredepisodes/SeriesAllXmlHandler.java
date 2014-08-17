@@ -172,6 +172,10 @@ public class SeriesAllXmlHandler extends DefaultHandler {
         lastValidTagName = null;
     }
 
+    /**
+     * Handles parsing the characters of any node and setting the values into
+     * a string for use inside of the node output.
+     */
     public void characters(char ch[], int start, int length)
             throws SAXException {
         if (lastValidTagName != null) {

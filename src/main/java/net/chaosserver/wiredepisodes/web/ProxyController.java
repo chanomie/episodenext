@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -55,6 +57,7 @@ import net.chaosserver.wiredepisodes.WatchedEpisodeCache;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -71,7 +74,7 @@ import org.xml.sax.SAXException;
 import com.google.appengine.api.datastore.Key;
 
 /**
- * Used to proxy all of the requests to TheTVDB API. It adds an additional layer
+ * Used to proxy all of the requests to TheTVDB API and TheMovieDB API. It adds an additional layer
  * of complexity by using web caching and filtering out extraneous results.
  * 
  * @author jreed
@@ -113,58 +116,6 @@ public class ProxyController {
     };
 
     /**
-     * Get series executes a get series search again.
-     * 
-     * @param seriesname name of the series to search for
-     * @param request the request
-     * @param response the response
-     * @throws IOException something went wrong connectin
-     * @deprecated use the searchForShow method instead.
-     */
-    @RequestMapping(value = "/getseries")
-    public void searchForSeries(
-            @RequestParam(required = true, value = "seriesname") String seriesname,
-            HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-
-        URL url = new URL("http://thetvdb.com/api/GetSeries.php?seriesname="
-                + URLEncoder.encode(seriesname, "UTF-8"));
-        URLConnection connection = url.openConnection();
-        connection.connect();
-        response.setContentType(connection.getContentType());
-
-        // Handle Cache Headers
-        String lastModifiedHeader = connection
-                .getHeaderField("Last-Modified");
-        String expiresHeader = connection.getHeaderField("Expires");
-        String cacheControlHeader = connection
-                .getHeaderField("Cache-Control");
-        if (lastModifiedHeader != null) {
-            response.addHeader("Last-Modified", lastModifiedHeader);
-        }
-        if (expiresHeader != null) {
-            response.addHeader("Expires", expiresHeader);
-        }
-        if (cacheControlHeader != null) {
-            response.addHeader("Cache-Control", cacheControlHeader);
-        }
-
-        BufferedReader inputReader = new BufferedReader(
-                new InputStreamReader(url.openStream()));
-        PrintWriter printWriter = response.getWriter();
-
-        String nextLine = inputReader.readLine();
-        while (nextLine != null) {
-            printWriter.println(SeriesAllXmlHandler
-                    .stripNonValidXMLCharacters(nextLine));
-            nextLine = inputReader.readLine();
-        }
-
-        printWriter.flush();
-        printWriter.close();
-    }
-
-    /**
      * Executes a search for the show against The TV DB API and The Movie DB
      * API.
      * 
@@ -187,38 +138,44 @@ public class ProxyController {
         outputXml.append("<Data>\n");
 
         // Search The TV DB
-        URL theTvDbUrl = new URL(
-                "http://thetvdb.com/api/GetSeries.php?seriesname="
-                        + URLEncoder.encode(searchterm, "UTF-8"));
-        Document doc = dBuilderLocal.get().parse(
-                new BufferedInputStream(theTvDbUrl.openStream()));
-        XPath xpath = xpathLocal.get();
-
-        double seriesNodeCount = (double) xpath.evaluate(
-                "count(//Data/Series)", doc, XPathConstants.NUMBER);
-
-        for (int i = 1; i <= seriesNodeCount; i++) {
-            outputXml.append("  <Series>\n");
-            String seriesid = (String) xpath.evaluate("//Data/Series[" + i
-                    + "]/seriesid", doc, XPathConstants.STRING);
-            String seriesName = (String) xpath.evaluate("//Data/Series[" + i
-                    + "]/SeriesName", doc, XPathConstants.STRING);
-            String firstAired = (String) xpath.evaluate("//Data/Series[" + i
-                    + "]/FirstAired", doc, XPathConstants.STRING);
-
-            outputXml.append("    <seriesid>");
-            outputXml.append(seriesid);
-            outputXml.append("</seriesid>\n");
-            outputXml.append("    <SeriesName>");
-            outputXml.append(seriesName);
-            outputXml.append("</SeriesName>\n");
-            outputXml.append("    <FirstAired>");
-            outputXml.append(firstAired);
-            outputXml.append("</FirstAired>\n");
-            outputXml.append("  </Series>\n");
-        }
+        outputXml.append(searchForShowTvDb(searchterm));
 
         // Search The Movie DB
+        outputXml.append(searchForShowMovieDb(searchterm));
+
+        // Output the final XML
+        outputXml.append("</Data>");
+
+        byte[] bytes = outputXml.toString().getBytes("UTF-8");
+        BufferedReader inputReader = new BufferedReader(
+                new InputStreamReader(new ByteArrayInputStream(bytes)));
+        PrintWriter printWriter = response.getWriter();
+
+        String nextLine = inputReader.readLine();
+        while (nextLine != null) {
+            printWriter.println(SeriesAllXmlHandler
+                    .stripNonValidXMLCharacters(nextLine));
+            nextLine = inputReader.readLine();
+        }
+
+        printWriter.flush();
+        printWriter.close();
+    }
+
+
+    /**
+     * Search for the show inside the Movie DB.
+     * 
+     * @param searchteam the show name to search for.
+     * @return the XML String representing results from the TVDB
+     * @return the search results as an XML.
+     * @throws JsonParseException 
+     * @throws IOException 
+     * @throws SAXException 
+     * @throws XPathExpressionException 
+     */
+    protected String searchForShowMovieDb(String searchterm) throws JsonParseException, IOException {
+    	StringBuffer outputXml = new StringBuffer();
         URL theMovieDbUrl = new URL(
                 "https://api.themoviedb.org/3/search/movie?query="
                         + URLEncoder.encode(searchterm, "UTF-8")
@@ -255,24 +212,58 @@ public class ProxyController {
             }
         }
 
-        // Output the final XML
-        outputXml.append("</Data>");
+    	return outputXml.toString();
+    }
 
-        byte[] bytes = outputXml.toString().getBytes("UTF-8");
-        BufferedReader inputReader = new BufferedReader(
-                new InputStreamReader(new ByteArrayInputStream(bytes)));
-        PrintWriter printWriter = response.getWriter();
+    /**
+     * Search for the show inside the TV DB.
+     * 
+     * @param searchteam the show name to search for.
+     * @return the XML String representing results from the TVDB
+     * @return the search results as an XML.
+     * @throws IOException 
+     * @throws SAXException 
+     * @throws XPathExpressionException 
+     */
+    protected String searchForShowTvDb(String searchterm) throws SAXException, IOException, XPathExpressionException {
+    	StringBuffer outputXml = new StringBuffer();
+        URL theTvDbUrl = new URL(
+                "http://thetvdb.com/api/GetSeries.php?seriesname="
+                        + URLEncoder.encode(searchterm, "UTF-8"));
+        Document doc = dBuilderLocal.get().parse(
+                new BufferedInputStream(theTvDbUrl.openStream()));
+        XPath xpath = xpathLocal.get();
 
-        String nextLine = inputReader.readLine();
-        while (nextLine != null) {
-            printWriter.println(SeriesAllXmlHandler
-                    .stripNonValidXMLCharacters(nextLine));
-            nextLine = inputReader.readLine();
+        double seriesNodeCount = (double) xpath.evaluate(
+                "count(//Data/Series)", doc, XPathConstants.NUMBER);
+
+        for (int i = 1; i <= seriesNodeCount; i++) {
+            try {
+                String seriesid = (String) xpath.evaluate("//Data/Series[" + i
+                    + "]/seriesid", doc, XPathConstants.STRING);
+                String seriesName = (String) xpath.evaluate("//Data/Series[" + i
+                    + "]/SeriesName", doc, XPathConstants.STRING);
+                String firstAired = (String) xpath.evaluate("//Data/Series[" + i
+                    + "]/FirstAired", doc, XPathConstants.STRING);
+
+                outputXml.append("  <Series>\n");
+                outputXml.append("    <seriesid>");
+                outputXml.append(seriesid);
+                outputXml.append("</seriesid>\n");
+                outputXml.append("    <SeriesName>");
+                outputXml.append(seriesName);
+                outputXml.append("</SeriesName>\n");
+                outputXml.append("    <FirstAired>");
+                outputXml.append(firstAired);
+                outputXml.append("</FirstAired>\n");
+                outputXml.append("  </Series>\n");
+            } catch (XPathExpressionException e) {
+                log.log(Level.WARNING, "Unable to parse series.",e);
+            }
         }
-
+        
         dBuilderLocal.get().reset();
-        printWriter.flush();
-        printWriter.close();
+        return outputXml.toString();
     }
 
     /**
