@@ -130,7 +130,10 @@ var googleRootUrl = "https://thewirewatcher.appspot.com/api/v1"
 // var googleRootUrl = "http://localhost:8080/api/v1"
 
 /**
- * The base URL for the Open Graph object of shows
+ * The base URL for the Open Graph object of shows.
+ * The API is defined as:
+ * facebookSeriesOgUrl/{seriesId}[/{episodeId}]
+ * 
  * @define {string}
  * @private
  */

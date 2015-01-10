@@ -3,7 +3,7 @@
 <c:set var="req" value="${pageContext.request}" />
 <c:set var="baseURL" value="${fn:replace(req.requestURL, fn:substring(req.requestURI, 1, fn:length(req.requestURI)), req.contextPath)}" />
 
-<c:url value="${baseURL}showdetails/${episode.seriesId}" var="seriesUrl" />
+<c:url value="${baseURL}showdetails/${series.id}" var="seriesUrl" />
 <c:url value="http://thetvdb.com/" var="tvdbUrl">
 	<c:param name="tab" value="series"/>
 	<c:param name="id" value="${series.id}"/>
