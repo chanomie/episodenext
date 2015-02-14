@@ -15,7 +15,9 @@
  *  
  *  http://code.google.com/p/thewirewatcher/
  */
-define(['jquery','jquery.spin','domReady!'], function($) {
+define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!'], 
+  function(thetvdb,googlesync,$) {
+
   /** START: Facebook Integration */
   window.fbAsyncInit = function() {
     FB.init({
@@ -123,7 +125,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
      * @private
      */
     'googleRootUrl' : 'https://thewirewatcher.appspot.com/api/v1',
-    // var googleRootUrl : "http://localhost:8080/api/v1"
+    // 'googleRootUrl' : "http://localhost:8080/api/v1",
 
     /**
      * The base URL for the Open Graph object of shows.
@@ -237,7 +239,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
             $("#allshowsexpander").addClass("fa fa-chevron-down");
             $("#showlist").show();
             $(document.body).animate({
-              'scrollTop': $('#allshowsseasonbar').offset().top-topDistance
+              'scrollTop': $('#allshowsseasonbar').offset().top - episodeNext.topDistance
             }, 1000);       
           } else {
             $(element).attr("data-status","hidden");
@@ -255,7 +257,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
             $("#unairedseasonexpander").addClass("fa fa-chevron-down");
             $("#unairedShowList").show();
             $(document.body).animate({
-              'scrollTop': $('#unairedseasonbar').offset().top-topDistance
+              'scrollTop': $('#unairedseasonbar').offset().top - episodeNext.topDistance
             }, 1000);       
           } else {
             $(element).attr("data-status","hidden");
@@ -268,7 +270,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
         $("#addnewshowbutton").click(function (event) { episodeNext.addNewShow(event); });
         $("#addnewshowbuttonfacebook").click(function (event) { episodeNext.facebookAddNewShow(event); });
         $('#addshowform').submit(function (event) { episodeNext.onSearch(event); });
-        $("#recache").click(function (event) { episodeNext.recache(event); });
+        $("#recache").click(function (event) { episodeNext.recache(); });
         $(".cancelmodal").click(function() {$.modal.close()});
         $("#facebookpost").click(function (event) { episodeNext.facebookPlayedEpisode(event); });
         $("#addtohome .close").click(function(event) {
@@ -277,7 +279,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
         });
 
         $("#googleSyncButton").click(function (event) { episodeNext.syncGoogle(event); });
-        $("#thetvdbsync").click(function (event) { episodeNext.recache(event); });
+        $("#thetvdbsync").click(function (event) { episodeNext.recache(); });
 
         $("#tvdbsync").change(function (event) { episodeNext.changeSyncFrequency(event); });
         $("#googlesync").change(function (event) { episodeNext.changeSyncFrequency(event); });
@@ -650,7 +652,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
 
       if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
         lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
-        if(!googleAuth && lastGoogleSyncEpoch) {
+        if(!episodeNext.googleAuth && lastGoogleSyncEpoch) {
           $("#googlemodal").modal({minWidth:"300",maxWidth:"300"});
         }      
         if(lastGoogleSyncEpoch == null) {
@@ -946,7 +948,9 @@ define(['jquery','jquery.spin','domReady!'], function($) {
      * @this {element} the button id used (element.data-seriesid)
      */
     deleteSeriesButton: function(event) {
-      var seriesid = target.attr("data-seriesid");
+      var episodeNext = this,
+          element = event.currentTarget,
+          seriesid = $(element).attr("data-seriesid");
 
       $("#deleteconfirm").
         attr("data-seriesid",seriesid);
@@ -1114,12 +1118,14 @@ define(['jquery','jquery.spin','domReady!'], function($) {
       episodeNext.stopspin("showInfoShow");
     },
 
-    facebookShare: function() {
-        var seriesId = $(this).attr("data-seriesid"),
-            episodeId = $(this).attr("data-episodeId"),
-            seasonnumber = $(this).attr("data-seasonnumber"),
-            episodenumber = $(this).attr("data-episodenumber"),
-            seasonId = $(this).attr("data-seasonid");
+    facebookShare: function(event) {
+        var episodeNext = this,
+            element = event.currentTarget,
+            seriesId = $(element).attr("data-seriesid"),
+            episodeId = $(element).attr("data-episodeId"),
+            seasonnumber = $(element).attr("data-seasonnumber"),
+            episodenumber = $(element).attr("data-episodenumber"),
+            seasonId = $(element).attr("data-seasonid");
 
         $("#facebookpost").
           attr("data-seriesid",seriesId).
@@ -1134,21 +1140,23 @@ define(['jquery','jquery.spin','domReady!'], function($) {
           } else {
             $("#mainpage").slideUp('slow');
             $("#settingspage").slideDown('slow');
-            trackPageView("/settingspage");
+            episodeNext.trackPageView("/settingspage");
           }
         });
       },
 
-    facebookPlayedEpisode: function() {
-      var episodeId = $(this).attr("data-episodeId"),
-          seasonnumber = $(this).attr("data-seasonnumber"),
-          episodenumber = $(this).attr("data-episodenumber"),
-          seriesId = $(this).attr("data-seriesid"),
+    facebookPlayedEpisode: function(event) {
+      var episodeNext = this,
+          element = event.currentTarget,
+          episodeId = $(element).attr("data-episodeId"),
+          seasonnumber = $(element).attr("data-seasonnumber"),
+          episodenumber = $(element).attr("data-episodenumber"),
+          seriesId = $(element).attr("data-seriesid"),
           episodeKey = seriesId + "-" + episodeId,
-          showUrl = facebookSeriesOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
+          showUrl = episodeNext.facebookSeriesOgUrl + seriesId + "/" + seasonnumber + "/" + episodenumber;
 
-      spin("facebookPlayedEpisode");
-      removeSeriesFromNextEpisodeCache(seriesId);
+      episodeNext.spin("facebookPlayedEpisode");
+      episodeNext.removeSeriesFromNextEpisodeCache(seriesId);
 
       $.modal.close();
 
@@ -1157,10 +1165,10 @@ define(['jquery','jquery.spin','domReady!'], function($) {
           alert('Error occured: ' + JSON.stringify(response.error));
         } else {
           console.log('Post ID: ' + response.id);
-          watchSingleEpisode(episodeKey, true);
+          episodeNext.watchSingleEpisode(episodeKey, true);
         }
       });  
-      stopspin("facebookPlayedEpisode");
+      episodeNext.stopspin("facebookPlayedEpisode");
     },
 
     playedEpisode: function(event) {
@@ -1246,7 +1254,7 @@ define(['jquery','jquery.spin','domReady!'], function($) {
     deleteSeries: function(seriesId) {
       // Treat as Map
       var episodeNext = this,
-          seriesList = getSeriesList();
+          seriesList = episodeNext.getSeriesList();
 
       delete seriesList[seriesId];
       episodeNext.trackShowAction("Series", "Delete", seriesId);
@@ -1590,340 +1598,30 @@ define(['jquery','jquery.spin','domReady!'], function($) {
     },
 
     //////
-    // Recache Section - Should move to its own module and be controlled
+    // TheTV Sync Section - Should move to its own module and be controlled
     // through web workers.
     /////
-    'isRecaching' : false,
-    'seriesListRecache' : {},
-    'seriesListIndex' : 0,
-    'nextEpisodeCache' : {},
-    'seriesListCache' : {},
-    'recacheStart' : new Date(),
-
-    /**
-     * Requests for recache of TheTVDB data.  This is a full sync and will
-     * cycle through each series and pull back the latest unwatched episode.
-     */
-    recache : function() {
-      var episodeNext = this;
-
-      if(!episodeNext.isRecaching) {
-        episodeNext.spin("recache");
-        episodeNext.isRecaching = true;
-        episodeNext.trackSyncService("TheTVDB","Sync Start");
-        episodeNext.recacheStart = new Date();
-        console.log("Starting recache. " + ((new Date() - episodeNext.recacheStart)/1000));
-        episodeNext.seriesListRecache = Object.keys(episodeNext.getSeriesList());
-        episodeNext.nextEpisodeCache = {};
-        episodeNext.seriesListCache = {};
-        episodeNext.seriesListIndex = 0;
-
-        setTimeout(episodeNext.recacheSeries.bind(episodeNext),episodeNext.timeoutDelay);
-      }
-    },
-
-    /**
-     * This is runs a single cycle in the recaching process.
-     */
-    recacheSeries : function() {
+    recache: function() {
       var episodeNext = this,
-          lastTheTvDbSync,
-          seriesListItem,
-          searchUrl;
+          thetvdbWebWorker;
 
-      if(episodeNext.seriesListIndex  < episodeNext.seriesListRecache.length) {
-        seriesListItem = episodeNext.seriesListRecache[episodeNext.seriesListIndex++];
-        searchUrl = episodeNext.getSeriesAllDetailsUrl + seriesListItem + "?includeall=false";
-
-        $.ajax({
-          url: searchUrl,
-          async: false,
-          success: function(data, status) {
-            var newSeries = {},
-                seriesId = $(data).find("Data Series id").text(),
-                oldestUnwatchedEpisode = undefined;
-
-            newSeries["seriesId"] = seriesId;
-            newSeries["seriesName"] = $(data).find("Data Series SeriesName").text();
-            newSeries["firstAiredDate"] = $(data).find("Data Series FirstAired").text(); 
-            newSeries["overview"] = $(data).find("Data Series Overview").text();
-            if( newSeries["overview"].length > 200 ) {
-              newSeries["overview"] = newSeries["overview"].substr(0,200) + "...";
-            }
-
-            newSeries["bannersrc"] = episodeNext.bannerUrl + $(data).find("Data Series banner").text();
-            episodeNext.seriesListCache[seriesId] = newSeries;
-
-            $(data).find("Data Episode").each(function(i,element) {
-              var episodeId = $(element).find("id").text(),
-                  episodeKey = seriesId + "-" + episodeId,
-                  firstAired,
-                  firstAiredDate,
-                  firstAiredEpoch;
-
-              if(!(episodeKey in episodeNext.getWatchedEpisodes())) {
-                firstAired = $(element).find("FirstAired").text();
-                if(firstAired !== undefined && firstAired !== "") {
-                  firstAiredDate = new Date(firstAired);
-                  firstAiredEpoch = firstAiredDate.getTime();
-                  if(oldestUnwatchedEpisode === undefined 
-                          || oldestUnwatchedEpisode["FirstAiredEpoch"] > firstAiredEpoch) {
-
-                    oldestUnwatchedEpisode = {};
-                    oldestUnwatchedEpisode["seriesId"] = seriesId;
-                    oldestUnwatchedEpisode["episodeId"] = episodeId;
-                    oldestUnwatchedEpisode["FirstAired"] = firstAired;
-                    oldestUnwatchedEpisode["FirstAiredEpoch"] = firstAiredDate.getTime();
-                    oldestUnwatchedEpisode["seriesName"] = newSeries["seriesName"];
-                    oldestUnwatchedEpisode["EpisodeName"] = $(this).find("EpisodeName").text();
-                    oldestUnwatchedEpisode["EpisodeNumber"] = $(this).find("EpisodeNumber").text();
-                    oldestUnwatchedEpisode["SeasonNumber"] = $(this).find("SeasonNumber").text();
-                    oldestUnwatchedEpisode["bannersrc"] = newSeries["bannersrc"];
-                    oldestUnwatchedEpisode["EpisodeImage"] = episodeNext.bannerUrl+ $(this).find("filename").text();
-                    oldestUnwatchedEpisode["Overview"] = $(this).find("Overview").text();
-                    if( oldestUnwatchedEpisode["Overview"].length > 200 ) {
-                      oldestUnwatchedEpisode["Overview"] = oldestUnwatchedEpisode["Overview"].substr(0,200) + "...";
-                    }
-
-                    // console.log(oldestUnwatchedEpisode["EpisodeName"] + ", Season: " + oldestUnwatchedEpisode["SeasonNumber"] + ", Episode: " + oldestUnwatchedEpisode["EpisodeNumber"]);
-                  }
-                }
-              }
-            });
-            if(oldestUnwatchedEpisode !== null) {
-              episodeNext.nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
-            }
-          }
-        });
-        setTimeout(episodeNext.recacheSeries.bind(episodeNext),episodeNext.timeoutDelay);
-
-      } else {
-        localStorage.setItem("nextEpisodeCache",JSON.stringify(episodeNext.nextEpisodeCache));
-        localStorage.setItem("seriesListCache",JSON.stringify(episodeNext.seriesListCache));
-        episodeNext.buildMainScreenFromCache();
-
-        lastTheTvDbSync = new Date();
-        localStorage.setItem("lastTvDbSync",lastTheTvDbSync.getTime());
-        episodeNext.updateSyncDisplay();
-        episodeNext.stopspin("recache");    
-        episodeNext.trackSyncComplete("TheTVDB","Sync Complete","Time",((new Date() - episodeNext.recacheStart)/1000));
-        episodeNext.isRecaching = false;
-        console.log("Finished recache. " + ((new Date() - episodeNext.recacheStart)/1000));
-      }
+      // if( window.Worker ) {
+      //  console.log("Using web worker!");
+      //  thetvdbWebWorker = new Worker('js/thetvdb.js' + '?bust=' + (new Date).getTime());
+      //  thetvdbWebWorker.postMessage('{"function":"recache"}');
+      //} else {
+      //  console.log("No web worker...");
+        thetvdb.setEpisodeNext(episodeNext);
+        thetvdb.recache();
+      //}
     },
-
-    //////
-    // Google Sync Section - Should move to its own module and be controlled
-    // through web workers.
-    /////
-    /** Google Sync State Stuff **/
-    'isGoogleSyncing': false,
-    // 'googleSyncKeyArray',
-    // 'googleArrayResult',
-    // googleArrayIndex,
-    //    googleWatchedEpisodesSync,
-    //    googleSeriesListSync,
-    //    googleLocalDirty,
-    'googleSyncStart': new Date(),
-    'googleLastSyncTime': 0,
 
     syncGoogle: function() {
       var episodeNext = this;
 
-      if(!episodeNext.isGoogleSyncing && episodeNext.googleAuth) {
-        episodeNext.spin("syncGoogle");
-        episodeNext.trackSyncService("Google","Sync Start");
-        episodeNext.googleSyncStart = new Date();
-        if(localStorage.getItem("lastGoogleSync") != null) {
-          episodeNext.googleLastSyncTime = episodeNext.localStorage.getItem("lastGoogleSync");
-        }
-
-        console.log("Starting Google Sync: " + googleSyncStart.toLocaleString());
-        episodeNext.isGoogleSyncing = true;
-        episodeNext.googleWatchedEpisodesSync = episodeNext.getWatchedEpisodes();
-        episodeNext.googleSeriesListSync = episodeNext.getSeriesList();
-        episodeNext.googleLocalDirty = false;
-        episodeNext.googleArrayResult = [];
-        episodeNext.googleArrayIndex = 0;
-
-          // Setup to Sync Watched Episodes From Google
-        $.ajax({
-            url: googleRootUrl+"/data/watched?updated="+googleLastSyncTime,
-            success: function(data, status) {
-              episodeNext.googleArrayResult = data;
-              episodeNext.googleArrayIndex = 0;
-              console.log("Got watched episodes from Google: " + ((new Date() - episodeNext.googleSyncStart)/1000));
-            },
-            complete: function(jqXHR,textStatus) {
-              setTimeout(this.syncWatchedEpisodesFromGoogle.bind(this),timeoutDelay);
-            },
-            error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); }
-        });
-      }
+      googlesync.setEpisodeNext(episodeNext);
+      googlesync.syncGoogle();
     },
-
-    syncWatchedEpisodesFromGoogle: function() {
-      var episodeNext = this,
-          episodeKey,
-          googleUpdated;
-
-      if(episodeNext.googleArrayIndex < episodeNext.googleArrayResult.length) {
-        episodeKey = episodeNext.googleArrayResult[googleArrayIndex].watchedKey,
-        googleUpdated = episodeNext.googleArrayResult[googleArrayIndex].updated;
-        if(googleUpdated == null) {
-          googleUpdated = 0;
-          episodeNext.googleArrayResult[googleArrayIndex].updated = googleUpdated;
-        }
-
-        if(episodeKey !== null && !(episodeKey in episodeNext.googleWatchedEpisodesSync)) {
-          console.log("Added local key " + episodeKey + ": " + ((new Date() - googleSyncStart)/1000));
-          episodeNext.googleWatchedEpisodesSync[episodeKey] = (new Date()).getTime();
-          episodeNext.googleLocalDirty = true;
-        }
-        episodeNext.googleArrayIndex++;
-        setTimeout(this.syncWatchedEpisodesFromGoogle.bind(this),timeoutDelay);
-      } else {
-          console.log("All done syncing episodes from Google. " + ((new Date() - googleSyncStart)/1000));
-          
-          if(episodeNext.googleLocalDirty) {
-            // Done with local sync
-            console.log("Local is dirty, so recache." + ((new Date() - googleSyncStart)/1000));
-            episodeNext.saveWatchedEpisodes(episodeNext.googleWatchedEpisodesSync, false); // don't recache
-            episodeNext.saveSeriesList(episodeNext.googleSeriesListSync);
-            episodeNext.googleLocalDirty = false;
-            episodeNext.recache();
-          }
-
-          // Setup to Sync Series Google
-          episodeNext.googleArrayResult = [];
-          episodeNext.googleArrayIndex = 0;
-          // Setup to Sync Watched Episodes From Google
-          $.ajax({
-              url: episodeNext.googleRootUrl+"/data/series?updated="+episodeNext.googleLastSyncTime,
-              success: function(data, status) {
-                episodeNext.googleArrayResult = data;
-                episodeNext.googleArrayIndex = 0;
-                console.log("Got series from Google: " + ((new Date() - episodeNext.googleSyncStart)/1000));
-              },
-              complete: function(jqXHR,textStatus) {
-                setTimeout(this.syncSeriesFromGoogle.bind(this),timeoutDelay);
-              },
-              error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); }
-          });
-      }
-    },
-
-    syncSeriesFromGoogle: function() {
-      var episodeNext = this,
-          seriesId,
-          googleUpdated;
-
-      if(episodeNext.googleArrayIndex < episodeNext.googleArrayResult.length) {
-        seriesId = episodeNext.googleArrayResult[googleArrayIndex].seriesId,
-        googleUpdated = episodeNext.googleArrayResult[googleArrayIndex].updated;
-        if(googleUpdated == null) {
-          googleUpdated = 0;
-          episodeNext.googleArrayResult[googleArrayIndex].updated = googleUpdated;
-        }
-
-        if(seriesId !== null && !(seriesId in episodeNext.googleSeriesListSync)) {
-          episodeNext.googleSeriesListSync[seriesId] = (new Date()).getTime();
-          episodeNext.googleLocalDirty = true;
-        }
-        episodeNext.googleArrayIndex++;
-        setTimeout(this.syncSeriesFromGoogle.bind(this),timeoutDelay);
-      } else {
-        console.log("All done syncing series from Google. " + ((new Date() - googleSyncStart)/1000));
-        if(episodeNext.googleLocalDirty) {
-          // Done with local sync
-          console.log("Local is dirty, so recache." + ((new Date() - googleSyncStart)/1000));
-          episodeNext.saveWatchedEpisodes(episodeNext.googleWatchedEpisodesSync, false); // don't recache
-          episodeNext.saveSeriesList(episodeNext.googleSeriesListSync);
-          episodeNext.googleLocalDirty = false;
-          episodeNext.recache();
-        }
-
-        // Setup to Sync Watched Episode To Google
-        episodeNext.googleArrayResult = Object.keys(googleWatchedEpisodesSync);
-        episodeNext.googleArrayIndex = 0;
-        setTimeout(this.syncWatchedEpisodesToGoogle.bind(this),slowTimeoutDelay);
-      }
-    },
-
-    syncWatchedEpisodesToGoogle: function() {
-      var episodeNext = this;
-      if(googleArrayIndex < googleArrayResult.length) {
-        var episodeKey = googleArrayResult[googleArrayIndex++],
-            episodeValue = googleWatchedEpisodesSync[episodeKey];
-        googleArrayIndex++;
-
-        if(episodeValue >= googleLastSyncTime) {
-          $.ajax({
-              url: googleRootUrl+"/data/watched",
-              type: "POST",
-              data: { "watchedKey": episodeKey, "updated": (new Date()).getTime() },
-              error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); },
-              complete: function(jqXHR,textStatus) {
-                setTimeout(this.syncWatchedEpisodesToGoogle.bind(this),timeoutDelay);
-              }
-          });
-        } else {
-          setTimeout(this.syncWatchedEpisodesToGoogle.bind(this),timeoutDelay);
-        }
-      } else {
-        console.log("All done syncing episodes to Google. " + ((new Date() - googleSyncStart)/1000));
-
-        // Set to Sync Series to Google
-        googleArrayResult = Object.keys(googleSeriesListSync);
-        googleArrayIndex = 0;
-        setTimeout(this.syncSeriesToGoogle.bind(this),slowTimeoutDelay);
-      }
-    },
-
-    syncSeriesToGoogle: function() {
-      var episodeNext = this;
-      if(googleArrayIndex < googleArrayResult.length) {
-        var seriesKey = googleArrayResult[googleArrayIndex++],
-            seriesValue = googleSeriesListSync[seriesKey];
-
-        if(seriesValue == null) {
-          seriesValue = 0;
-          googleSeriesListSync[seriesKey] = seriesValue;
-          googleLocalDirty = true;
-        }
-
-        if(seriesValue >= googleLastSyncTime) {
-          $.ajax({
-              url: googleRootUrl+"/data/series",
-              type: "POST",
-              data: { "seriesId": seriesKey, "updated": (new Date()).getTime() },
-              error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); },
-              complete: function(jqXHR,textStatus) {
-                setTimeout(this.syncSeriesToGoogle.bind(this),timeoutDelay);
-              }
-          });
-        } else {
-          setTimeout(this.syncSeriesToGoogle.bind(this),timeoutDelay);
-        }
-      } else {
-        console.log("All done syncing series to Google. " + ((new Date() - googleSyncStart)/1000));
-        setTimeout(this.syncGoogleComplete.bind(this),slowTimeoutDelay);
-      }
-    },
-
-    syncGoogleComplete: function() {
-      var lastGoogleSync = new Date();
-      localStorage.setItem("lastGoogleSync",lastGoogleSync.getTime());
-      updateSyncDisplay();
-        stopspin("syncGoogle");
-        checkPopupFloaters();
-        trackSyncComplete("Google","Sync Complete","Time",((new Date() - googleSyncStart)/1000));
-        isGoogleSyncing = false;
-        console.log("Google sync marked complete. " + ((new Date() - googleSyncStart)/1000));
-    },
-    //////
-    // End of the Sync Google Code
-    /////
 
     /** START: Google Analytics */
     /**
