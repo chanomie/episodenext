@@ -855,12 +855,12 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
       var episodeNext = this,
           element = event.currentTarget,
           seriesid = $(element).attr("data-seriesid"),
-          searchUrl = getMovieDetailsUrl + seriesid;
+          searchUrl = episodeNext.getMovieDetailsUrl + seriesid;
 
-      spin("displayMovieDetails");
+      episodeNext.spin("displayMovieDetails");
       $.ajax({
         url: searchUrl,
-        success: searchDisplayMovieSuccess,
+        success: function(data, status) { episodeNext.searchDisplayMovieSuccess(data, status); },
         error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); }
       });
     },
@@ -871,11 +871,12 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
      * @param status the status of the response
      */
     searchDisplayMovieSuccess: function(data, status) {
-      var seriesId = $(data).find("Data Movie id").text(),
+      var episodeNext = this,
+          seriesId = $(data).find("Data Movie id").text(),
           seriesName = $(data).find("Data Movie title").text(),
           firstAiredDate = $(data).find("Data Movie releaseDate").text(),
           overview = $(data).find("Data Movie overview").text(),
-          bannersrc = posterUrl + $(data).find("Data Movie posterPath").text();  
+          bannersrc = episodeNext.posterUrl + $(data).find("Data Movie posterPath").text();  
 
       $(".bannerdiv").hide();
       $("#addnewshowbutton").hide();
@@ -891,9 +892,9 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
       $("#searchpage").slideUp('slow');
       $("#addshowpage").slideDown('slow');
-      trackPageView("/addmoviepage");
+      episodeNext.trackPageView("/addmoviepage");
 
-      stopspin("displayMovieDetails");
+      episodeNext.stopspin("displayMovieDetails");
     },
 
     /**
@@ -1592,9 +1593,11 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
     },
 
     genericError: function(jqXHR, textStatus) {
-      stopspin("genericError");
+      var episodeNext = this;
+
+      episodeNext.stopspin("genericError");
       alert("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
-      console.log("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
+      episodeNext.console.log("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
     },
 
     //////

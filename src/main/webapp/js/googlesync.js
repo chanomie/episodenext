@@ -149,9 +149,9 @@ define([], function() {
           // Done with local sync
           console.log("Local is dirty, so recache." + ((new Date() - googlesync.googleSyncStart)/1000));
           googlesync.episodeNext.saveWatchedEpisodes(googlesync.googleWatchedEpisodesSync, false); // don't recache
-          googlesync.saveSeriesList(googlesync.googleSeriesListSync);
+          googlesync.episodeNext.saveSeriesList(googlesync.googleSeriesListSync);
           googlesync.googleLocalDirty = false;
-          googlesync.recache();
+          googlesync.episodeNext.recache();
         }
 
         // Setup to Sync Watched Episode To Google
