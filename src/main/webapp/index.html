@@ -53,7 +53,7 @@
         <meta name="apple-mobile-web-app-title" content="Episode.Next">
         
         <link href='https://fonts.googleapis.com/css?family=The+Girl+Next+Door|Open+Sans:800,400,300' rel='stylesheet' type='text/css'>
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="api/v1/warmup">
@@ -96,6 +96,14 @@
           <div class="modalbuttons">
             <div class="leftmodalbutton" id="deleteconfirm"><span class="confirm">Delete</span></div>
             <div class="rightmodalbutton cancelmodal" id="deletecancel"><span class="cancel">Cancel</span></div>
+          </div>
+        </div>   
+        <div id="downloadmodal" class="pagemodal" style="display:none;">
+          <div class="modaltitle">Download Series</div>
+          <div id="downloadtext"></div>
+          <div class="modalbuttons">
+            <div class="leftmodalbutton" id="downloadconfirm"><span class="confirm">Okay</span></div>
+            <div class="rightmodalbutton cancelmodal" id="downloadcancel"><span class="cancel">Cancel</span></div>
           </div>
         </div>   
         <div id="addtohome" style="display:none;">
@@ -158,8 +166,9 @@
 			</div>
 			<div class="content">
 			  <form id="addshowform" action="#">
-			    <i class="fa fa-search"></i>
-			    <input type="text" id="searchtext" name="searchtext" placeholder="Episode Name" />
+			      <i class="fa fa-search fa-fw"></i>
+			      <input type="text" id="searchtext" name="searchtext" placeholder="Episode Name" />
+			    </div>
 			  </form>
 			  <div id="searchResultList">
 			  </div>

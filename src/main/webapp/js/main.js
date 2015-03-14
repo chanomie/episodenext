@@ -286,6 +286,11 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
         $(".resetLocalStorage").click(function (event) { episodeNext.resetLocalStorage(event); });
 
+        $("#downloadconfirm").click(function (event) {
+          $.modal.close();
+        });
+        
+        
         episodeNext.checkGoogleAuth();
         episodeNext.checkPopupFloaters();
         episodeNext.updateSyncDisplay();
@@ -510,7 +515,15 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
                     $("<i></i>").
                     addClass("infoButtonShow").
                     attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
-                    addClass("fa fa-info-circle"))
+                    addClass("fa fa-info-circle")).
+                  append(
+                    $("<i></i>").
+                    addClass("downloadButtonShow").
+                    attr("data-seriesid",seriesListCache[seriesId]["seriesId"]).
+                    attr("data-seriesName",nextEpisodeCache[seriesId]["seriesName"]).
+                    attr("data-seasonnumber",nextEpisodeCache[seriesId]["SeasonNumber"]).
+                    attr("data-episodenumber",nextEpisodeCache[seriesId]["EpisodeNumber"]).
+                    addClass("fa fa-download"))
               ));
                  /*
                       append(
@@ -573,6 +586,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
         $(".pauseSeries").click(function(event) { episodeNext.pauseSeriesButton(event); })
         $("#deleteconfirm").click(function(event) { episodeNext.deleteSeriesConfirm(event); });
         $(".infoButtonShow").click(function(event) { episodeNext.showInfoShow(event); });
+        $(".downloadButtonShow").click(function(event) { episodeNext.downloadShow(event); });
       }
       console.log("Build screen stop: " + ((new Date() - start)/1000));    
 
@@ -999,6 +1013,25 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
         error: function(jqXHR,textStatus) { episodeNext.genericError(jqXHR,textStatus); },
       });
     },
+    
+    /**
+     * Launch the Get My Shows Applications.
+     */
+    downloadShow: function(event) {
+        var episodeNext = this,
+            element = event.currentTarget,
+            seriesid = $(element).attr("data-seriesid"),
+            seriesName = $(element).attr("data-seriesName"),
+            seasonNumber = $(element).attr("data-seasonnumber"),
+            episodeNumber = $(element).attr("data-episodenumber"),
+            searchString = seriesName 
+              + " S" + episodeNext.pad(seasonNumber,2)
+              + "E"  + episodeNext.pad(episodeNumber,2);  
+
+        $("#downloadtext").html(searchString);
+        $("#downloadmodal").modal({minWidth:"300",maxWidth:"300"});
+    },
+    
 
     /**
      * After pulling back information from TheTVDB this will display details
@@ -1678,5 +1711,17 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
     },
     /** END: Google Analytics */
 
+    /**
+     * Add left padding to a number.
+     * @param {string} n the number to left pad
+     * @param {string} width the width to pad until
+     * @param {string} z the string to pad with - defaults to 0
+     */
+    pad: function(n, width, z) {
+      z = z || '0';
+      n = n + '';
+      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    },
+    
   };
 });
