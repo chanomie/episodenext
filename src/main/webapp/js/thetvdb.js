@@ -101,15 +101,24 @@ define([], function() {
             thetvdb.episodeNext.spin(desc);
           }
         },
+
+        spin : function(desc) {
+          var thetvdb = this;
+          if(thetvdb.isWebWorker()) {
+            console.log("TODO: Web Worker!");
+          } else {
+            thetvdb.episodeNext.spin(desc);
+          }
+        },
         
         stopspin : function(desc) {
-            var thetvdb = this;
+          var thetvdb = this;
 
-            if(thetvdb.isWebWorker()) {
-              console.log("TODO: Web Worker!");
-            } else {
-              thetvdb.episodeNext.stopspin(desc);
-            }
+          if(thetvdb.isWebWorker()) {
+            console.log("TODO: Web Worker!");
+          } else {
+            thetvdb.episodeNext.stopspin(desc);
+          }
         },
 
         getWatchedEpisodes: function() {
@@ -141,6 +150,18 @@ define([], function() {
             return thetvdb.episodeNext.updateSyncDisplay();
           }
         },
+        
+        getSeries : function(seriesId) {
+        	var theTvDb = this,
+        	    seriesListCacheJson = localStorage.getItem("seriesListCache");
+        	
+            if(seriesListCacheJson !== null) {
+                seriesListCache = JSON.parse(seriesListCacheJson);
+                return seriesListCache[seriesId];
+            } else {
+            	// TODO get series from ajax call.
+            }
+        },
 
         /**
          * Requests for recache of TheTVDB data.  This is a full sync and will
@@ -160,22 +181,64 @@ define([], function() {
             theTvDb.seriesListCache = {};
             theTvDb.seriesListIndex = 0;
 
-            setTimeout(theTvDb.recacheSeries.bind(theTvDb),theTvDb.timeoutDelay);
+            setTimeout(theTvDb.recacheSeriesLoop.bind(theTvDb),theTvDb.timeoutDelay);
           }
+        },
+        
+        /**
+         * Requests the recaching of a single series.
+         */
+        recacheSingleEpisode: function(seriesId) {
+        	var theTvDb = this,
+        	    searchUrl = theTvDb.getSeriesAllDetailsUrl + seriesId + "?includeall=false",
+        	    nextEpisodeCacheJson,
+        	    nextEpisodeCache;
+
+        	theTvDb.spin("recacheSingleEpisode");
+        	
+            $.ajax({
+                url: searchUrl,
+                async: false,
+                success: function(data, status) {
+                	var seriesId = $(data).find("Data Series id").text(),
+                        oldestUnwatchedEpisode = undefined;
+                	
+                	oldestUnwatchedEpisode = theTvDb.getOldestUnwatchedEpisode(data, seriesId);
+                	
+                	nextEpisodeCacheJson = localStorage.getItem("nextEpisodeCache");
+                	if(nextEpisodeCacheJson !== null) {
+                	  nextEpisodeCache = JSON.parse(nextEpisodeCacheJson);
+                      if(oldestUnwatchedEpisode !== null) {
+                          nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
+                      } else {
+                          delete nextEpisodeCache[seriesId];
+                      }
+                      localStorage.setItem("nextEpisodeCache",JSON.stringify(nextEpisodeCache));
+                      theTvDb.buildMainScreenFromCache();
+                      theTvDb.stopspin("recacheSingleEpisode");
+                	}
+                	
+                }
+            });
         },
 
         /**
          * This is runs a single cycle in the recaching process.
          */
-        recacheSeries : function() {
+        recacheSeriesLoop : function() {
           var theTvDb = this,
               lastTheTvDbSync,
               seriesListItem,
               searchUrl;
 
+          console.log("recacheSeriesLoop seriesListIndex=[" + theTvDb.seriesListIndex
+        		  + "], seriesListRecache.length=[" + theTvDb.seriesListRecache.length + "]");
+        		  		
           if(theTvDb.seriesListIndex  < theTvDb.seriesListRecache.length) {
             seriesListItem = theTvDb.seriesListRecache[theTvDb.seriesListIndex++];
             searchUrl = theTvDb.getSeriesAllDetailsUrl + seriesListItem + "?includeall=false";
+            
+            console.log("recacheSeriesLoop searchUrl=[" + searchUrl + "]");
 
             $.ajax({
               url: searchUrl,
@@ -195,49 +258,14 @@ define([], function() {
 
                 newSeries["bannersrc"] = theTvDb.bannerUrl + $(data).find("Data Series banner").text();
                 theTvDb.seriesListCache[seriesId] = newSeries;
-
-                $(data).find("Data Episode").each(function(i,element) {
-                  var episodeId = $(element).find("id").text(),
-                      episodeKey = seriesId + "-" + episodeId,
-                      firstAired,
-                      firstAiredDate,
-                      firstAiredEpoch;
-
-                  if(!(episodeKey in theTvDb.getWatchedEpisodes())) {
-                    firstAired = $(element).find("FirstAired").text();
-                    if(firstAired !== undefined && firstAired !== "") {
-                      firstAiredDate = new Date(firstAired);
-                      firstAiredEpoch = firstAiredDate.getTime();
-                      if(oldestUnwatchedEpisode === undefined 
-                              || oldestUnwatchedEpisode["FirstAiredEpoch"] > firstAiredEpoch) {
-
-                        oldestUnwatchedEpisode = {};
-                        oldestUnwatchedEpisode["seriesId"] = seriesId;
-                        oldestUnwatchedEpisode["episodeId"] = episodeId;
-                        oldestUnwatchedEpisode["FirstAired"] = firstAired;
-                        oldestUnwatchedEpisode["FirstAiredEpoch"] = firstAiredDate.getTime();
-                        oldestUnwatchedEpisode["seriesName"] = newSeries["seriesName"];
-                        oldestUnwatchedEpisode["EpisodeName"] = $(this).find("EpisodeName").text();
-                        oldestUnwatchedEpisode["EpisodeNumber"] = $(this).find("EpisodeNumber").text();
-                        oldestUnwatchedEpisode["SeasonNumber"] = $(this).find("SeasonNumber").text();
-                        oldestUnwatchedEpisode["bannersrc"] = newSeries["bannersrc"];
-                        oldestUnwatchedEpisode["EpisodeImage"] = theTvDb.bannerUrl+ $(this).find("filename").text();
-                        oldestUnwatchedEpisode["Overview"] = $(this).find("Overview").text();
-                        if( oldestUnwatchedEpisode["Overview"].length > 200 ) {
-                          oldestUnwatchedEpisode["Overview"] = oldestUnwatchedEpisode["Overview"].substr(0,200) + "...";
-                        }
-
-                        // console.log(oldestUnwatchedEpisode["EpisodeName"] + ", Season: " + oldestUnwatchedEpisode["SeasonNumber"] + ", Episode: " + oldestUnwatchedEpisode["EpisodeNumber"]);
-                      }
-                    }
-                  }
-                });
+                
+                oldestUnwatchedEpisode = theTvDb.getOldestUnwatchedEpisode(data, seriesId, newSeries);
                 if(oldestUnwatchedEpisode !== null) {
                   theTvDb.nextEpisodeCache[seriesId] = oldestUnwatchedEpisode;
                 }
               }
             });
-            setTimeout(theTvDb.recacheSeries.bind(theTvDb),theTvDb.timeoutDelay);
+            setTimeout(theTvDb.recacheSeriesLoop.bind(theTvDb),theTvDb.timeoutDelay);
 
           } else {
             localStorage.setItem("nextEpisodeCache",JSON.stringify(theTvDb.nextEpisodeCache));
@@ -252,6 +280,56 @@ define([], function() {
             theTvDb.isRecaching = false;
             console.log("Finished recache. " + ((new Date() - theTvDb.recacheStart)/1000));
           }
+        },
+        
+        /**
+         * Gets the oldest unwatched episode from the XML returned by the Tv DB API call.
+         * @param {object} data the data returned from the API call
+         * @param {string} seriesId the series identifier.
+         */
+        getOldestUnwatchedEpisode : function(data, seriesId, series) {
+          var theTvDb = this,
+              oldestUnwatchedEpisode = undefined;
+          
+          if(series === undefined || series === null) {
+            series = theTvDb.getSeries(seriesId);
+          }
+
+          $(data).find("Data Episode").each(function(i,element) {
+            var episodeId = $(element).find("id").text(),
+                episodeKey = seriesId + "-" + episodeId,
+                firstAired,
+                firstAiredDate,
+                firstAiredEpoch;
+
+            if(!(episodeKey in theTvDb.getWatchedEpisodes())) {
+              firstAired = $(element).find("FirstAired").text();
+              if(firstAired !== undefined && firstAired !== "") {
+                firstAiredDate = new Date(firstAired);
+                firstAiredEpoch = firstAiredDate.getTime();
+                if(oldestUnwatchedEpisode === undefined 
+                    || oldestUnwatchedEpisode["FirstAiredEpoch"] > firstAiredEpoch) {
+
+                  oldestUnwatchedEpisode = {};
+                  oldestUnwatchedEpisode["seriesId"] = seriesId;
+                  oldestUnwatchedEpisode["episodeId"] = episodeId;
+                  oldestUnwatchedEpisode["FirstAired"] = firstAired;
+                  oldestUnwatchedEpisode["FirstAiredEpoch"] = firstAiredDate.getTime();
+                  oldestUnwatchedEpisode["seriesName"] = series["seriesName"];
+                  oldestUnwatchedEpisode["EpisodeName"] = $(this).find("EpisodeName").text();
+                  oldestUnwatchedEpisode["EpisodeNumber"] = $(this).find("EpisodeNumber").text();
+                  oldestUnwatchedEpisode["SeasonNumber"] = $(this).find("SeasonNumber").text();
+                  oldestUnwatchedEpisode["bannersrc"] = series["bannersrc"];
+                  oldestUnwatchedEpisode["EpisodeImage"] = theTvDb.bannerUrl+ $(this).find("filename").text();
+                  oldestUnwatchedEpisode["Overview"] = $(this).find("Overview").text();
+                  if( oldestUnwatchedEpisode["Overview"].length > 200 ) {
+                    oldestUnwatchedEpisode["Overview"] = oldestUnwatchedEpisode["Overview"].substr(0,200) + "...";
+                  }
+                }
+              }
+            }
+          });
+          return oldestUnwatchedEpisode;
         },
 	};
 

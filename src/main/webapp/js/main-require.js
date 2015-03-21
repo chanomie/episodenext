@@ -17,8 +17,7 @@ requirejs.config({
     "simplemodal": 'jquery.simplemodal.1.4.4.min',
     "helper": 'helper'
   },
-  "urlArgs": "bust=" + (+new Date)
-});
+}); // "urlArgs": "bust=" + (+new Date)
 
 // Load the main app module to start the app
 requirejs(['main','domReady!'], function(main) {

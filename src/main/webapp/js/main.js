@@ -1199,7 +1199,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
           alert('Error occured: ' + JSON.stringify(response.error));
         } else {
           console.log('Post ID: ' + response.id);
-          episodeNext.watchSingleEpisode(episodeKey, true);
+          episodeNext.watchSingleEpisode(episodeKey);
         }
       });  
       episodeNext.stopspin("facebookPlayedEpisode");
@@ -1213,7 +1213,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
           episodeKey = seriesId + "-" + episodeId;
 
       episodeNext.removeSeriesFromNextEpisodeCache(seriesId);
-      episodeNext.watchSingleEpisode(episodeKey, true);
+      episodeNext.watchSingleEpisode(episodeKey);
     },
 
     toggleWatchShow: function(event) {
@@ -1227,7 +1227,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
         $(element).addClass("fa fa-eye-slash");
 
         // Tracking inside this method
-        this.watchSingleEpisode(watchedkey, true);
+        episodeNext.watchSingleEpisode(watchedkey);
       } else {
         watchedEpisodes = episodeNext.getWatchedEpisodes();
         $(element).removeClass("fa fa-eye-slash");
@@ -1247,11 +1247,10 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
      *
      * @param {string} watchedEpisodeKey the key of the episode to mark as watched
      *        in the format of "{seriesId}-{episodeId}"
-     * @param {boolean} requestRecache indicates if the system should
-     *        automatically recache the system after adding the episode
      */
-    watchSingleEpisode: function(watchedEpisodeKey, requestRecache) {
+    watchSingleEpisode: function(watchedEpisodeKey) {
         var episodeNext = this,
+        	seriesId = (watchedEpisodeKey.split("-"))[0];
             watchedEpisodes = episodeNext.getWatchedEpisodes(),
             watchedTime = (new Date()).getTime();
             
@@ -1260,7 +1259,12 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
       // Realtime Add to Cloud
       episodeNext.addEpisodeToCloud(watchedEpisodeKey, watchedTime);
-      episodeNext.saveWatchedEpisodes(watchedEpisodes, requestRecache);
+
+      // Save the new watchlist
+      episodeNext.saveWatchedEpisodes(watchedEpisodes, false);
+
+      // Recache Single Episode
+      episodeNext.recacheSingleEpisode(seriesId);
     },
 
     /**
@@ -1650,6 +1654,17 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
         thetvdb.setEpisodeNext(episodeNext);
         thetvdb.recache();
       //}
+    },
+    
+    /**
+     * Requests a resync of a single episode.
+     * @param {string} episode key for a single episode {seriesId}-{episodeId}
+     */
+    recacheSingleEpisode: function(seriesId) {
+    	var episodeNext = this;
+    	
+    	thetvdb.setEpisodeNext(episodeNext);
+    	thetvdb.recacheSingleEpisode(seriesId);
     },
 
     syncGoogle: function() {

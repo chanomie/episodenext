@@ -293,6 +293,7 @@ form#addshowform {
 }
 
 form#addshowform i {
+	position: relative;
 	color: #B0B0B0;
 }
 
@@ -302,11 +303,6 @@ input#searchtext {
 	padding-left: 30px;
 	border-radius: 5px;
 	border: 1px solid darkgray;
-}
-
-.icon-search {
-	position: relative; 
-	left:10px;
 }
 
 div.seriesrow {
