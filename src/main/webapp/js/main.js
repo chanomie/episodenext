@@ -49,10 +49,10 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
     /**
      * Defines if the Google Authenticated Session has been established.
-     * @type {boolean}
+     * Three potential values are 'unknown' 'no' 'yes'
      * @private
      */
-    'googleAuth' : false,
+    'googleAuth' : 'unknown',
 
     /**
      * The TV DB URL base for the API
@@ -322,7 +322,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
       var episodeNext = this;
       if(data.googleLoginStatus == "true") {
         episodeNext.trackSyncService("Google","Authorized");
-        episodeNext.googleAuth = true;
+        episodeNext.googleAuth = 'yes';
         $("#googlelogin").hide();
         $("#googlelogout").show();
         $("#googleLoginButton").click(function(event) {
@@ -338,7 +338,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
           window.location.replace(data.googleLogoutUrl);
         });          
       } else {
-        episodeNext.googleAuth = false;
+        episodeNext.googleAuth = 'no';
         $("#googlelogin").show();
         $("#googlelogout").hide();
         $("#googleLoginButton").click(function(event) {
@@ -666,9 +666,9 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
       if(googleFrequencyString !== undefined && googleFrequencyString !== null && googleFrequencyString !== "0") {
         lastGoogleSyncEpoch = localStorage.getItem("lastGoogleSync");
-        if(!episodeNext.googleAuth && lastGoogleSyncEpoch) {
+        if((episodeNext.googleAuth == 'no') && lastGoogleSyncEpoch) {
           $("#googlemodal").modal({minWidth:"300",maxWidth:"300"});
-        }      
+        }
         if(lastGoogleSyncEpoch == null) {
           lastGoogleSyncEpoch = 0;
         }
@@ -1443,7 +1443,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
           now = (new Date()).getTime();
 
       // If Google is Auth'ed add to it:
-      if(episodeNext.googleAuth) {
+      if(episodeNext.googleAuth == 'yes') {
         $.ajax({
           url: episodeNext.googleRootUrl+"/data/watched",
           type: "POST",
@@ -1466,7 +1466,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
           now = (new Date()).getTime();
 
       // If Google is Auth'ed add to it:
-      if(episodeNext.googleAuth) {
+      if(episodeNext.googleAuth == 'yes') {
         $.ajax({
           url: episodeNext.googleRootUrl+"/data/series",
           type: "POST",
@@ -1488,7 +1488,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
       var episodeNext = this;
 
       // Delete realtime from Google
-      if(episodeNext.googleAuth) {
+      if(episodeNext.googleAuth == 'yes') {
         $.ajax({
           url: episodeNext.googleRootUrl+"/data/watched/"+watchedEpisodeKey,
           type: "DELETE",
@@ -1506,7 +1506,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
     deleteSeriesFromCloud: function(seriesId) {
       var episodeNext = this;
 
-      if(episodeNext.googleAuth) {
+      if(episodeNext.googleAuth == 'yes') {
         $.ajax({
           url: episodeNext.googleRootUrl+"/data/series/"+seriesId,
           type: "DELETE",
