@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>i2</appengine.app.version>
-        <appengine.target.version>1.9.18</appengine.target.version>
+        <appengine.target.version>1.9.38</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>3.2.2.RELEASE</org.springframework.version>
         <jackson.version>1.9.10</jackson.version>

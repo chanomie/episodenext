@@ -1170,7 +1170,9 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
         FB.getLoginStatus(function(response) {
           if (response.status === 'connected') {
-            $("#facebookmodal").modal({minWidth:"300",maxWidth:"300"});
+            $("#facebookmodal").modal({minWidth:"300",maxWidth:"300",height:'160'});
+            console.log("Setting #simplemodal-container to Auto");
+            $('#simplemodal-container').css('height', 'auto');
           } else {
             $("#mainpage").slideUp('slow');
             $("#settingspage").slideDown('slow');
