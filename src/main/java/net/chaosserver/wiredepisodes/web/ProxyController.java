@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.Principal;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
@@ -133,6 +134,15 @@ public class ProxyController {
 
         response.setContentType("text/xml; charset=iso-8859-1");
 
+    	Enumeration<String> headerNames = request.getHeaderNames();    	
+        if (headerNames != null) {
+          while (headerNames.hasMoreElements()) {
+        	  String headerName = headerNames.nextElement();
+        	  log.info("Header: [" + headerName + "] == [" + request.getHeader(headerName) + "]");
+          }
+        }
+        
+        
         StringBuffer outputXml = new StringBuffer();
         outputXml.append("<Data>\n");
 

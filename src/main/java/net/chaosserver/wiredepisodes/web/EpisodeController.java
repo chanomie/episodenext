@@ -21,7 +21,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Enumeration;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.xpath.XPathExpressionException;
 
 import net.chaosserver.wiredepisodes.ShowInformation;
 
@@ -38,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.xml.sax.SAXException;
 
 import com.omertron.thetvdbapi.model.Episode;
 import com.omertron.thetvdbapi.model.Series;
@@ -55,7 +60,7 @@ public class EpisodeController {
 
     @Autowired
     private ShowInformation showInformation;
-
+    
     @RequestMapping(value = "/showdetails", method = RequestMethod.GET)
     public String get() {
         return "episode/view";
