@@ -409,6 +409,9 @@ public class ProxyController {
             URL url = new URL(path);
 
             URLConnection connection = url.openConnection();
+            int timeout = 60 * 1000;
+            connection.setConnectTimeout(timeout);
+            connection.setReadTimeout(timeout);
             connection.connect();
 
             BufferedInputStream reader = new BufferedInputStream(

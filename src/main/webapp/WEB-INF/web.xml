@@ -40,10 +40,10 @@
     <filter-name>cors</filter-name>
     <filter-class>net.chaosserver.wiredepisodes.web.CorsFilter</filter-class>
   </filter>
-  <filter-mapping>
+  <!-- filter-mapping>
     <filter-name>cors</filter-name>
     <url-pattern>/api/*</url-pattern>
-  </filter-mapping>
+  </filter-mapping -->
  <session-config>
     <tracking-mode>COOKIE</tracking-mode>
   </session-config>

@@ -27,6 +27,7 @@
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+        <property name="javax.net.debug" value="all"/>
         <property name="thetvdb.apikey" value="${env.thetvdbapikey}" />
         <property name="themoviedb.apikey" value="${env.themoviedbkey}" />
     </system-properties>
