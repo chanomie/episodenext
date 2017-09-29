@@ -18,27 +18,6 @@
 define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!'], 
   function(thetvdb,googlesync,$) {
 
-  /** START: Facebook Integration */
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '132823190241236', // App ID
-      channelUrl : '//thewirewatcher.appspot.com/channel.html', // Channel File
-      status     : true, // check login status
-      cookie     : true, // enable cookies to allow the server to access the session
-      xfbml      : true  // parse XFBML
-    });
-  };
-
-  // Load the SDK asynchronously
-  (function(d){
-    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-    if (d.getElementById(id)) {return;}
-    js = d.createElement('script'); js.id = id; js.async = true;
-    js.src = "//connect.facebook.net/en_US/all.js";
-    ref.parentNode.insertBefore(js, ref);
-  }(document));
-  /** END: Facebook Integration */
-
   return {
     /** 
      * Google Analytics account used to push actions to GA
@@ -1636,7 +1615,7 @@ define(['thetvdb','googlesync','jquery','jquery.spin','simplemodal','domReady!']
 
       episodeNext.stopspin("genericError");
       alert("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
-      episodeNext.console.log("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
+      // episodeNext.console.log("Failure: textStatus = [" + textStatus + "], jqXHR.response [" + JSON.stringify(jqXHR.response) + "]");
     },
 
     //////
