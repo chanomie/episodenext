@@ -19,12 +19,16 @@
    Base styles: opinionated defaults
    ========================================================================== */
 
-html,
 button,
 input,
 select,
 textarea {
     color: #222;
+}
+
+html {
+	background-color: black;
+	color: #F0F0F0;
 }
 
 div.firsttime {
@@ -40,9 +44,11 @@ div.firsttime span {
 }
 
 body {
+    background-color: black;
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
     line-height: 1.4;
+    color; #F0F0F0;
 }
 
 a {
@@ -231,8 +237,7 @@ div.showlist {
 
 div#adbar {
 	margin-top: -10px;
-	border-top: solid 
-	gray 1px;
+	/* border-top: solid gray 1px; */
 	padding-top: 20px;
 }
 
@@ -250,8 +255,12 @@ div.help div.rightheader {
 	right: 10px;
 	float: right;
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
-	box-shadow: 5px 5px 5px #888888;
+	box-shadow: 5px 5px 5px #222222;
 	padding: 10px;
+}
+
+div.helptext {
+	color: black;
 }
 
 div.rightheader div.helptext {
@@ -265,7 +274,7 @@ div.help div.leftheader {
 	left: 10px;
 	float: left;
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
-	box-shadow: 5px 5px 5px #888888;
+	box-shadow: 5px 5px 5px #222222;
 	padding: 10px;
 }
 
@@ -278,7 +287,7 @@ div.help div.centerhelp {
 	margin-right: auto;
 	font-size: 150%;
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FBF2AC), color-stop(1, #F3DB82));
-	box-shadow: 5px 5px 5px #888888;
+	box-shadow: 5px 5px 5px #222222;
 	padding: 10px;
 
 }
@@ -454,8 +463,8 @@ div.seasonbar {
     font-size: 24px;
     font-weight:light;
 	text-transform: uppercase;
-    color: #A0A0A0;
-    background-color: #DADDE2;
+    color: #F0F0F0;
+    background-color: #444444;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -553,16 +562,16 @@ ul.tableView {
 	list-style-type:none;
 	font-size:16px;
 	padding:0;
-	background-color: rgb(247, 247, 247);
+	background-color: black;
 	border-top:1px solid #B2B4B8;
 	border-bottom:1px solid #B2B4B8;
 }
 
 ul.tableView li {
-	background-color:#F7F7F7;
+	background-color:black;
 	padding: 10px;
 	margin-left: 40px;
-	color:black;
+	color: #F0F0F0;
 	border-bottom:1px solid #B2B4B8;
 }
 
@@ -745,8 +754,8 @@ textarea[contenteditable] {
 
 @media only screen and (min-width: 760px) {
 	div.showlist {
-		border-left: 1px gray solid;
-		border-right: 1px gray solid;
+		/* border-left: 1px gray solid;
+		border-right: 1px gray solid; */
 	}
 }
 
